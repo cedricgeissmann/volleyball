@@ -1,0 +1,59 @@
+@media print {
+	/* Hide non-essential elements */
+	header,
+	footer,
+	nav,
+	.no-print,
+	button:not(.print-button) {
+		display: none !important;
+	}
+
+	/* Print-specific layout */
+	@page {
+		size: A4;
+		margin: 1.5cm;
+	}
+
+	body {
+		background: white;
+		color: black;
+	}
+
+	/* Trainingsplanner: 2-Spalten-Layout für A4 */
+	.print-layout {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-md);
+	}
+
+	.print-item {
+		page-break-inside: avoid;
+		border: 1px solid var(--color-gray-200);
+		padding: var(--space-sm);
+		margin-block-end: var(--space-sm);
+	}
+
+	/* QR-Codes in Print */
+	.qr-code {
+		max-width: 120px;
+		margin: var(--space-sm) auto;
+	}
+
+	/* Links: Show URLs */
+	a[href]:after {
+		content: ' (' attr(href) ')';
+		font-size: var(--font-size-xs);
+	}
+
+	/* Prevent page breaks */
+	h1,
+	h2,
+	h3 {
+		page-break-after: avoid;
+	}
+
+	/* Better table printing */
+	table {
+		page-break-inside: avoid;
+	}
+}

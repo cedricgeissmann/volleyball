@@ -1,0 +1,14 @@
+{
+  "name": "TV Muttenz Volleyball",
+  "short_name": "TV Muttenz VB",
+  "icons": [
+    {
+      "src": "/volleyball/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#FF3500",
+  "background_color": "#e5e5e5",
+  "display": "standalone"
+}
