@@ -1,5 +1,9 @@
 <script>
 	import { base } from '$app/paths';
+	import TeamCard from '$lib/components/team/TeamCard.svelte';
+
+	/** @type {{ data: { teams: Array<any> } }} */
+	let { data } = $props();
 </script>
 
 <svelte:head>
@@ -30,6 +34,15 @@
 			<li>Blog-Beiträge zum Constraints-Led Approach</li>
 			<li>Trainingsplaner für strukturierte Trainings</li>
 		</ul>
+	</section>
+
+	<section class="teams-section">
+		<h2>Unsere Teams</h2>
+		<div class="team-grid">
+			{#each data.teams as team}
+				<TeamCard {team} />
+			{/each}
+		</div>
 	</section>
 </main>
 
@@ -93,6 +106,25 @@
 		left: 0;
 	}
 
+	.teams-section {
+		margin-block: var(--space-3xl);
+	}
+
+	.teams-section h2 {
+		text-align: center;
+		color: var(--color-primary);
+		margin-bottom: var(--space-2xl);
+		font-size: var(--font-size-3xl);
+	}
+
+	.team-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+		gap: var(--space-xl);
+		max-width: var(--max-width-content);
+		margin-inline: auto;
+	}
+
 	@media (max-width: 768px) {
 		.hero h1 {
 			font-size: var(--font-size-3xl);
@@ -104,6 +136,10 @@
 
 		.info {
 			padding: var(--space-lg);
+		}
+
+		.team-grid {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>
