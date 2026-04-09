@@ -143,7 +143,7 @@
 		font-size: var(--font-size-base);
 		transition: color var(--transition-fast);
 		position: relative;
-		padding-block: var(--space-sm);
+		padding-block: var(--space-xs);
 		height: 100%;
 		display: flex;
 		align-items: center;
@@ -213,7 +213,7 @@
 		}
 
 		.nav a.active::after {
-			left: 0;
+			left: calc(-1 * var(--space-xl));
 			right: auto;
 			width: 3px;
 			height: 100%;
