@@ -1,0 +1,9 @@
+id: tempo-spieler
+name: Tempo-Spielende
+beschreibung: Dynamische Spielweise mit aktiver Steuerung und Variation des Spieltempos
+aufgaben:
+  - Ich beschleunige das Spiel nach erfolgreichen Aktionen
+  - Ich verlangsame das Tempo nach Fehlern zur Stabilisierung
+  - Ich nutze Tempowechsel um Gegner aus dem Rhythmus zu bringen
+  - Ich lese wann das Team Energie braucht oder Ruhe
+fokus: Spielflusssteuerung durch bewusste Tempovariation

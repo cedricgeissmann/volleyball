@@ -1,20 +1,8 @@
 <script>
-	import QRCode from '$lib/components/shared/QRCode.svelte';
-	import { getAbsoluteURL } from '$lib/utils/qrGenerator.js';
-	import { browser } from '$app/environment';
 	import { base } from '$app/paths';
 
 	let { data } = $props();
 	const { rolle } = data;
-
-	const pageUrl = browser ? window.location.href : getAbsoluteURL(`/rollen/${rolle.id}`);
-
-	function handlePrint() {
-		// Wait a bit to ensure QR code is rendered
-		setTimeout(() => {
-			window.print();
-		}, 100);
-	}
 </script>
 
 <svelte:head>
@@ -24,16 +12,12 @@
 
 <div class="rolle-detail">
 	<header class="page-header">
+		<a href="{base}/rollen" class="back-button">← Zurück zu Rollen</a>
 		<div class="header-content">
-			<a href="{base}/rollen" class="back-link">← Zurück zu Rollen</a>
 			<h1>{rolle.name}</h1>
 			{#if rolle.beschreibung}
 				<p class="description">{rolle.beschreibung}</p>
 			{/if}
-		</div>
-		<div class="qr-section">
-			<QRCode url={pageUrl} size={150} />
-			<p class="qr-hint">Scannen für schnellen Zugriff</p>
 		</div>
 	</header>
 
@@ -56,43 +40,48 @@
 			</section>
 		{/if}
 	</div>
-
-	<div class="actions print-hide">
-		<button class="btn btn-primary" onclick={handlePrint}>Drucken</button>
-	</div>
 </div>
 
 <style>
 	.rolle-detail {
 		max-width: var(--content-width-wide);
 		margin: 0 auto;
-		padding: var(--spacing-lg);
+		padding: var(--spacing-xl);
 	}
 
 	.page-header {
-		display: grid;
-		grid-template-columns: 1fr auto;
-		gap: var(--spacing-xl);
-		margin-bottom: var(--spacing-2xl);
-		padding-bottom: var(--spacing-xl);
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-lg);
+		margin-bottom: var(--spacing-3xl);
+		padding-bottom: var(--spacing-2xl);
 		border-bottom: 2px solid var(--color-border);
+	}
+
+	.back-button {
+		display: inline-flex;
+		align-items: center;
+		padding: var(--spacing-md) var(--spacing-lg);
+		background-color: var(--color-primary);
+		color: white;
+		text-decoration: none;
+		border-radius: var(--border-radius);
+		font-size: var(--font-size-base);
+		font-weight: 600;
+		transition: all var(--transition-normal);
+		width: fit-content;
+	}
+
+	.back-button:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		background-color: var(--color-primary-dark, var(--color-primary));
 	}
 
 	.header-content {
 		display: flex;
 		flex-direction: column;
-		gap: var(--spacing-sm);
-	}
-
-	.back-link {
-		color: var(--color-text-secondary);
-		text-decoration: none;
-		font-size: var(--font-size-sm);
-		transition: color var(--transition-normal);
-	}
-
-	.back-link:hover {
-		color: var(--color-primary);
+		gap: var(--spacing-md);
 	}
 
 	.page-header h1 {
@@ -107,31 +96,18 @@
 		margin: 0;
 	}
 
-	.qr-section {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--spacing-xs);
-	}
-
-	.qr-hint {
-		color: var(--color-text-secondary);
-		font-size: var(--font-size-xs);
-		margin: 0;
-	}
-
 	.content-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-		gap: var(--spacing-lg);
-		margin-bottom: var(--spacing-xl);
+		gap: var(--spacing-2xl);
+		margin-bottom: var(--spacing-2xl);
 	}
 
 	.card {
 		background-color: var(--color-bg);
 		border: 2px solid var(--color-border);
 		border-radius: var(--border-radius);
-		padding: var(--spacing-lg);
+		padding: var(--spacing-xl);
 	}
 
 	.card.full-width {
@@ -141,14 +117,14 @@
 	.card h2 {
 		color: var(--color-text);
 		margin-top: 0;
-		margin-bottom: var(--spacing-md);
+		margin-bottom: var(--spacing-lg);
 		font-size: var(--font-size-xl);
 	}
 
 	.focus-text {
 		color: var(--color-text);
 		font-size: var(--font-size-lg);
-		line-height: 1.6;
+		line-height: 1.8;
 		margin: 0;
 	}
 
@@ -160,9 +136,9 @@
 
 	.points-list li {
 		padding-left: var(--spacing-md);
-		margin-bottom: var(--spacing-sm);
+		margin-bottom: var(--spacing-md);
 		position: relative;
-		line-height: 1.6;
+		line-height: 1.8;
 	}
 
 	.points-list li::before {
@@ -173,50 +149,9 @@
 		font-weight: bold;
 	}
 
-	.actions {
-		display: flex;
-		justify-content: center;
-		gap: var(--spacing-md);
-		padding-top: var(--spacing-xl);
-		margin-top: var(--spacing-xl);
-		border-top: 2px solid var(--color-border);
-	}
-
-	.btn {
-		padding: var(--spacing-sm) var(--spacing-lg);
-		border: 2px solid var(--color-border);
-		border-radius: var(--border-radius);
-		background-color: var(--color-bg);
-		color: var(--color-text);
-		font-size: var(--font-size-base);
-		font-weight: 600;
-		cursor: pointer;
-		transition: all var(--transition-normal);
-	}
-
-	.btn-primary {
-		background-color: var(--color-primary);
-		color: white;
-		border-color: var(--color-primary);
-	}
-
-	.btn:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-	}
-
 	@media (max-width: 768px) {
 		.rolle-detail {
 			padding: var(--spacing-md);
-		}
-
-		.page-header {
-			grid-template-columns: 1fr;
-		}
-
-		.qr-section {
-			order: -1;
-			justify-self: center;
 		}
 
 		.content-grid {
@@ -225,21 +160,9 @@
 	}
 
 	@media print {
-		.print-hide {
-			display: none;
-		}
-
 		.page-header {
 			page-break-inside: avoid;
 			margin-bottom: var(--spacing-xl);
-		}
-
-		.qr-section {
-			page-break-inside: avoid;
-		}
-
-		.qr-hint {
-			display: none;
 		}
 
 		.card {
@@ -247,7 +170,7 @@
 			margin-bottom: var(--spacing-md);
 		}
 
-		.back-link {
+		.back-button {
 			display: none;
 		}
 	}

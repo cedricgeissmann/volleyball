@@ -1,0 +1,9 @@
+id: roboter
+name: Roboterhafte Person
+beschreibung: Mechanische, ruckartige Bewegungen ohne Fluss
+aufgaben:
+  - Ich bewege mich nur in geraden Linien und 90-Grad-Winkeln
+  - Ich mache roboterhafte, ruckartige Bewegungen
+  - Ich kann meine Gelenke nur in fixierten Winkeln bewegen
+  - Ich kommuniziere mit monotoner, roboterhafter Stimme
+fokus: Bewegungseinschränkung durch mechanische, unflexible Motorik

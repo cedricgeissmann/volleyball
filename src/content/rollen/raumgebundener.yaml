@@ -1,0 +1,9 @@
+id: raumgebundener
+name: Raumgebundene Person
+beschreibung: Bewegung nur innerhalb eines definierten Bereichs
+aufgaben:
+  - Ich bewege mich nur in meinem zugewiesenen kleinen Bereich
+  - Ich rufe lautstark wenn Bälle ausserhalb meiner Zone kommen
+  - Ich muss extrem präzise positioniert sein innerhalb meines Raums
+  - Ich verlasse mich auf Teamkollegen für Bälle ausserhalb
+fokus: Räumliche Einschränkung durch definierte Bewegungszone

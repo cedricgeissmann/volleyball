@@ -1,0 +1,9 @@
+id: druckerzeuger
+name: Druckerzeugende Person
+beschreibung: Trainingshelfer zur Simulation von Stresssituationen im Spiel
+aufgaben:
+  - Ich erzeuge Zeitdruck durch schnelle und unerwartete Ballwechsel
+  - Ich spiele Bälle gezielt in unangenehme Positionen
+  - Ich variiere Tempo und Platzierung ständig
+  - Ich fordere schnelle Entscheidungen unter Unsicherheit
+fokus: Repräsentatives Training durch Simulation von Wettkampfdruck

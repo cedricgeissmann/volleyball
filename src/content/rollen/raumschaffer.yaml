@@ -1,0 +1,9 @@
+id: raumschaffer
+name: Raumschaffende Person
+beschreibung: Intelligente Positionierung mit Öffnen von Raum für andere durch Bewegung
+aufgaben:
+  - Ich ziehe durch meine Bewegungen gegnerische Personen aus Position
+  - Ich schaffe durch Täuschungen Raum für meine Mitspieler
+  - Ich erkenne wo Platz entsteht und nutze ihn
+  - Ich koordiniere meine Bewegungen mit den Angreifern
+fokus: Taktische Raumgestaltung durch intelligente Bewegung und Täuschung

@@ -1,0 +1,9 @@
+id: angreifer
+name: Angreifende Person
+beschreibung: Offensive Spielweise mit Fokus auf erfolgreichen Punktabschluss
+aufgaben:
+  - Ich lese die gegnerische Verteidigung und passe meinen Schlag an
+  - Ich variiere zwischen harten Schlägen und platzierten Bällen
+  - Ich nutze Lücken im Block und in der Verteidigung gezielt aus
+  - Ich kommuniziere mit dem Zuspieler über meine Bereitschaft
+fokus: Adaptives Angriffsverhalten durch Lesen der gegnerischen Defensive

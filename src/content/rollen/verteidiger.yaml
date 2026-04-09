@@ -1,0 +1,9 @@
+id: verteidiger
+name: Verteidigende Person
+beschreibung: Raumabdeckung und defensive Anpassungsfähigkeit im Team
+aufgaben:
+  - Ich decke den Raum um mich herum konsequent ab
+  - Ich lasse keinen Ball in meiner Zone auf den Boden fallen
+  - Ich passe mich an die Bewegungen meiner Mitspieler an
+  - Ich erkenne Lücken in der Verteidigung und schliesse sie
+fokus: Raumverantwortung und Anpassung an Teamdynamik in der Defensive

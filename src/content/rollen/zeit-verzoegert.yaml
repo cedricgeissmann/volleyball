@@ -1,0 +1,9 @@
+id: zeit-verzoegert
+name: Zeit-Verzögerte Person
+beschreibung: Simulierte Reaktionsverzögerung im Spielverhalten
+aufgaben:
+  - Ich reagiere auf jeden Ball mit 2 Sekunden Verzögerung
+  - Ich zähle innerlich bis zwei bevor ich handle
+  - Ich muss Spielzüge deutlich früher antizipieren
+  - Ich bewege mich präventiv statt reaktiv
+fokus: Kognitive Einschränkung durch zeitliche Reaktionsverzögerung

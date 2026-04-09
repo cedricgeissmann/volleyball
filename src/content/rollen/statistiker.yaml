@@ -1,0 +1,9 @@
+id: statistiker
+name: Statistikführende Person
+beschreibung: Datenerfassung und Feedback-Geber für gezielte Leistungsanalyse
+aufgaben:
+  - Ich wähle eine Person aus und dokumentiere deren Leistung
+  - Ich zähle berührte Angriffsbälle, Fehler und Gratisbälle
+  - Ich gebe nach jeweils 5 Bällen die Statistik an die Person weiter
+  - Ich biete objektives Feedback zur Leistungsverbesserung
+fokus: Systematische Leistungserfassung und regelmässiges Feedback

@@ -1,0 +1,9 @@
+id: zuspieler
+name: Zuspielende Person
+beschreibung: Spielmachende Person für den zweiten Ball und zentrale Verteilerfunktion
+aufgaben:
+  - Ich spiele den zweiten Ball und organisiere den Angriff
+  - Ich beobachte und bewerte die Bereitschaft der Angreifer
+  - Ich verteile die Bälle gleichmässig auf alle Angreifer
+  - Ich nehme bei Gratisbällen nicht an der Verteidigung teil
+fokus: Spielüberblick und intelligente Ballverteilung an bereite Angreifer
