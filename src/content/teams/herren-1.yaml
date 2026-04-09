@@ -1,21 +1,29 @@
 id: herren-1
 name: Herren 1
-beschreibung: Herren Mannschaft in der 2. Liga
+beschreibung: Herren Mannschaft in der 3. Liga
 trainingszeiten:
   - tag: Dienstag
-    zeit: '20:00 - 22:00'
-    ort: Sporthalle Muttenz
+    zeit: '20:30 - 22:00'
+    ort: Kriegacker
   - tag: Donnerstag
-    zeit: '20:00 - 22:00'
-    ort: Sporthalle Muttenz
+    zeit: '20:30 - 22:00'
+    ort: Kriegacker
 ziele:
-  - titel: Aufschlag-Präzision
-    beschreibung: Gezielte Aufschläge in bestimmte Zonen mit hoher Erfolgsquote
-  - titel: Blocksicherheit
-    beschreibung: Konsistente Blockformation und gutes Timing
-  - titel: Annahme-Stabilität
-    beschreibung: Sichere Annahme für optimalen Spielaufbau
-  - titel: Kommunikation
-    beschreibung: Klare und effektive Kommunikation auf dem Feld
-  - titel: Taktisches Verständnis
-    beschreibung: Situationsgerechte Entscheidungen im Spielverlauf
+  - titel: Offen und freundlich
+    beschreibung: Wir unterstützen neue motivierte Spieler, die Interesse an unsere Spielweise zeigen
+  - titel: Defense First
+    beschreibung: Wir lassen den Gegner die Fehler machen
+  - titel: Smart not Hard
+    beschreibung: Wir setzen den Gegner mit klugen kontrollierten Bällen unter Druck
+  - titel: Beine als Basis
+    beschreibung: Jede Volleyballaktion startet in den Beinen; Kraft kommt immer zuerst aus den Beinen, niemals aus den Armen
+  - titel: Anwesenheit an Heimspieltagen
+    beschreibung: An Hiemspieltagen wo wir selbst Spiele haben, sind wir den ganzen Tag in der Halle, und helfen überall mit wo wir können
+  - titel: Helfereinsätze als Team
+    beschreibung: Wir machen alle Helfereinsätze als ganzes Team
+  - titel: Pünktlichkeit und Hilfsbereitschaft
+    beschreibung: Wir sind immer pünktlich oder zu früh und packen überall an wo wir können
+  - titel: Technische vielfalt
+    beschreibung: Wir begrüssen differenziertes Lernen und schätzen Ballkontrolle
+  - titel: Vereinfachen statt zerlegen
+    beschreibung: Wir versuchen im Training immer die Vorgaben umzusetzen, sind wir mit der Situation überfordert, holen wir Hilfe um die Aufgabe zu vereinfachen. Niemals zerlegen wir eine Aufgabe in Einzelschritte
