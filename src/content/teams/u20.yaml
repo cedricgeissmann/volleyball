@@ -2,12 +2,12 @@ id: u20
 name: U20
 beschreibung: Nachwuchs-Team mit Fokus auf technische Entwicklung
 trainingszeiten:
-  - tag: Montag
-    zeit: '18:30 - 20:00'
-    ort: Sporthalle Muttenz
-  - tag: Mittwoch
-    zeit: '18:30 - 20:00'
-    ort: Sporthalle Muttenz
+  - tag: Dienstag
+    zeit: '18:50 - 20:30'
+    ort: Kriegacker
+  - tag: Donnerstag
+    zeit: '19:00 - 20:30'
+    ort: Kriegacker
 ziele:
   - titel: Technik-Grundlagen
     beschreibung: Saubere Ausführung der Grundtechniken (Pritschen, Baggern, Aufschlag)
