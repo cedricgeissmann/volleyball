@@ -21,21 +21,6 @@
 		<p class="lead">Moderne Trainingsmethoden mit dem Constraints-Led Approach</p>
 	</section>
 
-	<section class="info">
-		<h2>Unsere Plattform</h2>
-		<p>
-			Diese Website ist die zentrale Kommunikationsplattform für unsere Volleyball-Teams. Hier
-			finden Sie:
-		</p>
-		<ul>
-			<li>Team-Informationen und Trainingszeiten</li>
-			<li>Teamziele und Kompetenzen</li>
-			<li>Übungen und Spielerrollen mit QR-Codes</li>
-			<li>Blog-Beiträge zum Constraints-Led Approach</li>
-			<li>Trainingsplaner für strukturierte Trainings</li>
-		</ul>
-	</section>
-
 	<section class="teams-section">
 		<h2>Unsere Teams</h2>
 		<div class="team-grid">
@@ -74,38 +59,6 @@
 		margin-block: var(--space-lg);
 	}
 
-	.info {
-		max-width: 800px;
-		margin: var(--space-3xl) auto;
-		background: var(--color-background-elevated);
-		padding: var(--space-xl);
-		border-radius: var(--radius-lg);
-		box-shadow: var(--shadow-card);
-		border: 1px solid var(--color-gray-200);
-	}
-
-	.info h2 {
-		color: var(--color-primary);
-		margin-block-start: 0;
-	}
-
-	.info ul {
-		list-style: none;
-		padding: 0;
-	}
-
-	.info li {
-		padding: var(--space-sm) 0;
-		padding-left: var(--space-lg);
-		position: relative;
-	}
-
-	.info li::before {
-		content: '🏐';
-		position: absolute;
-		left: 0;
-	}
-
 	.teams-section {
 		margin-block: var(--space-3xl);
 	}
@@ -132,10 +85,6 @@
 
 		.logo {
 			max-width: 200px;
-		}
-
-		.info {
-			padding: var(--space-lg);
 		}
 
 		.team-grid {

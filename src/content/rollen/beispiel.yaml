@@ -1,0 +1,7 @@
+id: beispiel
+name: Beispiel-Rolle
+beschreibung: Dies ist eine Beispiel-Rolle
+aufgaben:
+  - Erste Aufgabe
+  - Zweite Aufgabe
+fokus: Beispiel-Fokus

@@ -34,6 +34,27 @@
 				Teams
 			</a>
 			<a
+				href="{base}/uebungen"
+				class:active={$page.url.pathname.includes('/uebungen')}
+				on:click={closeMobileMenu}
+			>
+				Übungen
+			</a>
+			<a
+				href="{base}/rollen"
+				class:active={$page.url.pathname.includes('/rollen')}
+				on:click={closeMobileMenu}
+			>
+				Rollen
+			</a>
+			<a
+				href="{base}/planner"
+				class:active={$page.url.pathname.includes('/planner')}
+				on:click={closeMobileMenu}
+			>
+				Trainingsplaner
+			</a>
+			<a
 				href="{base}/cla"
 				class:active={$page.url.pathname.includes('/cla')}
 				on:click={closeMobileMenu}
@@ -53,13 +74,6 @@
 				on:click={closeMobileMenu}
 			>
 				Events
-			</a>
-			<a
-				href="{base}/planner"
-				class:active={$page.url.pathname.includes('/planner')}
-				on:click={closeMobileMenu}
-			>
-				Trainingsplaner
 			</a>
 		</nav>
 
@@ -130,6 +144,9 @@
 		transition: color var(--transition-fast);
 		position: relative;
 		padding-block: var(--space-sm);
+		height: 100%;
+		display: flex;
+		align-items: center;
 	}
 
 	.nav a:hover {
@@ -144,10 +161,10 @@
 	.nav a.active::after {
 		content: '';
 		position: absolute;
-		bottom: 0;
+		bottom: calc(-1 * var(--space-lg));
 		left: 0;
 		right: 0;
-		height: 2px;
+		height: 3px;
 		background: var(--color-primary);
 	}
 

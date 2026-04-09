@@ -11,20 +11,20 @@ export async function getTeamRoutes() {
 
 /**
  * Generiert Übungs-Routes für SSG
- * @returns {Promise<Array<{id: string}>>}
+ * @returns {Promise<Array<{uebungId: string}>>}
  */
 export async function getUebungRoutes() {
 	const uebungen = await loadUebungen();
-	return uebungen.map((uebung) => ({ id: uebung.id }));
+	return uebungen.map((uebung) => ({ uebungId: uebung.id }));
 }
 
 /**
  * Generiert Rollen-Routes für SSG
- * @returns {Promise<Array<{id: string}>>}
+ * @returns {Promise<Array<{rolleId: string}>>}
  */
 export async function getRollenRoutes() {
 	const rollen = await loadRollen();
-	return rollen.map((rolle) => ({ id: rolle.id }));
+	return rollen.map((rolle) => ({ rolleId: rolle.id }));
 }
 
 /**

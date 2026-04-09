@@ -1,4 +1,5 @@
 <script>
+	import { base } from '$app/paths';
 	import GoalCard from '$lib/components/team/GoalCard.svelte';
 
 	/** @type {{ data: { team: any } }} */
@@ -16,6 +17,9 @@
 		<header class="team-header">
 			<h1>{team.name}</h1>
 			<p class="lead">{team.beschreibung}</p>
+			<a href="{base}/kompetenzraster/{team.id}" class="btn-kompetenzraster">
+				📊 Mein Kompetenzraster
+			</a>
 		</header>
 
 		<section id="trainingszeiten" class="section">
@@ -79,7 +83,27 @@
 	.lead {
 		font-size: var(--font-size-xl);
 		color: var(--color-text-secondary);
-		margin: 0;
+		margin: 0 0 var(--space-lg) 0;
+	}
+
+	.btn-kompetenzraster {
+		display: inline-block;
+		margin-top: var(--space-lg);
+		background: var(--color-primary);
+		color: white;
+		padding: var(--space-md) var(--space-xl);
+		border-radius: var(--radius-md);
+		font-weight: var(--font-weight-medium);
+		transition: all var(--transition-fast);
+		text-decoration: none;
+		box-shadow: var(--shadow-sm);
+	}
+
+	.btn-kompetenzraster:hover {
+		background: var(--color-primary-hover);
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-md);
+		text-decoration: none;
 	}
 
 	.section {

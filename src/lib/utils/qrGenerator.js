@@ -16,12 +16,13 @@ export function getAbsoluteURL(path) {
 /**
  * Generiert einen QR-Code als Data URL
  * @param {string} url - URL für den QR-Code
+ * @param {number} [size=256] - Größe des QR-Codes in Pixeln
  * @returns {Promise<string>} Data URL des QR-Codes
  */
-export async function generateQRCode(url) {
+export async function generateQRCode(url, size = 256) {
 	try {
 		return await QRCode.toDataURL(url, {
-			width: 256,
+			width: size,
 			margin: 2,
 			color: {
 				dark: '#000000',

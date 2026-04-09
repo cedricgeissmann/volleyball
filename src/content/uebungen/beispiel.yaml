@@ -1,0 +1,9 @@
+id: beispiel
+titel: Beispiel-Übung
+beschreibung: Dies ist eine Beispiel-Übung
+kategorie: Beispiel
+ziele:
+  - Erstes Lernziel
+  - Zweites Lernziel
+fokus: Beispiel-Fokus
+dauer: 20
