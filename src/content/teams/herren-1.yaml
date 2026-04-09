@@ -9,21 +9,29 @@ trainingszeiten:
     zeit: '20:30 - 22:00'
     ort: Kriegacker
 ziele:
-  - titel: Offen und freundlich
-    beschreibung: Wir unterstützen neue motivierte Spieler, die Interesse an unsere Spielweise zeigen
   - titel: Defense First
-    beschreibung: Wir lassen den Gegner die Fehler machen
+    beschreibung: Ich spiele geduldig und lasse den Gegner Fehler machen, anstatt selbst unnötige Risiken einzugehen
   - titel: Smart not Hard
-    beschreibung: Wir setzen den Gegner mit klugen kontrollierten Bällen unter Druck
-  - titel: Beine als Basis
-    beschreibung: Jede Volleyballaktion startet in den Beinen; Kraft kommt immer zuerst aus den Beinen, niemals aus den Armen
-  - titel: Anwesenheit an Heimspieltagen
-    beschreibung: An Hiemspieltagen wo wir selbst Spiele haben, sind wir den ganzen Tag in der Halle, und helfen überall mit wo wir können
-  - titel: Helfereinsätze als Team
-    beschreibung: Wir machen alle Helfereinsätze als ganzes Team
-  - titel: Pünktlichkeit und Hilfsbereitschaft
-    beschreibung: Wir sind immer pünktlich oder zu früh und packen überall an wo wir können
-  - titel: Technische vielfalt
-    beschreibung: Wir begrüssen differenziertes Lernen und schätzen Ballkontrolle
-  - titel: Vereinfachen statt zerlegen
-    beschreibung: Wir versuchen im Training immer die Vorgaben umzusetzen, sind wir mit der Situation überfordert, holen wir Hilfe um die Aufgabe zu vereinfachen. Niemals zerlegen wir eine Aufgabe in Einzelschritte
+    beschreibung: Ich bin in der Lage, den Gegner mit kontrollierten, platzierten Bällen unter Druck zu setzen statt mit reiner Kraft
+  - titel: Read & Signal
+    beschreibung: Ich lese kontinuierlich Informationen aus dem Spiel und sende nonverbale Signale an meine Mitspieler durch Körpersprache und Positionierung
+  - titel: Connected Defense (Tensegrity)
+    beschreibung: Ich agiere in der Defensive als Teil eines verbundenen Systems, wo meine Position und Bewegung die Möglichkeiten meiner Mitspieler erweitert
+  - titel: Power from the Legs
+    beschreibung: Ich starte jede Aktion aus den Beinen und generiere Kraft durch koordinierte Ganzkörperbewegung
+  - titel: Technical Versatility
+    beschreibung: Ich beherrsche verschiedene Techniken und kann die Ballkontrolle situationsgerecht anpassen
+  - titel: Simplify, don't Decompose
+    beschreibung: Ich bin in der Lage, überfordernde Übungen durch Verlangsamung und Vereinfachung zu bewältigen, ohne sie in isolierte Einzelschritte zu zerlegen
+  - titel: Representative Learning
+    beschreibung: Ich verstehe, dass ich durch meine aktive Teilnahme im Training wertvolle Lerngelegenheiten für alle Mitspieler schaffe
+  - titel: Exploratory Mindset
+    beschreibung: Ich bin offen für Experimente, erforsche verschiedene Lösungswege und sehe Unsicherheit als Teil des Lernprozesses
+  - titel: Reliability & Support
+    beschreibung: Ich erscheine pünktlich, bin zuverlässig und unterstütze das Team aktiv wo immer nötig
+  - titel: Full Commitment on Game Days
+    beschreibung: Ich bin an Heimspieltagen den ganzen Tag präsent und bringe mich aktiv für den Verein ein
+  - titel: Team Spirit in Action
+    beschreibung: Ich übernehme Verantwortung für gemeinsame Aufgaben und setze mich als Teil des Teams ein
+  - titel: Welcoming Culture
+    beschreibung: Ich unterstütze neue Spieler aktiv beim Einstieg in unsere Spielphilosophie und Teamkultur

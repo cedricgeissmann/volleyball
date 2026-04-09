@@ -9,13 +9,29 @@ trainingszeiten:
     zeit: '19:00 - 20:30'
     ort: Kriegacker
 ziele:
-  - titel: Technik-Grundlagen
-    beschreibung: Saubere Ausführung der Grundtechniken (Pritschen, Baggern, Aufschlag)
-  - titel: Spielverständnis
-    beschreibung: Positionsspiel und Rotationsverständnis entwickeln
-  - titel: Teamwork
-    beschreibung: Zusammenspiel und gegenseitige Unterstützung fördern
-  - titel: Sprungkraft
-    beschreibung: Explosive Kraft und Sprungverhalten verbessern
-  - titel: Wettkampf-Mentalität
-    beschreibung: Selbstvertrauen und Durchhaltevermögen stärken
+  - titel: Building Defense First
+    beschreibung: Ich entwickle ein Verständnis für geduldiges Defensivspiel und lerne, solide Verteidigung als Spielbasis zu nutzen
+  - titel: Playing Smart
+    beschreibung: Ich bin in der Lage, clevere Spielzüge zu erkennen und kann kontrollierte Bälle gezielt einsetzen
+  - titel: Reading the Game
+    beschreibung: Ich lerne, Informationen aus dem Spiel zu lesen und entwickle die Fähigkeit, nonverbale Signale durch meine Körpersprache zu senden
+  - titel: Moving as One (Tensegrity)
+    beschreibung: Ich entwickle ein Bewusstsein für verbundenes Defensivspiel, wo meine Bewegungen die Optionen meiner Mitspieler erweitern
+  - titel: Legs as Foundation
+    beschreibung: Ich entwickle die Fähigkeit, jede Bewegung aus den Beinen zu starten und Ganzkörperkoordination aufzubauen
+  - titel: Technical Control
+    beschreibung: Ich kann verschiedene Techniken situationsgerecht anwenden und arbeite an präziser Ballkontrolle
+  - titel: Simplify, don't Decompose
+    beschreibung: Ich lerne, mit herausfordernden Übungen umzugehen, indem ich sie verlangsame oder vereinfache, statt sie in isolierte Einzelschritte zu zerlegen
+  - titel: Learning through Presence
+    beschreibung: Ich verstehe, dass meine aktive Anwesenheit und Teilnahme im Training wichtige Lernmöglichkeiten für alle schafft
+  - titel: Exploring Solutions
+    beschreibung: Ich probiere verschiedene Lösungswege aus, bin offen für Neues und sehe Fehler als natürlichen Teil des Lernens
+  - titel: Responsibility & Reliability
+    beschreibung: Ich bin pünktlich, zuverlässig und übernehme Verantwortung für meine Rolle im Team
+  - titel: Team Spirit & Communication
+    beschreibung: Ich kommuniziere aktiv mit meinen Mitspielern und unterstütze das Team durch positives Verhalten
+  - titel: Respect & Contribution
+    beschreibung: Ich respektiere alle Beteiligten und bringe mich aktiv bei Vereinsaufgaben ein
+  - titel: Growth Mindset
+    beschreibung: Ich sehe Fehler als Lernchancen und entwickle Selbstvertrauen durch eigenständiges Problemlösen
