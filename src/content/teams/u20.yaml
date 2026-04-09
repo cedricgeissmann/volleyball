@@ -1,0 +1,21 @@
+id: u20
+name: U20
+beschreibung: Nachwuchs-Team mit Fokus auf technische Entwicklung
+trainingszeiten:
+  - tag: Montag
+    zeit: '18:30 - 20:00'
+    ort: Sporthalle Muttenz
+  - tag: Mittwoch
+    zeit: '18:30 - 20:00'
+    ort: Sporthalle Muttenz
+ziele:
+  - titel: Technik-Grundlagen
+    beschreibung: Saubere Ausführung der Grundtechniken (Pritschen, Baggern, Aufschlag)
+  - titel: Spielverständnis
+    beschreibung: Positionsspiel und Rotationsverständnis entwickeln
+  - titel: Teamwork
+    beschreibung: Zusammenspiel und gegenseitige Unterstützung fördern
+  - titel: Sprungkraft
+    beschreibung: Explosive Kraft und Sprungverhalten verbessern
+  - titel: Wettkampf-Mentalität
+    beschreibung: Selbstvertrauen und Durchhaltevermögen stärken

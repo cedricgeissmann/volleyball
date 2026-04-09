@@ -1,0 +1,21 @@
+id: herren-1
+name: Herren 1
+beschreibung: Herren Mannschaft in der 2. Liga
+trainingszeiten:
+  - tag: Dienstag
+    zeit: '20:00 - 22:00'
+    ort: Sporthalle Muttenz
+  - tag: Donnerstag
+    zeit: '20:00 - 22:00'
+    ort: Sporthalle Muttenz
+ziele:
+  - titel: Aufschlag-Präzision
+    beschreibung: Gezielte Aufschläge in bestimmte Zonen mit hoher Erfolgsquote
+  - titel: Blocksicherheit
+    beschreibung: Konsistente Blockformation und gutes Timing
+  - titel: Annahme-Stabilität
+    beschreibung: Sichere Annahme für optimalen Spielaufbau
+  - titel: Kommunikation
+    beschreibung: Klare und effektive Kommunikation auf dem Feld
+  - titel: Taktisches Verständnis
+    beschreibung: Situationsgerechte Entscheidungen im Spielverlauf
