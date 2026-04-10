@@ -62,7 +62,7 @@ ${circles.join('\n')}
 
 /**
  * Generiert einen SVG-Snapshot für einen bestimmten Keyframe einer Animation
- * @param {Object} animation - Animation-Daten (mit keyframes)
+ * @param {Object} animation - Animation-Daten (mit keyframes, anchorPoint und groundPoints)
  * @param {number} keyframeIndex - Index des Keyframes (0 = Start, -1 = letzter Frame)
  * @param {Object} options - Rendering-Optionen
  * @returns {string} SVG-String
@@ -83,7 +83,9 @@ export function generateAnimationSnapshot(animation, keyframeIndex = 0, options 
 		return '';
 	}
 
-	const positions = calculatePositions(keyframe.joints);
+	const anchorPoint = animation.anchorPoint || 'hip';
+	const groundPoints = animation.groundPoints || null;
+	const positions = calculatePositions(keyframe.joints, anchorPoint, groundPoints);
 	return renderStickFigureToSVG(positions, options);
 }
 

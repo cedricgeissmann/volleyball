@@ -12,6 +12,7 @@ Dieses Verzeichnis enthält JSON-Dateien für Übungs-Animationen.
   "duration": 3000,      // Gesamtdauer in ms
   "loop": true,          // Wiederholen ja/nein
   "easing": "ease-in-out", // CSS easing function
+  "anchorPoint": "hip",  // Optional: Fixpunkt der Animation ('hip', 'hands', 'feet', 'leftHand', 'rightHand', 'leftFoot', 'rightFoot')
   "keyframes": [
     {
       "time": 0,         // Zeitpunkt in ms
@@ -87,11 +88,61 @@ Dieses Verzeichnis enthält JSON-Dateien für Übungs-Animationen.
 ```json
 {
   "spine": 0,
-  "leftShoulder": 270, "rightShoulder": 270,
-  "leftElbow": 180, "rightElbow": 180,
-  "leftHip": 0, "rightHip": 0,
+  "leftShoulder": 90, "rightShoulder": 90,
+  "leftElbow": 0, "rightElbow": 0,
+  "leftHip": 180, "rightHip": 180,
   "leftKnee": 180, "rightKnee": 180,
-  "leftAnkle": 90, "rightAnkle": 90
+  "leftAnkle": 180, "rightAnkle": 180
+}
+```
+
+### Anchor Points
+
+Der `anchorPoint` bestimmt, welcher Körperteil während der Animation fixiert bleibt (bei Koordinate 0,0):
+
+- **`hip`** (Standard): Hüfte bleibt fixiert - geeignet für stehende Übungen (z.B. Kniebeugen)
+- **`ground`**: Ground-Line Anchor - mehrere Körperteile auf einer Bodenlinie fixiert (siehe unten)
+- **`hands`**: Mittelwert zwischen beiden Händen - geeignet für einfache Übungen
+- **`feet`**: Mittelwert zwischen beiden Füßen - geeignet für Handstände
+- **`leftHand`**, **`rightHand`**, **`leftFoot`**, **`rightFoot`**: Einzelne Extremitäten fixieren
+
+#### Ground-Line Anchor (Empfohlen für Bodenübungen)
+
+Für Übungen bei denen **mehrere Punkte am Boden fixiert** sind (z.B. Liegestütze: Hände UND Füße):
+
+```json
+{
+  "type": "stickfigure",
+  "anchorPoint": "ground",
+  "groundPoints": ["leftHand", "rightHand", "leftFoot", "rightFoot"],
+  "keyframes": [...]
+}
+```
+
+**Funktionsweise:**
+- Alle angegebenen `groundPoints` werden auf einer gemeinsamen Bodenlinie (Y=0) platziert
+- Die Animation wird horizontal zentriert am Mittelwert der groundPoints
+- Perfekt für Liegestütze, Planks, Burpees, etc.
+
+**Standard groundPoints** (wenn nicht angegeben): `["leftHand", "rightHand", "leftFoot", "rightFoot"]`
+
+**Beispiel: Liegestütze mit fixierten Händen und Füßen**
+```json
+{
+  "type": "stickfigure",
+  "anchorPoint": "ground",
+  "groundPoints": ["leftHand", "rightHand", "leftFoot", "rightFoot"],
+  "keyframes": [...]
+}
+```
+
+**Beispiel: Plank (nur Hände und Zehen)**
+```json
+{
+  "type": "stickfigure",
+  "anchorPoint": "ground",
+  "groundPoints": ["leftHand", "rightHand", "leftAnkleJoint", "rightAnkleJoint"],
+  "keyframes": [...]
 }
 ```
 

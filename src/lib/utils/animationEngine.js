@@ -34,9 +34,11 @@ function polarToCart(origin, angle, distance) {
 /**
  * Berechnet alle Skelett-Positionen aus Gelenkwinkeln
  * @param {Object} joints - Gelenk-Winkel
+ * @param {string} anchorPoint - Fixpunkt für die Animation ('hip', 'hands', 'feet', 'ground', 'leftHand', 'rightHand', 'leftFoot', 'rightFoot')
+ * @param {Array<string>} groundPoints - Körperteile die auf dem Boden fixiert sein sollen (nur bei anchorPoint='ground')
  * @returns {Object} Positionen aller Körperteile
  */
-export function calculatePositions(joints) {
+export function calculatePositions(joints, anchorPoint = 'hip', groundPoints = null) {
 	const positions = {};
 
 	// Standard-Werte falls Gelenke nicht definiert
@@ -69,7 +71,7 @@ export function calculatePositions(joints) {
 	positions.head = polarToCart(positions.neck, j.spine, SEGMENT_LENGTHS.head);
 
 	// Schultern (links und rechts von der Brust)
-	const shoulderWidth = 15;
+	const shoulderWidth = 8;
 	const shoulderAngle = j.spine + 90; // Senkrecht zur Wirbelsäule
 	positions.leftShoulder = polarToCart(positions.chest, shoulderAngle, shoulderWidth);
 	positions.rightShoulder = polarToCart(positions.chest, shoulderAngle + 180, shoulderWidth);
@@ -97,7 +99,7 @@ export function calculatePositions(joints) {
 	positions.rightHand = polarToCart(positions.rightWrist, j.rightWrist, SEGMENT_LENGTHS.hand);
 
 	// Hüft-Gelenke (links und rechts von der Hüfte)
-	const hipWidth = 10;
+	const hipWidth = 5;
 	const hipAngle = j.spine + 90; // Senkrecht zur Wirbelsäule
 	positions.leftHipJoint = polarToCart(positions.hip, hipAngle, hipWidth);
 	positions.rightHipJoint = polarToCart(positions.hip, hipAngle + 180, hipWidth);
@@ -135,6 +137,74 @@ export function calculatePositions(joints) {
 		j.rightAnkle,
 		SEGMENT_LENGTHS.foot
 	);
+
+	// Anchor-Point: Verschiebe alle Positionen so dass der gewählte Punkt bei (0,0) liegt
+	let anchorPos = { x: 0, y: 0 };
+
+	switch (anchorPoint) {
+		case 'ground':
+			// Ground-Line: Hände und Füße (oder custom groundPoints) auf einer Bodenlinie
+			const defaultGroundPoints = ['leftHand', 'rightHand', 'leftFoot', 'rightFoot'];
+			const groundJoints = groundPoints || defaultGroundPoints;
+			
+			// Sammle Positionen aller Ground-Points
+			const groundPositions = groundJoints
+				.map(joint => positions[joint])
+				.filter(pos => pos !== undefined);
+			
+			if (groundPositions.length > 0) {
+				// Finde niedrigste Y-Position (= Boden)
+				// In SVG: Y wächst nach unten, also nehmen wir das Maximum
+				const groundY = Math.max(...groundPositions.map(p => p.y));
+				
+				// Finde X-Mittelwert für Zentrierung
+				const centerX = groundPositions.reduce((sum, p) => sum + p.x, 0) / groundPositions.length;
+				
+				anchorPos = { x: centerX, y: groundY };
+			} else {
+				// Fallback auf Hüfte wenn keine groundPoints gefunden
+				anchorPos = positions.hip;
+			}
+			break;
+		case 'hands':
+			// Mittelwert zwischen linker und rechter Hand
+			anchorPos = {
+				x: (positions.leftHand.x + positions.rightHand.x) / 2,
+				y: (positions.leftHand.y + positions.rightHand.y) / 2,
+			};
+			break;
+		case 'feet':
+			// Mittelwert zwischen linkem und rechtem Fuß
+			anchorPos = {
+				x: (positions.leftFoot.x + positions.rightFoot.x) / 2,
+				y: (positions.leftFoot.y + positions.rightFoot.y) / 2,
+			};
+			break;
+		case 'leftHand':
+			anchorPos = positions.leftHand;
+			break;
+		case 'rightHand':
+			anchorPos = positions.rightHand;
+			break;
+		case 'leftFoot':
+			anchorPos = positions.leftFoot;
+			break;
+		case 'rightFoot':
+			anchorPos = positions.rightFoot;
+			break;
+		case 'hip':
+		default:
+			// Default: Hüfte bleibt bei (0,0)
+			anchorPos = positions.hip;
+			break;
+	}
+
+	// Verschiebe alle Positionen
+	const offset = { x: -anchorPos.x, y: -anchorPos.y };
+	for (const key in positions) {
+		positions[key].x += offset.x;
+		positions[key].y += offset.y;
+	}
 
 	return positions;
 }
@@ -231,16 +301,18 @@ export function createWebAnimationKeyframes(animData) {
 /**
  * Berechnet Bounding Box für die Animation
  * @param {Array} keyframes - Alle Keyframes
+ * @param {string} anchorPoint - Fixpunkt für die Animation
+ * @param {Array<string>} groundPoints - Körperteile die auf dem Boden fixiert sein sollen
  * @returns {{minX: number, maxX: number, minY: number, maxY: number}}
  */
-export function calculateBoundingBox(keyframes) {
+export function calculateBoundingBox(keyframes, anchorPoint = 'hip', groundPoints = null) {
 	let minX = Number.POSITIVE_INFINITY;
 	let maxX = Number.NEGATIVE_INFINITY;
 	let minY = Number.POSITIVE_INFINITY;
 	let maxY = Number.NEGATIVE_INFINITY;
 
 	for (const keyframe of keyframes) {
-		const positions = calculatePositions(keyframe.joints);
+		const positions = calculatePositions(keyframe.joints, anchorPoint, groundPoints);
 
 		for (const pos of Object.values(positions)) {
 			minX = Math.min(minX, pos.x);

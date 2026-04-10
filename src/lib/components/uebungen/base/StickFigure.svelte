@@ -3,13 +3,15 @@
 
 	let {
 		joints = {},
+		anchorPoint = 'hip',
+		groundPoints = null,
 		scale = 1,
 		color = '#333',
 		strokeWidth = 3
 	} = $props();
 
 	// Berechne Positionen basierend auf Gelenk-Winkeln
-	let positions = $derived(calculatePositions(joints));
+	let positions = $derived(calculatePositions(joints, anchorPoint, groundPoints));
 
 	// ViewBox berechnen (zentriert um den Körper)
 	const padding = 20;

@@ -38,7 +38,14 @@
 	<div class="stickfigure-animation">
 		<AnimationController {animationData} {autoplay}>
 			{#snippet children(props)}
-				<StickFigure joints={props.joints} {scale} {color} {strokeWidth} />
+				<StickFigure 
+					joints={props.joints} 
+					anchorPoint={props.anchorPoint}
+					groundPoints={props.groundPoints}
+					{scale} 
+					{color} 
+					{strokeWidth} 
+				/>
 			{/snippet}
 		</AnimationController>
 	</div>

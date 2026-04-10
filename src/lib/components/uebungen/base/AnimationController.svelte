@@ -83,5 +83,14 @@
 </script>
 
 {#if animationData}
-	{@render children({ joints: currentJoints, isPlaying, play, pause, reset, currentTime })}
+	{@render children({ 
+		joints: currentJoints, 
+		anchorPoint: animationData.anchorPoint || 'hip',
+		groundPoints: animationData.groundPoints || null,
+		isPlaying, 
+		play, 
+		pause, 
+		reset, 
+		currentTime 
+	})}
 {/if}
