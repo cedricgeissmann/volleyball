@@ -1,0 +1,20 @@
+id: liegestuetze
+typ: kraft
+titel: Liegestütze
+beschreibung: Klassische Liegestütze für Brust, Trizeps und Schultern. Eine fundamentale Kraftübung für den Oberkörper.
+kategorie: Krafttraining
+wiederholungen: "10-20"
+ziele:
+  - Brustmuskulatur stärken
+  - Trizeps kräftigen
+  - Core-Stabilität verbessern
+  - Schultermuskulatur aktivieren
+fokus: Oberkörper
+animation: liegestuetze.anim.json
+anleitung:
+  - Hände schulterbreit aufsetzen, Finger zeigen nach vorne
+  - Körper bildet eine gerade Linie von Kopf bis Ferse
+  - Core anspannen, Gesäß nicht durchhängen lassen
+  - Ellbogen bis ca. 90° beugen, Körper zum Boden senken
+  - Zurück in die Ausgangsposition drücken
+  - Kontrollierte Bewegung, gleichmäßiges Tempo

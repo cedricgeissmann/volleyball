@@ -1,0 +1,20 @@
+id: kniebeugen
+typ: kraft
+titel: Kniebeugen
+beschreibung: Grundlegende Kniebeugen für Beinmuskulatur und Core-Stabilität. Eine der wichtigsten Funktionalübungen.
+kategorie: Krafttraining
+wiederholungen: "15-25"
+ziele:
+  - Beinmuskulatur kräftigen
+  - Gesäßmuskulatur stärken
+  - Balance und Koordination verbessern
+  - Core-Stabilität erhöhen
+fokus: Unterkörper
+animation: kniebeugen.anim.json
+anleitung:
+  - Füße schulterbreit aufstellen, Zehenspitzen leicht nach außen
+  - Arme nach vorne strecken oder vor der Brust verschränken
+  - Hüfte nach hinten schieben, Knie beugen
+  - Rücken gerade halten, Knie nicht über Zehenspitzen
+  - Bis ca. 90° in den Knien gehen
+  - Durch die Fersen drücken und zurück in Ausgangsposition

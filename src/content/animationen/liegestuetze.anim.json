@@ -1,0 +1,62 @@
+{
+  "type": "stickfigure",
+  "duration": 3000,
+  "loop": true,
+  "easing": "ease-in-out",
+  "keyframes": [
+    {
+      "time": 0,
+      "joints": {
+        "spine": 0,
+        "leftShoulder": 270,
+        "rightShoulder": 270,
+        "leftElbow": 180,
+        "rightElbow": 180,
+        "leftWrist": 180,
+        "rightWrist": 180,
+        "leftHip": 0,
+        "rightHip": 0,
+        "leftKnee": 180,
+        "rightKnee": 180,
+        "leftAnkle": 90,
+        "rightAnkle": 90
+      }
+    },
+    {
+      "time": 1500,
+      "joints": {
+        "spine": 0,
+        "leftShoulder": 270,
+        "rightShoulder": 270,
+        "leftElbow": 90,
+        "rightElbow": 90,
+        "leftWrist": 180,
+        "rightWrist": 180,
+        "leftHip": 355,
+        "rightHip": 5,
+        "leftKnee": 178,
+        "rightKnee": 182,
+        "leftAnkle": 90,
+        "rightAnkle": 90
+      }
+    },
+    {
+      "time": 3000,
+      "joints": {
+        "spine": 0,
+        "leftShoulder": 270,
+        "rightShoulder": 270,
+        "leftElbow": 180,
+        "rightElbow": 180,
+        "leftWrist": 180,
+        "rightWrist": 180,
+        "leftHip": 0,
+        "rightHip": 0,
+        "leftKnee": 180,
+        "rightKnee": 180,
+        "leftAnkle": 90,
+        "rightAnkle": 90
+      }
+    }
+  ]
+}

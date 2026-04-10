@@ -31,6 +31,11 @@ import yaml from 'js-yaml';
  * @property {string[]} ziele - Lernziele
  * @property {string} fokus - Fokus-Bereich
  * @property {number} [dauer] - Dauer in Minuten (optional)
+ * @property {string} [typ] - Übungstyp (kraft, ausdauer, volleyball, etc.)
+ * @property {string|number} [wiederholungen] - Wiederholungen (z.B. "10-20" oder 15)
+ * @property {string} [bedingung] - Bedingung für Übungsende
+ * @property {string} [animation] - Pfad zur Animations-Datei
+ * @property {string[]} [anleitung] - Schritt-für-Schritt Anleitung
  */
 
 /**
@@ -86,11 +91,11 @@ export async function loadTeamById(id) {
 }
 
 /**
- * Lädt alle Übungen
+ * Lädt alle Übungen (inkl. Unterordner)
  * @returns {Promise<Uebung[]>}
  */
 export async function loadUebungen() {
-	const modules = import.meta.glob('/src/content/uebungen/*.yaml', {
+	const modules = import.meta.glob('/src/content/uebungen/**/*.yaml', {
 		eager: true,
 		query: '?raw',
 	});
@@ -107,17 +112,33 @@ export async function loadUebungen() {
 }
 
 /**
- * Lädt eine Übung nach ID
+ * Lädt eine Übung nach ID (sucht in allen Unterordnern)
  * @param {string} id - Übungs-ID
  * @returns {Promise<Uebung|null>}
  */
 export async function loadUebungById(id) {
+	// Erst im Root-Verzeichnis suchen
 	try {
 		const module = await import(`/src/content/uebungen/${id}.yaml?raw`);
 		return yaml.load(module.default);
-	} catch {
-		return null;
+	} catch {}
+
+	// Dann in Unterordnern suchen
+	const modules = import.meta.glob('/src/content/uebungen/**/*.yaml', {
+		eager: true,
+		query: '?raw',
+	});
+
+	for (const path in modules) {
+		const module = /** @type {any} */ (modules[path]);
+		const content = module.default;
+		const uebung = /** @type {Uebung} */ (yaml.load(content));
+		if (uebung.id === id) {
+			return uebung;
+		}
 	}
+
+	return null;
 }
 
 /**
@@ -168,4 +189,57 @@ export async function loadEvents() {
 	}
 
 	return events.sort((a, b) => new Date(a.datum).getTime() - new Date(b.datum).getTime());
+}
+
+/**
+ * Parsed Wiederholungen aus String oder Number
+ * @param {string|number} value - Wiederholungen (z.B. "10-20" oder 15)
+ * @returns {{min: number, max: number, isRange: boolean}|null}
+ */
+export function parseRepetitions(value) {
+	if (!value) return null;
+	if (typeof value === 'number') {
+		return { min: value, max: value, isRange: false };
+	}
+	if (typeof value === 'string' && value.includes('-')) {
+		const [min, max] = value.split('-').map((v) => parseInt(v.trim()));
+		return { min, max, isRange: true };
+	}
+	return null;
+}
+
+/**
+ * Gibt eine zufällige Zahl im Wiederholungsbereich zurück
+ * @param {{min: number, max: number, isRange: boolean}} reps - Geparste Wiederholungen
+ * @returns {number|null}
+ */
+export function getRandomReps(reps) {
+	if (!reps) return null;
+	if (!reps.isRange) return reps.min;
+	return Math.floor(Math.random() * (reps.max - reps.min + 1)) + reps.min;
+}
+
+/**
+ * Formatiert Wiederholungen als String
+ * @param {{min: number, max: number, isRange: boolean}} reps - Geparste Wiederholungen
+ * @returns {string}
+ */
+export function formatReps(reps) {
+	if (!reps) return '';
+	return reps.isRange ? `${reps.min}-${reps.max} Wdh.` : `${reps.min} Wdh.`;
+}
+
+/**
+ * Lädt eine Animation aus JSON-Datei
+ * @param {string} filename - Animation-Dateiname (ohne Pfad)
+ * @returns {Promise<any>}
+ */
+export async function loadAnimation(filename) {
+	try {
+		const module = await import(`/src/content/animationen/${filename}`);
+		return module.default;
+	} catch (error) {
+		console.error(`Failed to load animation: ${filename}`, error);
+		return null;
+	}
 }

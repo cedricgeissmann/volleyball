@@ -3,6 +3,7 @@
 	import QRCode from '$lib/components/shared/QRCode.svelte';
 	import { getAbsoluteURL } from '$lib/utils/qrGenerator.js';
 	import { browser } from '$app/environment';
+	import { parseRepetitions, formatReps } from '$lib/utils/contentLoader.js';
 
 	let { data } = $props();
 	const { uebungen } = data;
@@ -257,16 +258,20 @@
 										{#if uebung.beschreibung}
 											<p class="description">{uebung.beschreibung}</p>
 										{/if}
-										{#if uebung.dauer || uebung.fokus}
-											<div class="setup-info">
-												{#if uebung.dauer}
-													<span class="badge">{uebung.dauer} Min</span>
-												{/if}
-												{#if uebung.fokus}
-													<span class="badge">{uebung.fokus}</span>
-												{/if}
-											</div>
-										{/if}
+										<div class="setup-info">
+											{#if uebung.typ}
+												<span class="badge badge-typ">{uebung.typ}</span>
+											{/if}
+											{#if uebung.wiederholungen}
+												{@const reps = parseRepetitions(uebung.wiederholungen)}
+												<span class="badge">{formatReps(reps)}</span>
+											{:else if uebung.dauer}
+												<span class="badge">{uebung.dauer} Min</span>
+											{/if}
+											{#if uebung.fokus}
+												<span class="badge">{uebung.fokus}</span>
+											{/if}
+										</div>
 									</div>
 									<div class="card-qr">
 										<QRCode url={getAbsoluteURL(`/uebungen/${uebung.id}`)} size={60} />
@@ -319,7 +324,12 @@
 								</div>
 							{/if}
 
-							{#if uebung.dauer}
+							{#if uebung.wiederholungen}
+								{@const reps = parseRepetitions(uebung.wiederholungen)}
+								<div class="card-dauer">
+									<strong>Wiederholungen:</strong> {formatReps(reps)}
+								</div>
+							{:else if uebung.dauer}
 								<div class="card-dauer">
 									<strong>Dauer:</strong> {uebung.dauer} Minuten
 								</div>
@@ -667,6 +677,12 @@
 		border-radius: 4px;
 		font-size: var(--font-size-xs);
 		font-weight: 600;
+		text-transform: capitalize;
+	}
+
+	.badge-typ {
+		background-color: var(--color-primary);
+		color: white;
 	}
 
 	/* QR Code auf Karte */
