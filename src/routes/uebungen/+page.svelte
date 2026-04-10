@@ -4,6 +4,7 @@
 	import { getAbsoluteURL } from '$lib/utils/qrGenerator.js';
 	import { browser } from '$app/environment';
 	import { parseRepetitions, formatReps } from '$lib/utils/contentLoader.js';
+	import PrintCardBackKraft from '$lib/components/uebungen/print/PrintCardBackKraft.svelte';
 
 	let { data } = $props();
 	const { uebungen } = data;
@@ -290,11 +291,12 @@
 			</div>
 		{/if}
 
-		<!-- Print-Bereich: Spielkarten-Layout -->
+		<!-- Print-Bereich: Doppelseitige Karten (zum Falten) -->
 		<div class="print-cards">
 			{#each selectedAndFilteredUebungen as uebung}
-				<div class="card-wrapper">
-					<div class="exercise-card">
+				<div class="card-wrapper-double">
+					<!-- Linke Seite: Vorderseite (Details) -->
+					<div class="exercise-card card-front">
 						<div class="card-header">
 							<h2 class="card-title">{uebung.titel}</h2>
 							{#if uebung.kategorie}
@@ -341,6 +343,17 @@
 								<QRCode url={getAbsoluteURL(`/uebungen/${uebung.id}`)} size={80} />
 							</div>
 						</div>
+					</div>
+
+					<!-- Rechte Seite: Rückseite (Animation) -->
+					<div class="exercise-card card-back">
+						{#if uebung.animationData}
+							<PrintCardBackKraft animation={uebung.animationData} />
+						{:else}
+							<div class="no-animation">
+								<p>Keine Animation verfügbar</p>
+							</div>
+						{/if}
 					</div>
 				</div>
 			{/each}
@@ -701,16 +714,43 @@
 		display: none;
 	}
 
-	.card-wrapper {
+	.card-wrapper-double {
 		break-inside: avoid;
 		page-break-inside: avoid;
+		display: flex;
+		flex-direction: row;
+		gap: 0;
+		position: relative;
+	}
+
+	/* Schnittmarkierungen an den Ecken */
+	.card-wrapper-double::before,
+	.card-wrapper-double::after {
+		content: '';
+		position: absolute;
+		width: 3mm;
+		height: 3mm;
+		border: 1px solid var(--color-gray-400);
+	}
+
+	.card-wrapper-double::before {
+		top: -1mm;
+		left: -1mm;
+		border-right: none;
+		border-bottom: none;
+	}
+
+	.card-wrapper-double::after {
+		bottom: -1mm;
+		right: -1mm;
+		border-left: none;
+		border-top: none;
 	}
 
 	.exercise-card {
 		width: 63mm;
 		height: 88mm;
 		border: 2px solid var(--color-gray-300);
-		border-radius: 6px;
 		padding: 8px;
 		background-color: white;
 		display: flex;
@@ -718,6 +758,30 @@
 		position: relative;
 		overflow: hidden;
 		box-sizing: border-box;
+	}
+
+	.card-front {
+		border-radius: 6px 0 0 6px;
+		border-right: 1px dashed var(--color-gray-400);
+	}
+
+	.card-back {
+		border-radius: 0 6px 6px 0;
+		border-left: 1px dashed var(--color-gray-400);
+		padding: 0;
+		overflow: hidden;
+		position: relative;
+	}
+
+	.no-animation {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--color-text-secondary);
+		font-size: 9pt;
+		text-align: center;
 	}
 
 	.card-header {
@@ -852,7 +916,7 @@
 
 		.print-cards {
 			display: grid;
-			grid-template-columns: repeat(3, 63mm);
+			grid-template-columns: repeat(1, 126mm); /* Eine doppelte Karte pro Zeile */
 			grid-auto-rows: 88mm;
 			gap: 5mm;
 			padding: 10mm;
@@ -861,6 +925,11 @@
 		@page {
 			size: A4;
 			margin: 10mm;
+		}
+
+		.card-wrapper-double {
+			width: 126mm;
+			height: 88mm;
 		}
 
 		.exercise-card {
