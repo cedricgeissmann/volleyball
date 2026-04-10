@@ -68,7 +68,25 @@ Dieses Verzeichnis enthält JSON-Dateien für Übungs-Animationen.
 - **0°**: Nach rechts
 - **90°**: Nach unten
 - **180°**: Nach links
-- **270°**: Nach oben
+- **270°** (oder **-90°**): Nach oben
+- **Negative Winkel**: z.B. -30° = 330° (leicht nach oben rechts)
+
+**Wichtig für symmetrische Bewegungen:**
+- Beide Arme/Beine sollten **identische Winkel** haben für symmetrische Posen
+- Bei Bewegungen: Schulter und Ellbogen bewegen sich **zusammen** (nicht gegengleich)
+- Beispiel: Liegestütz - beide Schultern UND beide Ellbogen haben denselben Winkel
+
+### Forward Kinematics System
+
+Die Animation verwendet Forward Kinematics vom **Hüftpunkt** aus:
+- Alle Positionen werden vom Hüftpunkt berechnet
+- Spine-Winkel bestimmt die Körperausrichtung
+- Beine sind typischerweise 180° versetzt zum Spine
+- Arme bewegen sich relativ zur Schulter
+
+**Beispiel Liegestütz-Geometrie:**
+- Spine bei -30° (nach oben geneigt) → Beine bei 150° (180° versetzt, nach unten geneigt)
+- Spine bei 0° (horizontal) → Beine bei 180° (horizontal)
 
 ### Beispiel-Posen
 
@@ -84,15 +102,41 @@ Dieses Verzeichnis enthält JSON-Dateien für Übungs-Animationen.
 }
 ```
 
-**Liegestütz (oben):**
+**Liegestütz (oben, Arme gestreckt):**
 ```json
 {
-  "spine": 0,
-  "leftShoulder": 90, "rightShoulder": 90,
-  "leftElbow": 0, "rightElbow": 0,
-  "leftHip": 180, "rightHip": 180,
-  "leftKnee": 180, "rightKnee": 180,
-  "leftAnkle": 180, "rightAnkle": 180
+  "spine": -30,           // Körper nach oben geneigt
+  "leftShoulder": 90,     // Beide Schultern nach unten
+  "rightShoulder": 90,
+  "leftElbow": 90,        // Beide Ellbogen nach unten (gestreckt)
+  "rightElbow": 90,
+  "leftWrist": 0,         // Hände flach (nach rechts zeigend)
+  "rightWrist": 0,
+  "leftHip": 150,         // Beine 180° versetzt zum Spine
+  "rightHip": 150,
+  "leftKnee": 150,        // Knie = Hip (gerade Beine)
+  "rightKnee": 150,
+  "leftAnkle": 90,        // Füße nach unten
+  "rightAnkle": 90
+}
+```
+
+**Liegestütz (unten, Arme gebeugt):**
+```json
+{
+  "spine": 0,             // Körper horizontal
+  "leftShoulder": 160,    // Schultern und Ellbogen bewegen sich zusammen
+  "rightShoulder": 160,
+  "leftElbow": 20,        // Ellbogen gebeugt (nach oben/rechts)
+  "rightElbow": 20,
+  "leftWrist": 0,
+  "rightWrist": 0,
+  "leftHip": 180,         // Beine 180° versetzt zum Spine
+  "rightHip": 180,
+  "leftKnee": 180,
+  "rightKnee": 180,
+  "leftAnkle": 90,
+  "rightAnkle": 90
 }
 ```
 
@@ -145,6 +189,33 @@ Für Übungen bei denen **mehrere Punkte am Boden fixiert** sind (z.B. Liegestü
   "keyframes": [...]
 }
 ```
+
+### Praktische Tipps für das Erstellen von Animationen
+
+**1. Symmetrie beachten:**
+- Für symmetrische Übungen: Beide Arme/Beine haben **identische Winkel**
+- `leftShoulder` = `rightShoulder`, `leftElbow` = `rightElbow`, etc.
+
+**2. Gelenk-Koordination:**
+- Bei Arm-Bewegungen: Schulter und Ellbogen bewegen sich **zusammen** in die gleiche Richtung
+- Bei gestreckten Gliedmaßen: Gelenke haben gleiche Winkel (z.B. `leftHip` = `leftKnee` für gerade Beine)
+
+**3. Spine und Beine:**
+- Beine sind typischerweise **180° versetzt** zum Spine
+- Beispiel: Spine = -30° → Beine = 150°
+- Beispiel: Spine = 0° → Beine = 180°
+
+**4. Ellbogen-Beugung:**
+- Gestreckte Arme: Ellbogen-Winkel = Schulter-Winkel
+- Gebeugte Arme: Ellbogen-Winkel verändert sich zusammen mit Schulter-Winkel
+- Bei Liegestützen: Ellbogen beugt sich "nach oben/hinten" (kleiner Winkel wie 20°)
+
+**5. Schrittweise vorgehen:**
+- Zuerst die Grundpose definieren (z.B. Liegestütz oben)
+- Spine-Winkel festlegen und Beine 180° versetzen
+- Beide Arme mit identischen Winkeln positionieren
+- Keyframe für extreme Position erstellen (z.B. Liegestütz unten)
+- Testen und iterativ anpassen
 
 ## Volleyball Court-Animationen
 
