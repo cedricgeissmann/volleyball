@@ -19,9 +19,7 @@
 </svelte:head>
 
 <div class="uebung-detail">
-	{#if isFallback}
-		<TranslationFallbackBanner {lang} />
-	{/if}
+	<TranslationFallbackBanner {lang} {isFallback} />
 
 	<header class="page-header">
 		<a href="{base}/{lang}/uebungen" class="back-button">← Zurück zu Übungen</a>

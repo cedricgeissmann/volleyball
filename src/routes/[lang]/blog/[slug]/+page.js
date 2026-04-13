@@ -1,14 +1,16 @@
 import { error } from '@sveltejs/kit';
-import { getBlogPostBySlug, getBlogPostSlugs } from '$lib/utils/blogLoader.js';
+import { getBlogPostBySlugWithFallback, getBlogPostSlugs } from '$lib/utils/blogLoader.js';
 
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
 	const { slug, lang } = params;
 	try {
-		const post = await getBlogPostBySlug(slug, lang);
+		const { item: post, isFallback } = await getBlogPostBySlugWithFallback(slug, lang);
 		
 		return {
-			post
+			post,
+			isFallback,
+			lang
 		};
 	} catch (e) {
 		throw error(404, {

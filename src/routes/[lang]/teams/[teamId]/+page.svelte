@@ -14,9 +14,7 @@
 </svelte:head>
 
 <div class="container">
-	{#if isFallback}
-		<TranslationFallbackBanner {lang} />
-	{/if}
+	<TranslationFallbackBanner {lang} {isFallback} />
 
 	<article class="team-detail">
 		<header class="team-header">

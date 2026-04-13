@@ -13,9 +13,7 @@
 </svelte:head>
 
 <div class="rolle-detail">
-	{#if isFallback}
-		<TranslationFallbackBanner {lang} />
-	{/if}
+	<TranslationFallbackBanner {lang} {isFallback} />
 
 	<header class="page-header">
 		<a href="{base}/{lang}/rollen" class="back-button">← Zurück zu Rollen</a>

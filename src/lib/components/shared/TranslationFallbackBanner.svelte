@@ -1,9 +1,9 @@
 <script>
-	/** @type {{ lang: string }} */
-	let { lang } = $props();
+	/** @type {{ lang: string, isFallback?: boolean }} */
+	let { lang, isFallback = false } = $props();
 </script>
 
-{#if lang !== 'de'}
+{#if lang !== 'de' && isFallback}
 	<div class="fallback-banner" role="note">
 		<svg
 			class="icon"

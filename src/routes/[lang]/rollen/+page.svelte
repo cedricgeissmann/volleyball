@@ -119,9 +119,7 @@
 		</div>
 	</header>
 
-	{#if isFallback}
-		<TranslationFallbackBanner {lang} />
-	{/if}
+	<TranslationFallbackBanner {lang} {isFallback} />
 
 	{#if rollen.length === 0}
 		<div class="empty-state">

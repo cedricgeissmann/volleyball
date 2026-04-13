@@ -138,9 +138,7 @@
 </svelte:head>
 
 <div class="uebungen-page">
-	{#if isFallback}
-		<TranslationFallbackBanner {lang} />
-	{/if}
+	<TranslationFallbackBanner {lang} {isFallback} />
 
 	<header class="page-header">
 		<div class="header-content">

@@ -1,4 +1,5 @@
 <script>
+	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
 	let { data } = $props();
 </script>
 
@@ -8,5 +9,7 @@
 		<meta name="description" content={data.post.metadata.description} />
 	{/if}
 </svelte:head>
+
+<TranslationFallbackBanner lang={data.lang} isFallback={data.isFallback} />
 
 <data.post.component />

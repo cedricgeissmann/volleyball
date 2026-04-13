@@ -12,9 +12,7 @@
 </svelte:head>
 
 <div class="container">
-	{#if data.isFallback}
-		<TranslationFallbackBanner {lang} />
-	{/if}
+	<TranslationFallbackBanner {lang} isFallback={data.isFallback} />
 
 	<header class="page-header">
 		<h1>Unsere Teams</h1>

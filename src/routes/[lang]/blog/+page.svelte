@@ -12,9 +12,7 @@
 </svelte:head>
 
 <div class="blog-page">
-	{#if data.isFallback}
-		<TranslationFallbackBanner {lang} />
-	{/if}
+	<TranslationFallbackBanner {lang} isFallback={data.isFallback} />
 
 	<h1>Blog</h1>
 	<p class="intro">Gedanken und Erfahrungen zum Volleyball-Training</p>
