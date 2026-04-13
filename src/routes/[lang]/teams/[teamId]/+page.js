@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { loadTeamById, loadTeams } from '$lib/utils/contentLoader.js';
+import { loadTeamByIdWithFallback, loadTeams } from '$lib/utils/contentLoader.js';
 
 export const prerender = true;
 
@@ -23,7 +23,7 @@ export async function entries() {
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
 	const { teamId, lang } = params;
-	const team = await loadTeamById(teamId, lang);
+	const { item: team, isFallback } = await loadTeamByIdWithFallback(teamId, lang);
 
 	if (!team) {
 		throw error(404, 'Team nicht gefunden');
@@ -31,6 +31,7 @@ export async function load({ params }) {
 
 	return {
 		team,
+		isFallback,
 		lang,
 	};
 }

@@ -1,8 +1,9 @@
 <script>
 	import TeamCard from '$lib/components/team/TeamCard.svelte';
+	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
 
-	/** @type {{ data: { teams: Array<any> } }} */
 	let { data } = $props();
+	const lang = data.lang ?? 'de';
 </script>
 
 <svelte:head>
@@ -11,6 +12,10 @@
 </svelte:head>
 
 <div class="container">
+	{#if data.isFallback}
+		<TranslationFallbackBanner {lang} />
+	{/if}
+
 	<header class="page-header">
 		<h1>Unsere Teams</h1>
 		<p class="lead">

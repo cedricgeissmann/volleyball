@@ -2,9 +2,10 @@
 	import { base } from '$app/paths';
 	import { parseRepetitions, getRandomReps, formatReps } from '$lib/utils/contentLoader.js';
 	import StickFigureAnimation from '$lib/components/uebungen/animations/StickFigureAnimation.svelte';
+	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
 
 	let { data } = $props();
-	const { uebung } = data;
+	const { uebung, isFallback } = data;
 	const lang = data.lang ?? 'de';
 
 	// Parse Wiederholungen
@@ -18,6 +19,10 @@
 </svelte:head>
 
 <div class="uebung-detail">
+	{#if isFallback}
+		<TranslationFallbackBanner {lang} />
+	{/if}
+
 	<header class="page-header">
 		<a href="{base}/{lang}/uebungen" class="back-button">← Zurück zu Übungen</a>
 		<div class="header-content">

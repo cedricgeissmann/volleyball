@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { loadRolleById, loadRollen } from '$lib/utils/contentLoader.js';
+import { loadRolleByIdWithFallback, loadRollen } from '$lib/utils/contentLoader.js';
 
 export const prerender = true;
 
@@ -23,7 +23,7 @@ export async function entries() {
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
 	const { rolleId, lang } = params;
-	const rolle = await loadRolleById(rolleId, lang);
+	const { item: rolle, isFallback } = await loadRolleByIdWithFallback(rolleId, lang);
 
 	if (!rolle) {
 		throw error(404, 'Rolle nicht gefunden');
@@ -31,6 +31,7 @@ export async function load({ params }) {
 
 	return {
 		rolle,
+		isFallback,
 		lang,
 	};
 }

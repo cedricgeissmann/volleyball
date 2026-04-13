@@ -5,9 +5,11 @@
 	import { browser } from '$app/environment';
 	import { parseRepetitions, formatReps } from '$lib/utils/contentLoader.js';
 	import PrintCardBackKraft from '$lib/components/uebungen/print/PrintCardBackKraft.svelte';
+	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
 
 	let { data } = $props();
-	const { uebungen } = data;
+	const { uebungen, isFallback } = data;
+	const lang = data.lang ?? 'de';
 
 	// Suchfunktion
 	let searchQuery = $state('');
@@ -136,6 +138,10 @@
 </svelte:head>
 
 <div class="uebungen-page">
+	{#if isFallback}
+		<TranslationFallbackBanner {lang} />
+	{/if}
+
 	<header class="page-header">
 		<div class="header-content">
 			<h1>Übungen</h1>

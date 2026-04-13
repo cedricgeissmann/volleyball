@@ -89,6 +89,22 @@ export async function loadTeams(locale = 'de') {
 }
 
 /**
+ * Lädt alle Teams für eine Locale, mit isFallback-Flag
+ * @param {string} [locale='de']
+ * @returns {Promise<{items: Team[], isFallback: boolean}>}
+ */
+export async function loadTeamsWithFallback(locale = 'de') {
+	const items = await loadTeams(locale);
+	// isFallback: EN wurde angefragt aber kein EN-Content vorhanden
+	if (locale !== 'de') {
+		const modules = import.meta.glob('/src/content/teams/**/*.yaml', { eager: true, query: '?raw' });
+		const hasLocale = Object.keys(modules).some((p) => p.includes(`/teams/${locale}/`));
+		return { items, isFallback: !hasLocale };
+	}
+	return { items, isFallback: false };
+}
+
+/**
  * Lädt ein Team nach ID für eine Locale
  * @param {string} id - Team-ID
  * @param {string} [locale='de'] - Sprache (de oder en)
@@ -105,6 +121,27 @@ export async function loadTeamById(id, locale = 'de') {
 		}
 		return null;
 	}
+}
+
+/**
+ * Lädt ein Team nach ID, mit isFallback-Flag
+ * @param {string} id
+ * @param {string} [locale='de']
+ * @returns {Promise<{item: Team|null, isFallback: boolean}>}
+ */
+export async function loadTeamByIdWithFallback(id, locale = 'de') {
+	if (locale !== 'de') {
+		try {
+			const module = await import(`../../content/teams/${locale}/${id}.yaml?raw`);
+			const item = /** @type {Team} */ (yaml.load(module.default));
+			return { item, isFallback: false };
+		} catch {
+			const item = await loadTeamById(id, 'de');
+			return { item, isFallback: true };
+		}
+	}
+	const item = await loadTeamById(id, 'de');
+	return { item, isFallback: false };
 }
 
 /**
@@ -137,6 +174,21 @@ export async function loadUebungen(locale = 'de') {
 	}
 
 	return uebungen.sort((a, b) => a.titel.localeCompare(b.titel));
+}
+
+/**
+ * Lädt alle Übungen für eine Locale, mit isFallback-Flag
+ * @param {string} [locale='de']
+ * @returns {Promise<{items: Uebung[], isFallback: boolean}>}
+ */
+export async function loadUebungenWithFallback(locale = 'de') {
+	const items = await loadUebungen(locale);
+	if (locale !== 'de') {
+		const modules = import.meta.glob('/src/content/uebungen/**/*.yaml', { eager: true, query: '?raw' });
+		const hasLocale = Object.keys(modules).some((p) => p.includes(`/uebungen/${locale}/`));
+		return { items, isFallback: !hasLocale };
+	}
+	return { items, isFallback: false };
 }
 
 /**
@@ -175,6 +227,29 @@ export async function loadUebungById(id, locale = 'de') {
 }
 
 /**
+ * Lädt eine Übung nach ID, mit isFallback-Flag
+ * @param {string} id
+ * @param {string} [locale='de']
+ * @returns {Promise<{item: Uebung|null, isFallback: boolean}>}
+ */
+export async function loadUebungByIdWithFallback(id, locale = 'de') {
+	if (locale !== 'de') {
+		// Prüfe ob EN-Version existiert
+		const modules = import.meta.glob('/src/content/uebungen/**/*.yaml', { eager: true, query: '?raw' });
+		for (const path in modules) {
+			if (!path.includes(`/uebungen/${locale}/`)) continue;
+			const module = /** @type {any} */ (modules[path]);
+			const uebung = /** @type {Uebung} */ (yaml.load(module.default));
+			if (uebung.id === id) return { item: uebung, isFallback: false };
+		}
+		const item = await loadUebungById(id, 'de');
+		return { item, isFallback: true };
+	}
+	const item = await loadUebungById(id, 'de');
+	return { item, isFallback: false };
+}
+
+/**
  * Lädt alle Rollen für eine Locale
  * @param {string} [locale='de'] - Sprache (de oder en)
  * @returns {Promise<Rolle[]>}
@@ -204,6 +279,21 @@ export async function loadRollen(locale = 'de') {
 }
 
 /**
+ * Lädt alle Rollen für eine Locale, mit isFallback-Flag
+ * @param {string} [locale='de']
+ * @returns {Promise<{items: Rolle[], isFallback: boolean}>}
+ */
+export async function loadRollenWithFallback(locale = 'de') {
+	const items = await loadRollen(locale);
+	if (locale !== 'de') {
+		const modules = import.meta.glob('/src/content/rollen/**/*.yaml', { eager: true, query: '?raw' });
+		const hasLocale = Object.keys(modules).some((p) => p.includes(`/rollen/${locale}/`));
+		return { items, isFallback: !hasLocale };
+	}
+	return { items, isFallback: false };
+}
+
+/**
  * Lädt eine Rolle nach ID für eine Locale
  * @param {string} id - Rollen-ID
  * @param {string} [locale='de'] - Sprache (de oder en)
@@ -220,6 +310,27 @@ export async function loadRolleById(id, locale = 'de') {
 		}
 		return null;
 	}
+}
+
+/**
+ * Lädt eine Rolle nach ID, mit isFallback-Flag
+ * @param {string} id
+ * @param {string} [locale='de']
+ * @returns {Promise<{item: Rolle|null, isFallback: boolean}>}
+ */
+export async function loadRolleByIdWithFallback(id, locale = 'de') {
+	if (locale !== 'de') {
+		try {
+			const module = await import(`../../content/rollen/${locale}/${id}.yaml?raw`);
+			const item = /** @type {Rolle} */ (yaml.load(module.default));
+			return { item, isFallback: false };
+		} catch {
+			const item = await loadRolleById(id, 'de');
+			return { item, isFallback: true };
+		}
+	}
+	const item = await loadRolleById(id, 'de');
+	return { item, isFallback: false };
 }
 
 /**

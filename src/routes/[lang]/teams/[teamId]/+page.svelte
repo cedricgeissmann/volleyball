@@ -1,10 +1,10 @@
 <script>
 	import { base } from '$app/paths';
 	import GoalCard from '$lib/components/team/GoalCard.svelte';
+	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
 
-	/** @type {{ data: { team: any } }} */
 	let { data } = $props();
-	const { team } = data;
+	const { team, isFallback } = data;
 	const lang = data.lang ?? 'de';
 </script>
 
@@ -14,6 +14,10 @@
 </svelte:head>
 
 <div class="container">
+	{#if isFallback}
+		<TranslationFallbackBanner {lang} />
+	{/if}
+
 	<article class="team-detail">
 		<header class="team-header">
 			<h1>{team.name}</h1>

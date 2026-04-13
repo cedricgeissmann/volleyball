@@ -61,6 +61,21 @@ export async function getAllBlogPosts(locale = 'de') {
 }
 
 /**
+ * Lädt alle Blog-Posts mit isFallback-Flag
+ * @param {string} [locale='de']
+ * @returns {Promise<{items: Array, isFallback: boolean}>}
+ */
+export async function getAllBlogPostsWithFallback(locale = 'de') {
+	const items = await getAllBlogPosts(locale);
+	if (locale !== 'de') {
+		const modules = import.meta.glob('/src/content/blog/**/*.{md,svx}', { eager: true });
+		const hasLocale = Object.keys(modules).some((p) => p.includes(`/blog/${locale}/`) && !p.includes('README'));
+		return { items, isFallback: !hasLocale };
+	}
+	return { items, isFallback: false };
+}
+
+/**
  * Lädt einen spezifischen Blog-Post basierend auf dem Slug für eine Locale
  * @param {string} slug - Der URL-Slug des Blog-Posts
  * @param {string} [locale='de'] - Sprache (de oder en)
@@ -102,6 +117,34 @@ export async function getBlogPostBySlug(slug, locale = 'de') {
 	} catch (e) {
 		throw error(404, `Blog-Post "${slug}" nicht gefunden`);
 	}
+}
+
+/**
+ * Lädt einen Blog-Post nach Slug, mit isFallback-Flag
+ * @param {string} slug
+ * @param {string} [locale='de']
+ * @returns {Promise<{item: Object, isFallback: boolean}>}
+ */
+export async function getBlogPostBySlugWithFallback(slug, locale = 'de') {
+	if (locale !== 'de') {
+		try {
+			let post;
+			try {
+				post = await import(`../../content/blog/${locale}/${slug}.md`);
+			} catch {
+				post = await import(`../../content/blog/${locale}/${slug}.svx`);
+			}
+			return {
+				item: { slug, metadata: post.metadata, component: post.default },
+				isFallback: false
+			};
+		} catch {
+			const item = await getBlogPostBySlug(slug, 'de');
+			return { item, isFallback: true };
+		}
+	}
+	const item = await getBlogPostBySlug(slug, locale);
+	return { item, isFallback: false };
 }
 
 /**

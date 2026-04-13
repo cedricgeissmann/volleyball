@@ -1,8 +1,9 @@
 <script>
 	import { base } from '$app/paths';
+	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
 
 	let { data } = $props();
-	const { rolle } = data;
+	const { rolle, isFallback } = data;
 	const lang = data.lang ?? 'de';
 </script>
 
@@ -12,6 +13,10 @@
 </svelte:head>
 
 <div class="rolle-detail">
+	{#if isFallback}
+		<TranslationFallbackBanner {lang} />
+	{/if}
+
 	<header class="page-header">
 		<a href="{base}/{lang}/rollen" class="back-button">← Zurück zu Rollen</a>
 		<div class="header-content">

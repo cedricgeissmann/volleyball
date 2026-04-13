@@ -1,6 +1,7 @@
 <script>
 	import { base } from '$app/paths';
-	
+	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
+
 	let { data } = $props();
 	const lang = data.lang ?? 'de';
 </script>
@@ -11,6 +12,10 @@
 </svelte:head>
 
 <div class="blog-page">
+	{#if data.isFallback}
+		<TranslationFallbackBanner {lang} />
+	{/if}
+
 	<h1>Blog</h1>
 	<p class="intro">Gedanken und Erfahrungen zum Volleyball-Training</p>
 

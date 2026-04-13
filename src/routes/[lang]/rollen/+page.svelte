@@ -1,11 +1,12 @@
 <script>
 	import { base } from '$app/paths';
 	import QRCode from '$lib/components/shared/QRCode.svelte';
+	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
 	import { getAbsoluteURL } from '$lib/utils/qrGenerator.js';
 	import { browser } from '$app/environment';
 
 	let { data } = $props();
-	const { rollen } = data;
+	const { rollen, isFallback } = data;
 	const lang = data.lang ?? 'de';
 
 	// Suchfunktion
@@ -117,6 +118,10 @@
 			<p>Volleyball-Rollen und Positionen im Constraints-Led Approach</p>
 		</div>
 	</header>
+
+	{#if isFallback}
+		<TranslationFallbackBanner {lang} />
+	{/if}
 
 	{#if rollen.length === 0}
 		<div class="empty-state">

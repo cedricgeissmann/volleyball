@@ -1,4 +1,4 @@
-import { loadUebungen } from '$lib/utils/contentLoader.js';
+import { loadUebungenWithFallback } from '$lib/utils/contentLoader.js';
 
 export const prerender = true;
 
@@ -13,8 +13,10 @@ export function entries() {
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
 	const { lang } = params;
-	const uebungen = await loadUebungen(lang);
+	const { items: uebungen, isFallback } = await loadUebungenWithFallback(lang);
 	return {
 		uebungen,
+		isFallback,
+		lang,
 	};
 }

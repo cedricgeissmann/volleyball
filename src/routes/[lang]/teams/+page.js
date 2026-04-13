@@ -1,4 +1,4 @@
-import { loadTeams } from '$lib/utils/contentLoader.js';
+import { loadTeamsWithFallback } from '$lib/utils/contentLoader.js';
 
 export const prerender = true;
 
@@ -13,8 +13,10 @@ export function entries() {
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
 	const { lang } = params;
-	const teams = await loadTeams(lang);
+	const { items: teams, isFallback } = await loadTeamsWithFallback(lang);
 	return {
 		teams,
+		isFallback,
+		lang,
 	};
 }

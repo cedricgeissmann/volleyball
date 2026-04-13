@@ -1,4 +1,4 @@
-import { loadRollen } from '$lib/utils/contentLoader.js';
+import { loadRollenWithFallback } from '$lib/utils/contentLoader.js';
 
 export const prerender = true;
 
@@ -13,9 +13,10 @@ export function entries() {
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
 	const { lang } = params;
-	const rollen = await loadRollen(lang);
+	const { items: rollen, isFallback } = await loadRollenWithFallback(lang);
 	return {
 		rollen,
+		isFallback,
 		lang,
 	};
 }

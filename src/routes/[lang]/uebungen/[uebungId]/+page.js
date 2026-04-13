@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { loadUebungById, loadAnimation, loadUebungen } from '$lib/utils/contentLoader.js';
+import { loadUebungByIdWithFallback, loadAnimation, loadUebungen } from '$lib/utils/contentLoader.js';
 
 export const prerender = true;
 
@@ -23,7 +23,7 @@ export async function entries() {
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
 	const { uebungId, lang } = params;
-	const uebung = await loadUebungById(uebungId, lang);
+	const { item: uebung, isFallback } = await loadUebungByIdWithFallback(uebungId, lang);
 
 	if (!uebung) {
 		throw error(404, 'Übung nicht gefunden');
@@ -40,6 +40,7 @@ export async function load({ params }) {
 			...uebung,
 			animationData,
 		},
+		isFallback,
 		lang,
 	};
 }
