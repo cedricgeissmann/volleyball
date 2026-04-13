@@ -1,4 +1,24 @@
-import { loadTeamById } from '$lib/utils/contentLoader.js';
+import { error } from '@sveltejs/kit';
+import { loadTeamById, loadTeams } from '$lib/utils/contentLoader.js';
+
+export const prerender = true;
+
+/** @type {import('./$types').EntryGenerator} */
+export async function entries() {
+	// Load all teams for both languages
+	const deTeams = await loadTeams('de');
+	
+	// Generate entries for all team/language combinations
+	const entries = [];
+	
+	// Add entries for both languages
+	for (const team of deTeams) {
+		entries.push({ lang: 'de', teamId: team.id });
+		entries.push({ lang: 'en', teamId: team.id });
+	}
+	
+	return entries;
+}
 
 /** @type {import('./$types').PageLoad} */
 export async function load({ params }) {
@@ -6,10 +26,7 @@ export async function load({ params }) {
 	const team = await loadTeamById(teamId, lang);
 
 	if (!team) {
-		return {
-			status: 404,
-			error: new Error('Team nicht gefunden'),
-		};
+		throw error(404, 'Team nicht gefunden');
 	}
 
 	return {

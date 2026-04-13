@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="utf-8">
+	<title>Redirecting...</title>
+	<script>
+		// Detect if we're in production (with /volleyball base path) or dev
+		const basePath = window.location.pathname.startsWith('/volleyball') ? '/volleyball' : '';
+		const redirectUrl = basePath + '/de/';
+		
+		// Immediate redirect
+		window.location.replace(redirectUrl);
+	</script>
+	<noscript>
+		<meta http-equiv="refresh" content="0; url=/volleyball/de/">
+	</noscript>
+</head>
+<body>
+	<p>Redirecting...</p>
+</body>
+</html>

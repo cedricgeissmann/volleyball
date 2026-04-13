@@ -4,14 +4,11 @@
 	import Header from '$lib/components/layout/Header.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import { locale } from 'svelte-i18n';
-	import { initI18n } from '$lib/i18n';
 
 	let { children, data } = $props();
 
-	// Initialize i18n with the current language
-	initI18n(data?.lang || 'de');
-
 	// Set the locale from the route parameter
+	// i18n is already initialized in +layout.js
 	$effect(() => {
 		if (data?.lang) {
 			locale.set(data.lang);

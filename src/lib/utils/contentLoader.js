@@ -96,7 +96,7 @@ export async function loadTeams(locale = 'de') {
  */
 export async function loadTeamById(id, locale = 'de') {
 	try {
-		const module = await import(`/src/content/teams/${locale}/${id}.yaml?raw`);
+		const module = await import(`../../content/teams/${locale}/${id}.yaml?raw`);
 		return yaml.load(module.default);
 	} catch {
 		// Fallback zu Deutsch
@@ -211,7 +211,7 @@ export async function loadRollen(locale = 'de') {
  */
 export async function loadRolleById(id, locale = 'de') {
 	try {
-		const module = await import(`/src/content/rollen/${locale}/${id}.yaml?raw`);
+		const module = await import(`../../content/rollen/${locale}/${id}.yaml?raw`);
 		return yaml.load(module.default);
 	} catch {
 		// Fallback zu Deutsch
@@ -285,7 +285,7 @@ export function formatReps(reps) {
  */
 export async function loadAnimation(filename) {
 	try {
-		const module = await import(`/src/content/animationen/${filename}`);
+		const module = await import(`../../content/animationen/${filename}`);
 		return module.default;
 	} catch (error) {
 		console.error(`Failed to load animation: ${filename}`, error);
