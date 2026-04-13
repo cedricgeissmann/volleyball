@@ -1,9 +1,15 @@
 <script>
+	import { base } from '$app/paths';
+	
 	// Frontmatter-Props von mdsvex
 	let { title = '', date = '', author = '', tags = [], excerpt = '', children } = $props();
 </script>
 
 <article class="blog-post">
+	<nav class="back-nav">
+		<a href="{base}/blog">← Zurück zur Übersicht</a>
+	</nav>
+	
 	<header>
 		<h1>{title}</h1>
 		{#if date || author}
@@ -37,6 +43,22 @@
 		padding: var(--space-xl);
 	}
 
+	.back-nav {
+		margin-block-end: var(--space-lg);
+	}
+
+	.back-nav a {
+		color: var(--color-primary);
+		text-decoration: none;
+		font-size: var(--font-size-sm);
+		transition: color 0.2s;
+	}
+
+	.back-nav a:hover {
+		color: var(--color-secondary);
+		text-decoration: underline;
+	}
+
 	.blog-post h1 {
 		color: var(--color-primary);
 		margin-block-start: 0;
@@ -68,6 +90,20 @@
 
 	.content {
 		line-height: 1.7;
+		overflow-wrap: break-word;
+		word-wrap: break-word;
+		word-break: break-word;
+		hyphens: auto;
+	}
+
+	.content :global(h1),
+	.content :global(h2),
+	.content :global(h3),
+	.content :global(h4),
+	.content :global(h5),
+	.content :global(h6) {
+		overflow-wrap: break-word;
+		word-wrap: break-word;
 	}
 
 	.content :global(h2) {
@@ -125,9 +161,91 @@
 		font-style: italic;
 	}
 
+	.content :global(table) {
+		width: 100%;
+		border-collapse: collapse;
+		margin-block: var(--space-lg);
+		font-size: var(--font-size-sm);
+		overflow-x: auto;
+		display: block;
+	}
+
+	.content :global(th),
+	.content :global(td) {
+		padding: var(--space-sm);
+		text-align: left;
+		border: 1px solid var(--color-gray-200);
+	}
+
+	.content :global(th) {
+		background: var(--color-gray-100);
+		font-weight: var(--font-weight-medium);
+	}
+
+	.content :global(img) {
+		max-width: 100%;
+		height: auto;
+	}
+
 	@media (max-width: 768px) {
 		.blog-post {
 			padding: var(--space-md);
+		}
+
+		.blog-post h1 {
+			font-size: 1.75rem;
+			line-height: 1.2;
+		}
+
+		.content :global(h2) {
+			font-size: 1.5rem;
+			margin-block-start: var(--space-xl);
+		}
+
+		.content :global(h3) {
+			font-size: 1.25rem;
+			margin-block-start: var(--space-lg);
+		}
+
+		.content :global(table) {
+			font-size: 0.85rem;
+		}
+
+		.content :global(th),
+		.content :global(td) {
+			padding: var(--space-xs);
+		}
+
+		.content :global(ul),
+		.content :global(ol) {
+			padding-left: var(--space-lg);
+		}
+	}
+
+	@media (max-width: 480px) {
+		.blog-post {
+			padding: var(--space-sm);
+		}
+
+		.blog-post h1 {
+			font-size: 1.5rem;
+		}
+
+		.content :global(h2) {
+			font-size: 1.3rem;
+		}
+
+		.content :global(h3) {
+			font-size: 1.15rem;
+		}
+
+		.content :global(table) {
+			font-size: 0.75rem;
+		}
+
+		.meta {
+			flex-direction: column;
+			gap: var(--space-xs);
 		}
 	}
 </style>
