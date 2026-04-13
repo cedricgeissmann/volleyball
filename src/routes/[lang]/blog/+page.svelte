@@ -2,6 +2,7 @@
 	import { base } from '$app/paths';
 	
 	let { data } = $props();
+	const lang = data.lang ?? 'de';
 </script>
 
 <svelte:head>
@@ -17,7 +18,7 @@
 		<div class="posts-list">
 			{#each data.posts as post}
 				<article class="post-card">
-					<a href="{base}/blog/{post.slug}" class="post-link">
+					<a href="{base}/{lang}/blog/{post.slug}" class="post-link">
 						<h2>{post.title}</h2>
 						{#if post.date}
 							<time class="post-date" datetime={post.date}>

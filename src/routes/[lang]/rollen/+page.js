@@ -16,5 +16,6 @@ export async function load({ params }) {
 	const rollen = await loadRollen(lang);
 	return {
 		rollen,
+		lang,
 	};
 }

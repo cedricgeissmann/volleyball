@@ -31,5 +31,6 @@ export async function load({ params }) {
 
 	return {
 		team,
+		lang,
 	};
 }

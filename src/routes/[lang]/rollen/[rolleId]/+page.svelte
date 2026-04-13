@@ -3,6 +3,7 @@
 
 	let { data } = $props();
 	const { rolle } = data;
+	const lang = data.lang ?? 'de';
 </script>
 
 <svelte:head>
@@ -12,7 +13,7 @@
 
 <div class="rolle-detail">
 	<header class="page-header">
-		<a href="{base}/rollen" class="back-button">← Zurück zu Rollen</a>
+		<a href="{base}/{lang}/rollen" class="back-button">← Zurück zu Rollen</a>
 		<div class="header-content">
 			<h1>{rolle.name}</h1>
 			{#if rolle.beschreibung}

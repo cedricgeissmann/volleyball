@@ -1,13 +1,21 @@
 <script>
 	import { base } from '$app/paths';
-	
+	import { page } from '$app/stores';
+
 	// Frontmatter-Props von mdsvex
 	let { title = '', date = '', author = '', tags = [], excerpt = '', children } = $props();
+
+	const currentLang = $derived.by(() => {
+		const pathParts = $page.url.pathname.split('/').filter(Boolean);
+		const firstPart = pathParts[0];
+		const langPart = firstPart === 'volleyball' ? pathParts[1] : firstPart;
+		return langPart === 'en' ? 'en' : 'de';
+	});
 </script>
 
 <article class="blog-post">
 	<nav class="back-nav">
-		<a href="{base}/blog">← Zurück zur Übersicht</a>
+		<a href="{base}/{currentLang}/blog">← Zurück zur Übersicht</a>
 	</nav>
 	
 	<header>

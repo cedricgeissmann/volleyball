@@ -5,6 +5,7 @@
 
 	let { data } = $props();
 	const { uebung } = data;
+	const lang = data.lang ?? 'de';
 
 	// Parse Wiederholungen
 	const reps = parseRepetitions(uebung.wiederholungen);
@@ -18,7 +19,7 @@
 
 <div class="uebung-detail">
 	<header class="page-header">
-		<a href="{base}/uebungen" class="back-button">← Zurück zu Übungen</a>
+		<a href="{base}/{lang}/uebungen" class="back-button">← Zurück zu Übungen</a>
 		<div class="header-content">
 			<h1>{uebung.titel}</h1>
 			{#if uebung.kategorie}

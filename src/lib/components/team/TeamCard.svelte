@@ -1,5 +1,6 @@
 <script>
 	import { base } from '$app/paths';
+	import { page } from '$app/stores';
 
 	/**
 	 * @type {{
@@ -12,6 +13,13 @@
 	 * }}
 	 */
 	let { team } = $props();
+
+	const currentLang = $derived.by(() => {
+		const pathParts = $page.url.pathname.split('/').filter(Boolean);
+		const firstPart = pathParts[0];
+		const langPart = firstPart === 'volleyball' ? pathParts[1] : firstPart;
+		return langPart === 'en' ? 'en' : 'de';
+	});
 </script>
 
 <article class="team-card">
@@ -29,7 +37,7 @@
 		</div>
 	{/if}
 
-	<a href="{base}/teams/{team.id}" class="btn-primary"> Details anzeigen </a>
+	<a href="{base}/{currentLang}/teams/{team.id}" class="btn-primary"> Details anzeigen </a>
 </article>
 
 <style>

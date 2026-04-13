@@ -6,7 +6,8 @@ export async function load({ params }) {
 	const posts = await getAllBlogPosts(lang);
 	
 	return {
-		posts
+		posts,
+		lang,
 	};
 }
 

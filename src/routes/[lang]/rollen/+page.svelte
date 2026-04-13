@@ -6,6 +6,7 @@
 
 	let { data } = $props();
 	const { rollen } = data;
+	const lang = data.lang ?? 'de';
 
 	// Suchfunktion
 	let searchQuery = $state('');
@@ -81,7 +82,7 @@
 		// Nur navigieren wenn nicht auf Checkbox geklickt wurde
 		const target = event.target;
 		if (target instanceof HTMLElement && !target.closest('.checkbox-wrapper')) {
-			window.location.href = `${base}/rollen/${rolleId}`;
+			window.location.href = `${base}/${lang}/rollen/${rolleId}`;
 		}
 	}
 
@@ -231,7 +232,7 @@
 							{/if}
 						</div>
 						<div class="card-qr">
-							<QRCode url={getAbsoluteURL(`/rollen/${rolle.id}`)} size={60} />
+							<QRCode url={getAbsoluteURL(`/${lang}/rollen/${rolle.id}`)} size={60} />
 						</div>
 					</div>
 				</div>
@@ -275,7 +276,7 @@
 
 						<div class="card-footer">
 							<div class="qr-code-small">
-								<QRCode url={getAbsoluteURL(`/rollen/${rolle.id}`)} size={80} />
+								<QRCode url={getAbsoluteURL(`/${lang}/rollen/${rolle.id}`)} size={80} />
 							</div>
 						</div>
 					</div>

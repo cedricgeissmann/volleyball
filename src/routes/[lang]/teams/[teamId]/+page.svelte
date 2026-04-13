@@ -5,6 +5,7 @@
 	/** @type {{ data: { team: any } }} */
 	let { data } = $props();
 	const { team } = data;
+	const lang = data.lang ?? 'de';
 </script>
 
 <svelte:head>
@@ -17,7 +18,7 @@
 		<header class="team-header">
 			<h1>{team.name}</h1>
 			<p class="lead">{team.beschreibung}</p>
-			<a href="{base}/kompetenzraster/{team.id}" class="btn-kompetenzraster">
+			<a href="{base}/{lang}/kompetenzraster/{team.id}" class="btn-kompetenzraster">
 				📊 Mein Kompetenzraster
 			</a>
 		</header>

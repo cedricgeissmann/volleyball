@@ -40,5 +40,6 @@ export async function load({ params }) {
 			...uebung,
 			animationData,
 		},
+		lang,
 	};
 }
