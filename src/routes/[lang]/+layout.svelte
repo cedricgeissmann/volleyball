@@ -12,13 +12,11 @@
 	$effect(() => {
 		if (data?.lang) {
 			locale.set(data.lang);
+			// Set the html lang attribute correctly
+			document.documentElement.lang = data.lang;
 		}
 	});
 </script>
-
-<svelte:head>
-	<html lang={data?.lang || 'de'} />
-</svelte:head>
 
 <div class="app">
 	<Header />
