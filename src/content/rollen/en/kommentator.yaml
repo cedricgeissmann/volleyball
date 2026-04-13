@@ -1,0 +1,9 @@
+id: kommentator
+name: Commentator
+beschreibung: Self-appointed sports reporter providing live commentary
+aufgaben:
+  - I comment on every action like a TV sports announcer
+  - I give all plays dramatic names and descriptions
+  - I interview teammates during live play
+  - I analyze game situations in detail instead of participating
+fokus: Distraction through constant live commentary of the game

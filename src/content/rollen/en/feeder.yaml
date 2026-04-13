@@ -1,0 +1,9 @@
+id: feeder
+name: Feeder
+beschreibung: Active training support by feeding balls precisely to where errors occur
+aufgaben:
+  - I feed the ball where an error just happened
+  - I put slight pressure on players without creating dangerous situations
+  - I read the game and am ready at the right moment
+  - I adapt timing and intensity to the skill level
+fokus: Smart ball feeding for error correction without overwhelming players

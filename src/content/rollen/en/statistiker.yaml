@@ -1,0 +1,9 @@
+id: statistiker
+name: Statistician
+beschreibung: Data collection and feedback provider for targeted performance analysis
+aufgaben:
+  - I select one player and document their performance
+  - I count attack balls touched, errors, and free balls
+  - I share the stats with the player after every 5 balls
+  - I offer objective feedback for performance improvement
+fokus: Systematic performance tracking and regular feedback

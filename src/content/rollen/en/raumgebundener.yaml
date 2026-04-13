@@ -1,0 +1,9 @@
+id: raumgebundener
+name: Zone-Bound Player
+beschreibung: Movement restricted to a defined area only
+aufgaben:
+  - I move only within my assigned small zone
+  - I call out loudly when balls land outside my zone
+  - I must be precisely positioned within my space
+  - I rely on teammates for balls outside my zone
+fokus: Spatial restriction through a defined movement zone

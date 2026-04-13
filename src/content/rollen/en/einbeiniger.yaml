@@ -1,0 +1,9 @@
+id: einbeiniger
+name: One-Legged Player
+beschreibung: Using only one leg for movement
+aufgaben:
+  - I move only by hopping on one leg
+  - I may not use the other leg for locomotion
+  - I plan my positioning ahead of time due to slower movement
+  - I use my balance and jumping power optimally
+fokus: Mobility restriction through one-legged movement

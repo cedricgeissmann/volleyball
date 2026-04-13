@@ -1,0 +1,9 @@
+id: touch-minimalist
+name: Touch Minimalist
+beschreibung: Limited to a set number of ball contacts per game
+aufgaben:
+  - I may touch at most every third ball of my team
+  - I keep a precise count of my ball contacts
+  - I strategically choose which balls I play
+  - I deliberately leave balls for teammates even when I could reach them
+fokus: Strategic restriction through limited ball contacts

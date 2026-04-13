@@ -1,0 +1,9 @@
+id: beobachter
+name: Observer
+beschreibung: Analytical outside perspective for strategic feedback
+aufgaben:
+  - I observe play patterns and identify recurring problems
+  - I give specific feedback on tactical decisions
+  - I ask questions that prompt players to reflect
+  - I document successful and problematic game situations
+fokus: External perspective to promote self-awareness and reflection

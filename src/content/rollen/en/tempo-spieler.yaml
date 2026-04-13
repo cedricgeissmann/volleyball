@@ -1,0 +1,9 @@
+id: tempo-spieler
+name: Tempo Player
+beschreibung: Dynamic play style with active control and variation of game pace
+aufgaben:
+  - I accelerate play after successful actions
+  - I slow the pace after mistakes to stabilize the situation
+  - I use tempo changes to throw opponents off rhythm
+  - I read when the team needs energy or calm
+fokus: Game flow control through deliberate tempo variation

@@ -1,0 +1,9 @@
+id: taktiker
+name: Tactician
+beschreibung: Strategic thinking with an overview of play patterns and adjustments
+aufgaben:
+  - I recognize the opponent's patterns and communicate them to the team
+  - I suggest tactical adjustments during the game
+  - I plan several plays ahead
+  - I systematically exploit the opponent's weaknesses
+fokus: Game intelligence through pattern recognition and strategic adaptation

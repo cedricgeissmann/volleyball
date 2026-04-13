@@ -1,0 +1,9 @@
+id: roboter
+name: Robot
+beschreibung: Mechanical, jerky movements without any flow
+aufgaben:
+  - I move only in straight lines and 90-degree angles
+  - I make robotic, jerky movements
+  - I can only move my joints at fixed angles
+  - I communicate in a monotone, robotic voice
+fokus: Movement restriction through mechanical, inflexible motor control

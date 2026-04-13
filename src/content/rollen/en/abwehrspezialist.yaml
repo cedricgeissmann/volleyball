@@ -1,0 +1,9 @@
+id: abwehrspezialist
+name: Defense Specialist
+beschreibung: Reactive defense with a focus on difficult ball retrievals
+aufgaben:
+  - I anticipate the direction of the attacker's hit
+  - I adjust my body position to the expected ball
+  - I use different defensive techniques depending on ball speed
+  - I keep apparently lost balls in play
+fokus: Adaptive defense through anticipation and flexible technique selection

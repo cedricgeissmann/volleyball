@@ -1,0 +1,9 @@
+id: verteidiger
+name: Defender
+beschreibung: Court coverage and defensive adaptability within the team
+aufgaben:
+  - I consistently cover the space around me
+  - I don't let any ball drop in my zone
+  - I adapt to my teammates' movements
+  - I recognize gaps in the defense and close them
+fokus: Spatial responsibility and adaptation to team dynamics in defense

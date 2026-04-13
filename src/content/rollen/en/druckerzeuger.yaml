@@ -1,0 +1,9 @@
+id: druckerzeuger
+name: Pressure Creator
+beschreibung: Training helper to simulate high-stress game situations
+aufgaben:
+  - I create time pressure through quick and unexpected ball exchanges
+  - I play balls deliberately into uncomfortable positions
+  - I constantly vary pace and placement
+  - I demand fast decisions under uncertainty
+fokus: Representative training through simulation of competitive pressure

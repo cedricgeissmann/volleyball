@@ -1,0 +1,9 @@
+id: angreifer
+name: Attacker
+beschreibung: Offensive play style with a focus on successful point finishes
+aufgaben:
+  - I read the opponent's defense and adjust my hit accordingly
+  - I vary between hard hits and well-placed balls
+  - I exploit gaps in the block and defense strategically
+  - I communicate my readiness to the setter
+fokus: Adaptive attack behavior by reading the opponent's defensive setup

@@ -1,0 +1,9 @@
+id: zeit-verzoegert
+name: Delayed Reactor
+beschreibung: Simulated reaction delay in play behavior
+aufgaben:
+  - I react to every ball with a 2-second delay
+  - I count to two internally before acting
+  - I must anticipate plays much earlier than normal
+  - I move preventively rather than reactively
+fokus: Cognitive restriction through a deliberate reaction time delay
