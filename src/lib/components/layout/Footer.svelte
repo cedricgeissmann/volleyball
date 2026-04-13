@@ -1,5 +1,15 @@
 <script>
 	import { base } from '$app/paths';
+	import { page } from '$app/stores';
+	import { _ } from 'svelte-i18n';
+
+	// Get current language from URL
+	const currentLang = $derived.by(() => {
+		const pathParts = $page.url.pathname.split('/').filter(Boolean);
+		const firstPart = pathParts[0];
+		const langPart = firstPart === 'volleyball' ? pathParts[1] : firstPart;
+		return langPart === 'en' ? 'en' : 'de';
+	});
 </script>
 
 <footer class="footer">
@@ -8,7 +18,7 @@
 			© {new Date().getFullYear()} TV Muttenz Volleyball | Cedric Geissmann -
 			<a href="mailto:cedric.geissmann@gmail.com">cedric.geissmann@gmail.com</a>
 		</p>
-		<a href="{base}/datenschutz" class="privacy-link">Datenschutz</a>
+		<a href="{base}/{currentLang}/datenschutz" class="privacy-link">{$_('nav_privacy')}</a>
 	</div>
 </footer>
 

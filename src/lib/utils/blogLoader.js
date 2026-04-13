@@ -9,18 +9,24 @@ import { base } from '$app/paths';
  */
 
 /**
- * Lädt alle Blog-Posts mit Metadaten
+ * Lädt alle Blog-Posts mit Metadaten für eine Locale
+ * @param {string} [locale='de'] - Sprache (de oder en)
  * @returns {Promise<Array>} Array von Blog-Posts mit Metadaten
  */
-export async function getAllBlogPosts() {
+export async function getAllBlogPosts(locale = 'de') {
 	// Dynamisches Import aller .md und .svx Dateien aus dem blog Verzeichnis
-	const modules = import.meta.glob('/src/content/blog/*.{md,svx}', { eager: true });
+	const modules = import.meta.glob('/src/content/blog/**/*.{md,svx}', { eager: true });
 	
 	const posts = [];
 	
 	for (const [path, module] of Object.entries(modules)) {
 		// Überspringe README.txt
 		if (path.includes('README')) continue;
+		
+		// Prüfe ob der Pfad zur gewünschten Locale gehört
+		if (!path.includes(`/blog/${locale}/`)) {
+			continue;
+		}
 		
 		// Extrahiere den Slug aus dem Dateipfad
 		const slug = path.split('/').pop().replace(/\.(md|svx)$/, '');
@@ -44,23 +50,39 @@ export async function getAllBlogPosts() {
 	});
 	
 	// Filtere nur veröffentlichte Posts
-	return posts.filter(post => post.published !== false);
+	const filteredPosts = posts.filter(post => post.published !== false);
+	
+	// Fallback zu Deutsch wenn keine Posts gefunden
+	if (filteredPosts.length === 0 && locale !== 'de') {
+		return getAllBlogPosts('de');
+	}
+	
+	return filteredPosts;
 }
 
 /**
- * Lädt einen spezifischen Blog-Post basierend auf dem Slug
+ * Lädt einen spezifischen Blog-Post basierend auf dem Slug für eine Locale
  * @param {string} slug - Der URL-Slug des Blog-Posts
+ * @param {string} [locale='de'] - Sprache (de oder en)
  * @returns {Promise<Object>} Blog-Post Objekt mit Metadaten und Component
  */
-export async function getBlogPostBySlug(slug) {
+export async function getBlogPostBySlug(slug, locale = 'de') {
 	try {
 		// Versuche .md Datei zu laden
 		let post;
 		try {
-			post = await import(`../../content/blog/${slug}.md`);
+			post = await import(`../../content/blog/${locale}/${slug}.md`);
 		} catch (e) {
 			// Falls .md nicht existiert, versuche .svx
-			post = await import(`../../content/blog/${slug}.svx`);
+			try {
+				post = await import(`../../content/blog/${locale}/${slug}.svx`);
+			} catch (e2) {
+				// Fallback zu Deutsch
+				if (locale !== 'de') {
+					return getBlogPostBySlug(slug, 'de');
+				}
+				throw e2;
+			}
 		}
 		
 		if (!post) {

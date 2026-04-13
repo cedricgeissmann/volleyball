@@ -1,0 +1,9 @@
+id: zuspieler
+name: Setter
+beschreibung: Playmaker for the second ball and central distribution function
+aufgaben:
+  - I play the second ball and organize the attack
+  - I observe and evaluate the readiness of the attackers
+  - I distribute the balls evenly to all attackers
+  - I do not participate in defense on free balls
+fokus: Game overview and intelligent ball distribution to ready attackers

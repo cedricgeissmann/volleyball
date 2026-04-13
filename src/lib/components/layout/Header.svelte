@@ -1,8 +1,19 @@
 <script>
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
+	import LanguageSwitcher from './LanguageSwitcher.svelte';
+	import { _ } from 'svelte-i18n';
 
 	let mobileMenuOpen = $state(false);
+
+	// Get current language from URL path
+	const currentLang = $derived.by(() => {
+		const pathParts = $page.url.pathname.split('/').filter(Boolean);
+		const firstPart = pathParts[0];
+		// Remove base path if present
+		const langPart = firstPart === 'volleyball' ? pathParts[1] : firstPart;
+		return langPart === 'en' ? 'en' : 'de';
+	});
 
 	function toggleMobileMenu() {
 		mobileMenuOpen = !mobileMenuOpen;
@@ -21,75 +32,78 @@
 
 <header class="header">
 	<div class="container">
-		<a href="{base}/" class="logo-link" on:click={closeMobileMenu}>
+		<a href="{base}/{currentLang}" class="logo-link" on:click={closeMobileMenu}>
 			<img src="{base}/logo.png" alt="TV Muttenz Volleyball" class="logo" />
 		</a>
 
 		<nav class="nav" class:open={mobileMenuOpen}>
 			<a
-				href="{base}/teams"
+				href="{base}/{currentLang}/teams"
 				class:active={$page.url.pathname.includes('/teams')}
 				on:click={closeMobileMenu}
 			>
-				Teams
+				{$_('nav_teams')}
 			</a>
 			<a
-				href="{base}/uebungen"
+				href="{base}/{currentLang}/uebungen"
 				class:active={$page.url.pathname.includes('/uebungen')}
 				on:click={closeMobileMenu}
 			>
-				Übungen
+				{$_('nav_exercises')}
 			</a>
 			<a
-				href="{base}/rollen"
+				href="{base}/{currentLang}/rollen"
 				class:active={$page.url.pathname.includes('/rollen')}
 				on:click={closeMobileMenu}
 			>
-				Rollen
+				{$_('nav_roles')}
 			</a>
 			<a
-				href="{base}/planner"
+				href="{base}/{currentLang}/planner"
 				class:active={$page.url.pathname.includes('/planner')}
 				on:click={closeMobileMenu}
 			>
-				Trainingsplaner
+				{$_('nav_planner')}
 			</a>
 			<a
-				href="{base}/cla"
+				href="{base}/{currentLang}/cla"
 				class:active={$page.url.pathname.includes('/cla')}
 				on:click={closeMobileMenu}
 			>
-				CLA-Theorie
+				{$_('nav_cla')}
 			</a>
 			<a
-				href="{base}/blog"
+				href="{base}/{currentLang}/blog"
 				class:active={$page.url.pathname.includes('/blog')}
 				on:click={closeMobileMenu}
 			>
-				Blog
+				{$_('nav_blog')}
 			</a>
 			<a
-				href="{base}/events"
+				href="{base}/{currentLang}/events"
 				class:active={$page.url.pathname.includes('/events')}
 				on:click={closeMobileMenu}
 			>
-				Events
+				{$_('nav_events')}
 			</a>
 		</nav>
 
-		<button class="mobile-menu-toggle" on:click={toggleMobileMenu} aria-label="Menü öffnen">
-			{#if mobileMenuOpen}
-				<!-- Close Icon -->
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-					<path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round" />
-				</svg>
-			{:else}
-				<!-- Hamburger Icon -->
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-					<path d="M3 12h18M3 6h18M3 18h18" stroke-width="2" stroke-linecap="round" />
-				</svg>
-			{/if}
-		</button>
+		<div class="header-actions">
+			<LanguageSwitcher />
+			<button class="mobile-menu-toggle" on:click={toggleMobileMenu} aria-label={$_('aria_open_menu')}>
+				{#if mobileMenuOpen}
+					<!-- Close Icon -->
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+						<path d="M18 6L6 18M6 6l12 12" stroke-width="2" stroke-linecap="round" />
+					</svg>
+				{:else}
+					<!-- Hamburger Icon -->
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+						<path d="M3 12h18M3 6h18M3 18h18" stroke-width="2" stroke-linecap="round" />
+					</svg>
+				{/if}
+			</button>
+		</div>
 	</div>
 </header>
 
@@ -166,6 +180,12 @@
 		right: 0;
 		height: 3px;
 		background: var(--color-primary);
+	}
+
+	.header-actions {
+		display: flex;
+		align-items: center;
+		gap: var(--space-md);
 	}
 
 	.mobile-menu-toggle {

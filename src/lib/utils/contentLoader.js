@@ -59,42 +59,60 @@ import yaml from 'js-yaml';
  */
 
 /**
- * Lädt alle Teams
+ * Lädt alle Teams für eine Locale
+ * @param {string} [locale='de'] - Sprache (de oder en)
  * @returns {Promise<Team[]>}
  */
-export async function loadTeams() {
-	const modules = import.meta.glob('/src/content/teams/*.yaml', { eager: true, query: '?raw' });
+export async function loadTeams(locale = 'de') {
+	// Versuche zuerst die gewünschte Locale zu laden
+	let modules = import.meta.glob('/src/content/teams/**/*.yaml', { eager: true, query: '?raw' });
 	const teams = [];
 
 	for (const path in modules) {
+		// Prüfe ob der Pfad zur gewünschten Locale gehört
+		if (!path.includes(`/teams/${locale}/`)) {
+			continue;
+		}
+		
 		const module = /** @type {any} */ (modules[path]);
 		const content = module.default;
 		const team = /** @type {Team} */ (yaml.load(content));
 		teams.push(team);
 	}
 
+	// Fallback zu Deutsch wenn keine Teams gefunden
+	if (teams.length === 0 && locale !== 'de') {
+		return loadTeams('de');
+	}
+
 	return teams.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /**
- * Lädt ein Team nach ID
+ * Lädt ein Team nach ID für eine Locale
  * @param {string} id - Team-ID
+ * @param {string} [locale='de'] - Sprache (de oder en)
  * @returns {Promise<Team|null>}
  */
-export async function loadTeamById(id) {
+export async function loadTeamById(id, locale = 'de') {
 	try {
-		const module = await import(`/src/content/teams/${id}.yaml?raw`);
+		const module = await import(`/src/content/teams/${locale}/${id}.yaml?raw`);
 		return yaml.load(module.default);
 	} catch {
+		// Fallback zu Deutsch
+		if (locale !== 'de') {
+			return loadTeamById(id, 'de');
+		}
 		return null;
 	}
 }
 
 /**
- * Lädt alle Übungen (inkl. Unterordner)
+ * Lädt alle Übungen (inkl. Unterordner) für eine Locale
+ * @param {string} [locale='de'] - Sprache (de oder en)
  * @returns {Promise<Uebung[]>}
  */
-export async function loadUebungen() {
+export async function loadUebungen(locale = 'de') {
 	const modules = import.meta.glob('/src/content/uebungen/**/*.yaml', {
 		eager: true,
 		query: '?raw',
@@ -102,34 +120,44 @@ export async function loadUebungen() {
 	const uebungen = [];
 
 	for (const path in modules) {
+		// Prüfe ob der Pfad zur gewünschten Locale gehört
+		if (!path.includes(`/uebungen/${locale}/`)) {
+			continue;
+		}
+		
 		const module = /** @type {any} */ (modules[path]);
 		const content = module.default;
 		const uebung = /** @type {Uebung} */ (yaml.load(content));
 		uebungen.push(uebung);
 	}
 
+	// Fallback zu Deutsch wenn keine Übungen gefunden
+	if (uebungen.length === 0 && locale !== 'de') {
+		return loadUebungen('de');
+	}
+
 	return uebungen.sort((a, b) => a.titel.localeCompare(b.titel));
 }
 
 /**
- * Lädt eine Übung nach ID (sucht in allen Unterordnern)
+ * Lädt eine Übung nach ID (sucht in allen Unterordnern) für eine Locale
  * @param {string} id - Übungs-ID
+ * @param {string} [locale='de'] - Sprache (de oder en)
  * @returns {Promise<Uebung|null>}
  */
-export async function loadUebungById(id) {
-	// Erst im Root-Verzeichnis suchen
-	try {
-		const module = await import(`/src/content/uebungen/${id}.yaml?raw`);
-		return yaml.load(module.default);
-	} catch {}
-
-	// Dann in Unterordnern suchen
+export async function loadUebungById(id, locale = 'de') {
+	// In Unterordnern suchen
 	const modules = import.meta.glob('/src/content/uebungen/**/*.yaml', {
 		eager: true,
 		query: '?raw',
 	});
 
 	for (const path in modules) {
+		// Prüfe ob der Pfad zur gewünschten Locale gehört
+		if (!path.includes(`/uebungen/${locale}/`)) {
+			continue;
+		}
+		
 		const module = /** @type {any} */ (modules[path]);
 		const content = module.default;
 		const uebung = /** @type {Uebung} */ (yaml.load(content));
@@ -138,37 +166,58 @@ export async function loadUebungById(id) {
 		}
 	}
 
+	// Fallback zu Deutsch
+	if (locale !== 'de') {
+		return loadUebungById(id, 'de');
+	}
+
 	return null;
 }
 
 /**
- * Lädt alle Rollen
+ * Lädt alle Rollen für eine Locale
+ * @param {string} [locale='de'] - Sprache (de oder en)
  * @returns {Promise<Rolle[]>}
  */
-export async function loadRollen() {
-	const modules = import.meta.glob('/src/content/rollen/*.yaml', { eager: true, query: '?raw' });
+export async function loadRollen(locale = 'de') {
+	const modules = import.meta.glob('/src/content/rollen/**/*.yaml', { eager: true, query: '?raw' });
 	const rollen = [];
 
 	for (const path in modules) {
+		// Prüfe ob der Pfad zur gewünschten Locale gehört
+		if (!path.includes(`/rollen/${locale}/`)) {
+			continue;
+		}
+		
 		const module = /** @type {any} */ (modules[path]);
 		const content = module.default;
 		const rolle = /** @type {Rolle} */ (yaml.load(content));
 		rollen.push(rolle);
 	}
 
+	// Fallback zu Deutsch wenn keine Rollen gefunden
+	if (rollen.length === 0 && locale !== 'de') {
+		return loadRollen('de');
+	}
+
 	return rollen.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /**
- * Lädt eine Rolle nach ID
+ * Lädt eine Rolle nach ID für eine Locale
  * @param {string} id - Rollen-ID
+ * @param {string} [locale='de'] - Sprache (de oder en)
  * @returns {Promise<Rolle|null>}
  */
-export async function loadRolleById(id) {
+export async function loadRolleById(id, locale = 'de') {
 	try {
-		const module = await import(`/src/content/rollen/${id}.yaml?raw`);
+		const module = await import(`/src/content/rollen/${locale}/${id}.yaml?raw`);
 		return yaml.load(module.default);
 	} catch {
+		// Fallback zu Deutsch
+		if (locale !== 'de') {
+			return loadRolleById(id, 'de');
+		}
 		return null;
 	}
 }

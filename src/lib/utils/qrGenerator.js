@@ -3,14 +3,15 @@ import QRCode from 'qrcode';
 const BASE_URL = 'https://cedricgeissmann.github.io/volleyball';
 
 /**
- * Erstellt die absolute URL für einen Pfad
+ * Erstellt die absolute URL für einen Pfad mit Locale
  * @param {string} path - Relativer Pfad (z.B. '/teams/herren-1')
+ * @param {string} [locale='de'] - Sprache (de oder en)
  * @returns {string} Absolute URL
  */
-export function getAbsoluteURL(path) {
+export function getAbsoluteURL(path, locale = 'de') {
 	// Entferne führenden Slash wenn vorhanden
 	const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-	return `${BASE_URL}/${cleanPath}`;
+	return `${BASE_URL}/${locale}/${cleanPath}`;
 }
 
 /**

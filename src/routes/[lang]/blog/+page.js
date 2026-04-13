@@ -1,8 +1,9 @@
 import { getAllBlogPosts } from '$lib/utils/blogLoader.js';
 
 /** @type {import('./$types').PageLoad} */
-export async function load() {
-	const posts = await getAllBlogPosts();
+export async function load({ params }) {
+	const { lang } = params;
+	const posts = await getAllBlogPosts(lang);
 	
 	return {
 		posts
