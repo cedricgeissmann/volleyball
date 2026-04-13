@@ -13,6 +13,7 @@
 	let { team, selbsteinschaetzung, fremdeinschaetzung } = $props();
 
 	import { createKompetenzId } from '$lib/utils/kompetenzraster.js';
+	import { _ } from 'svelte-i18n';
 
 	/**
 	 * @param {number} diff
@@ -25,8 +26,8 @@
 </script>
 
 <div class="fremd-vergleich">
-	<h3>Vergleich: Selbst- vs. Fremdeinschätzung</h3>
-	<p class="info">Die Fremdeinschätzung wird nur zur Ansicht verwendet und nicht gespeichert.</p>
+	<h3>{$_('heading_comparison')}</h3>
+	<p class="info">{$_('comparison_view_only')}</p>
 
 	<div class="vergleich-grid">
 		{#each team.ziele as ziel}
@@ -40,11 +41,11 @@
 					<div class="kompetenz-name">{ziel.titel}</div>
 					<div class="werte">
 						<div class="wert selbst">
-							<span class="label">Selbst:</span>
+							<span class="label">{$_('comparison_self')}</span>
 							<span class="value">{selbst}</span>
 						</div>
 						<div class="wert fremd">
-							<span class="label">Fremd:</span>
+							<span class="label">{$_('comparison_external')}:</span>
 							<span class="value">{fremd}</span>
 						</div>
 						<div class="diff">

@@ -14,6 +14,7 @@
 	"btn_show_details": "Show Details",
 	"btn_back_to_exercises": "Back to Exercises",
 	"btn_back_to_roles": "Back to Roles",
+	"btn_back_to_overview": "Back to Overview",
 	"btn_save_self_assessment": "Save Self-Assessment",
 	"btn_request_external_assessment": "Request External Assessment",
 	"btn_hide_external_assessment": "Hide External Assessment",
@@ -117,6 +118,10 @@
 	"print_start": "Start",
 	"print_end": "End",
 	"print_no_animation": "No animation available",
+	"animation_loading": "Loading animation...",
+	"animation_error": "Error loading animation",
+	"qr_loading": "Generating QR code...",
+	"qr_error": "Could not generate QR code",
 	
 	"placeholder_under_construction": "This page is still under construction.",
 	"placeholder_planner_title": "Create and manage your training plans",

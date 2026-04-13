@@ -1,28 +1,26 @@
 <script>
 	import { base } from '$app/paths';
 	import TeamCard from '$lib/components/team/TeamCard.svelte';
+	import { _ } from 'svelte-i18n';
 
 	/** @type {{ data: { teams: Array<any> } }} */
 	let { data } = $props();
 </script>
 
 <svelte:head>
-	<title>TV Muttenz Volleyball - Willkommen</title>
-	<meta
-		name="description"
-		content="Offizielle Website des TV Muttenz Volleyball - Moderne Trainingsmethoden mit dem Constraints-Led Approach"
-	/>
+	<title>TV Muttenz Volleyball</title>
+	<meta name="description" content={$_('heading_modern_training')} />
 </svelte:head>
 
 <main class="container">
 	<section class="hero">
 		<img src="{base}/logo.png" alt="TV Muttenz Volleyball Logo" class="logo" />
-		<h1>Willkommen beim TV Muttenz Volleyball</h1>
-		<p class="lead">Moderne Trainingsmethoden mit dem Constraints-Led Approach</p>
+		<h1>{$_('heading_welcome')}</h1>
+		<p class="lead">{$_('heading_modern_training')}</p>
 	</section>
 
 	<section class="teams-section">
-		<h2>Unsere Teams</h2>
+		<h2>{$_('heading_our_teams')}</h2>
 		<div class="team-grid">
 			{#each data.teams as team}
 				<TeamCard {team} />

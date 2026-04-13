@@ -3,6 +3,7 @@
 	import { parseRepetitions, getRandomReps, formatReps } from '$lib/utils/contentLoader.js';
 	import StickFigureAnimation from '$lib/components/uebungen/animations/StickFigureAnimation.svelte';
 	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
+	import { _ } from 'svelte-i18n';
 
 	let { data } = $props();
 	const { uebung, isFallback } = data;
@@ -22,7 +23,7 @@
 	<TranslationFallbackBanner {lang} {isFallback} />
 
 	<header class="page-header">
-		<a href="{base}/{lang}/uebungen" class="back-button">← Zurück zu Übungen</a>
+		<a href="{base}/{lang}/uebungen" class="back-button">← {$_('btn_back_to_exercises')}</a>
 		<div class="header-content">
 			<h1>{uebung.titel}</h1>
 			{#if uebung.kategorie}
@@ -37,46 +38,46 @@
 	<div class="content-grid">
 		{#if uebung.animation && uebung.typ === 'kraft'}
 			<section class="card animation-card">
-				<h2>Übungsanimation</h2>
+				<h2>{$_('heading_exercise_animation')}</h2>
 				<StickFigureAnimation animationFile={uebung.animation} />
 			</section>
 		{/if}
 
 		<section class="card full-width">
-			<h2>Info</h2>
+			<h2>{$_('heading_info')}</h2>
 			<dl class="info-list">
 				{#if uebung.typ}
 					<div class="info-item">
-						<dt>Typ</dt>
+						<dt>{$_('info_type')}</dt>
 						<dd style="text-transform: capitalize;">{uebung.typ}</dd>
 					</div>
 				{/if}
 				{#if randomReps}
 					<div class="info-item">
-						<dt>Wiederholungen</dt>
+						<dt>{$_('info_repetitions')}</dt>
 						<dd>{randomReps}x</dd>
 					</div>
 				{:else if uebung.dauer}
 					<div class="info-item">
-						<dt>Dauer</dt>
-						<dd>{uebung.dauer} Minuten</dd>
+						<dt>{$_('info_duration')}</dt>
+						<dd>{uebung.dauer} {$_('info_minutes')}</dd>
 					</div>
 				{/if}
 				{#if uebung.bedingung}
 					<div class="info-item">
-						<dt>Bedingung</dt>
+						<dt>{$_('info_condition')}</dt>
 						<dd>{uebung.bedingung}</dd>
 					</div>
 				{/if}
 				{#if uebung.fokus}
 					<div class="info-item">
-						<dt>Fokus</dt>
+						<dt>{$_('heading_focus')}</dt>
 						<dd>{uebung.fokus}</dd>
 					</div>
 				{/if}
 				{#if uebung.kategorie}
 					<div class="info-item">
-						<dt>Kategorie</dt>
+						<dt>{$_('info_category')}</dt>
 						<dd>{uebung.kategorie}</dd>
 					</div>
 				{/if}
@@ -85,7 +86,7 @@
 
 		{#if uebung.anleitung && uebung.anleitung.length > 0}
 			<section class="card full-width">
-				<h2>Anleitung</h2>
+				<h2>{$_('heading_instructions')}</h2>
 				<ol class="instruction-list">
 					{#each uebung.anleitung as schritt}
 						<li>{schritt}</li>
@@ -96,7 +97,7 @@
 
 		{#if uebung.ziele && uebung.ziele.length > 0}
 			<section class="card full-width">
-				<h2>Lernziele</h2>
+				<h2>{$_('heading_learning_objectives')}</h2>
 				<ul class="points-list">
 					{#each uebung.ziele as ziel}
 						<li>{ziel}</li>

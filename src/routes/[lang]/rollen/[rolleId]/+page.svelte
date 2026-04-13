@@ -1,6 +1,7 @@
 <script>
 	import { base } from '$app/paths';
 	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
+	import { _ } from 'svelte-i18n';
 
 	let { data } = $props();
 	const { rolle, isFallback } = data;
@@ -16,7 +17,7 @@
 	<TranslationFallbackBanner {lang} {isFallback} />
 
 	<header class="page-header">
-		<a href="{base}/{lang}/rollen" class="back-button">← Zurück zu Rollen</a>
+		<a href="{base}/{lang}/rollen" class="back-button">← {$_('btn_back_to_roles')}</a>
 		<div class="header-content">
 			<h1>{rolle.name}</h1>
 			{#if rolle.beschreibung}
@@ -28,14 +29,14 @@
 	<div class="content-grid">
 		{#if rolle.fokus}
 			<section class="card">
-				<h2>Fokus</h2>
+				<h2>{$_('heading_focus')}</h2>
 				<p class="focus-text">{rolle.fokus}</p>
 			</section>
 		{/if}
 
 		{#if rolle.aufgaben && rolle.aufgaben.length > 0}
 			<section class="card full-width">
-				<h2>Aufgaben</h2>
+				<h2>{$_('heading_tasks')}</h2>
 				<ul class="points-list">
 					{#each rolle.aufgaben as aufgabe}
 						<li>{aufgabe}</li>

@@ -1,5 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
+	import { _ } from 'svelte-i18n';
 	import { generateQRCode } from '$lib/utils/qrGenerator.js';
 	import { browser } from '$app/environment';
 
@@ -29,7 +31,7 @@
 			qrDataUrl = await generateQRCode(url, size);
 		} catch (err) {
 			console.error('Failed to generate QR code:', err);
-			error = 'QR-Code konnte nicht generiert werden';
+			error = get(_)('qr_error');
 		} finally {
 			loading = false;
 		}
@@ -53,7 +55,7 @@
 <div class="qr-code-container {className}">
 	{#if loading}
 		<div class="qr-loading" style="width: {size}px; height: {size}px;">
-			<span>QR-Code wird generiert...</span>
+			<span>{$_('qr_loading')}</span>
 		</div>
 	{:else if error}
 		<div class="qr-error" style="width: {size}px; height: {size}px;">

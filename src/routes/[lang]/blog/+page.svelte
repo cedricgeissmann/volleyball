@@ -1,21 +1,22 @@
 <script>
 	import { base } from '$app/paths';
 	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
+	import { _ } from 'svelte-i18n';
 
 	let { data } = $props();
 	const lang = data.lang ?? 'de';
 </script>
 
 <svelte:head>
-	<title>Blog - VC Damen Pfungen</title>
-	<meta name="description" content="Blog über Volleyball-Training und CLA" />
+	<title>Blog - TV Muttenz Volleyball</title>
+	<meta name="description" content={$_('meta_blog_desc')} />
 </svelte:head>
 
 <div class="blog-page">
 	<TranslationFallbackBanner {lang} isFallback={data.isFallback} />
 
 	<h1>Blog</h1>
-	<p class="intro">Gedanken und Erfahrungen zum Volleyball-Training</p>
+	<p class="intro">{$_('blog_subtitle')}</p>
 
 	{#if data.posts && data.posts.length > 0}
 		<div class="posts-list">
@@ -48,7 +49,7 @@
 		</div>
 	{:else}
 		<div class="placeholder">
-			<p>Noch keine Blog-Posts vorhanden.</p>
+			<p>{$_('blog_no_posts')}</p>
 		</div>
 	{/if}
 </div>

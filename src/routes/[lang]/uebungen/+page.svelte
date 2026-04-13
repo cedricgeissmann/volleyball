@@ -6,6 +6,7 @@
 	import { parseRepetitions, formatReps } from '$lib/utils/contentLoader.js';
 	import PrintCardBackKraft from '$lib/components/uebungen/print/PrintCardBackKraft.svelte';
 	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
+	import { _ } from 'svelte-i18n';
 
 	let { data } = $props();
 	const { uebungen, isFallback } = data;
@@ -133,8 +134,8 @@
 </script>
 
 <svelte:head>
-	<title>Übungen - TV Muttenz Volleyball</title>
-	<meta name="description" content="Volleyball-Übungen basierend auf dem Constraints-Led Approach" />
+	<title>{$_('nav_exercises')} - TV Muttenz Volleyball</title>
+	<meta name="description" content={$_('meta_exercises_desc')} />
 </svelte:head>
 
 <div class="uebungen-page">
@@ -142,16 +143,16 @@
 
 	<header class="page-header">
 		<div class="header-content">
-			<h1>Übungen</h1>
-			<p>Volleyball-Übungen basierend auf dem Constraints-Led Approach</p>
+			<h1>{$_('nav_exercises')}</h1>
+			<p>{$_('meta_exercises_desc')}</p>
 		</div>
 	</header>
 
 	{#if uebungen.length === 0}
 		<div class="empty-state">
-			<p>Noch keine Übungen vorhanden.</p>
+			<p>{$_('msg_no_exercises_yet')}</p>
 			<p class="hint">
-				Übungen können als YAML-Dateien in <code>src/content/uebungen/</code> hinzugefügt werden.
+				{$_('msg_exercises_can_be_added')} <code>src/content/uebungen/</code> {$_('msg_can_be_added')}
 			</p>
 		</div>
 	{:else}
@@ -173,12 +174,12 @@
 					<circle cx="11" cy="11" r="8"></circle>
 					<path d="m21 21-4.35-4.35"></path>
 				</svg>
-				<input
-					type="text"
-					placeholder="Übungen durchsuchen..."
-					bind:value={searchQuery}
-					class="search-input"
-				/>
+			<input
+				type="text"
+				placeholder={$_('form_search_exercises')}
+				bind:value={searchQuery}
+				class="search-input"
+			/>
 				{#if searchQuery}
 					<button class="clear-search" onclick={() => (searchQuery = '')}>
 						<svg
@@ -203,12 +204,12 @@
 		<!-- Auswahl-Controls -->
 		<div class="filter-controls print-hide">
 			<div class="selection-info">
-				<strong>{selectedAndFilteredUebungen.length}</strong> von
-				<strong>{filteredUebungen.length}</strong> Übungen ausgewählt
+				<strong>{selectedAndFilteredUebungen.length}</strong> {$_('selection_of')}
+				<strong>{filteredUebungen.length}</strong> {$_('selection_exercises_selected')}
 			</div>
 			<div class="button-group">
-				<button class="btn btn-secondary" onclick={selectAll}>Alle auswählen</button>
-				<button class="btn btn-secondary" onclick={deselectAll}>Alle abwählen</button>
+				<button class="btn btn-secondary" onclick={selectAll}>{$_('btn_select_all')}</button>
+				<button class="btn btn-secondary" onclick={deselectAll}>{$_('btn_deselect_all')}</button>
 				<button
 					class="btn btn-primary"
 					onclick={handlePrint}
@@ -230,7 +231,7 @@
 						></path>
 						<rect x="6" y="14" width="12" height="8"></rect>
 					</svg>
-					Drucken
+					{$_('btn_print')}
 				</button>
 			</div>
 		</div>
@@ -291,7 +292,7 @@
 
 		{#if filteredUebungen.length === 0}
 			<div class="empty-state print-hide">
-				<p>Keine Übungen gefunden für "{searchQuery}"</p>
+				<p>{$_('msg_no_exercises_found')} "{searchQuery}"</p>
 			</div>
 		{/if}
 
@@ -315,13 +316,13 @@
 
 							{#if uebung.fokus}
 								<div class="card-fokus">
-									<strong>Fokus:</strong> {uebung.fokus}
+									<strong>{$_('heading_focus')}:</strong> {uebung.fokus}
 								</div>
 							{/if}
 
 							{#if uebung.ziele && uebung.ziele.length > 0}
 								<div class="card-ziele">
-									<h3>Lernziele:</h3>
+									<h3>{$_('heading_learning_objectives')}:</h3>
 									<ul>
 										{#each uebung.ziele as ziel}
 											<li>{ziel}</li>
@@ -333,11 +334,11 @@
 							{#if uebung.wiederholungen}
 								{@const reps = parseRepetitions(uebung.wiederholungen)}
 								<div class="card-dauer">
-									<strong>Wiederholungen:</strong> {formatReps(reps)}
+									<strong>{$_('info_repetitions')}:</strong> {formatReps(reps)}
 								</div>
 							{:else if uebung.dauer}
 								<div class="card-dauer">
-									<strong>Dauer:</strong> {uebung.dauer} Minuten
+									<strong>{$_('info_duration')}:</strong> {uebung.dauer} {$_('info_minutes')}
 								</div>
 							{/if}
 						</div>
@@ -353,11 +354,11 @@
 					<div class="exercise-card card-back">
 						{#if uebung.animationData}
 							<PrintCardBackKraft animation={uebung.animationData} />
-						{:else}
-							<div class="no-animation">
-								<p>Keine Animation verfügbar</p>
-							</div>
-						{/if}
+					{:else}
+						<div class="no-animation">
+							<p>{$_('print_no_animation')}</p>
+						</div>
+					{/if}
 					</div>
 				</div>
 			{/each}

@@ -1,5 +1,6 @@
 <script>
 	import { generateStartEndSnapshots } from '$lib/utils/svgSnapshot.js';
+	import { _ } from 'svelte-i18n';
 
 	let { animation } = $props();
 
@@ -17,13 +18,13 @@
 
 <div class="print-card-back-kraft">
 	<div class="animation-frame">
-		<div class="frame-label">Start</div>
+		<div class="frame-label">{$_('print_start')}</div>
 		<div class="frame-content">
 			{@html snapshots.start}
 		</div>
 	</div>
 	<div class="animation-frame">
-		<div class="frame-label">Ende</div>
+		<div class="frame-label">{$_('print_end')}</div>
 		<div class="frame-content">
 			{@html snapshots.end}
 		</div>

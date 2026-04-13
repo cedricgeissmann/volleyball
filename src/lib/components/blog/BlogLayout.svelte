@@ -1,6 +1,7 @@
 <script>
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
+	import { _ } from 'svelte-i18n';
 
 	// Frontmatter-Props von mdsvex
 	let { title = '', date = '', author = '', tags = [], excerpt = '', children } = $props();
@@ -15,7 +16,7 @@
 
 <article class="blog-post">
 	<nav class="back-nav">
-		<a href="{base}/{currentLang}/blog">← Zurück zur Übersicht</a>
+		<a href="{base}/{currentLang}/blog">← {$_('btn_back_to_overview')}</a>
 	</nav>
 	
 	<header>
@@ -26,7 +27,7 @@
 					<time datetime={date}>{new Date(date).toLocaleDateString('de-DE')}</time>
 				{/if}
 				{#if author}
-					<span class="author">von {author}</span>
+					<span class="author">{$_('form_from')} {author}</span>
 				{/if}
 			</div>
 		{/if}

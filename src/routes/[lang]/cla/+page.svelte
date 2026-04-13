@@ -1,18 +1,19 @@
+<script>
+	import { _ } from 'svelte-i18n';
+</script>
+
 <svelte:head>
-	<title>CLA-Theorie - TV Muttenz Volleyball</title>
-	<meta
-		name="description"
-		content="Constraints-Led Approach im Volleyball - Theoretische Grundlagen"
-	/>
+	<title>{$_('nav_cla')} - TV Muttenz Volleyball</title>
+	<meta name="description" content={$_('meta_cla_desc')} />
 </svelte:head>
 
 <div class="cla-page">
-	<h1>CLA-Theorie</h1>
-	<p class="intro">Constraints-Led Approach im Volleyball</p>
+	<h1>{$_('nav_cla')}</h1>
+	<p class="intro">{$_('placeholder_cla_title')}</p>
 
 	<div class="placeholder">
-		<p>Diese Seite befindet sich noch im Aufbau.</p>
-		<p>Hier werden die theoretischen Grundlagen des Constraints-Led Approach erklärt.</p>
+		<p>{$_('placeholder_under_construction')}</p>
+		<p>{$_('placeholder_cla_desc')}</p>
 	</div>
 </div>
 

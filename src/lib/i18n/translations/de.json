@@ -14,6 +14,7 @@
 	"btn_show_details": "Details anzeigen",
 	"btn_back_to_exercises": "Zurück zu Übungen",
 	"btn_back_to_roles": "Zurück zu Rollen",
+	"btn_back_to_overview": "Zurück zur Übersicht",
 	"btn_save_self_assessment": "Selbsteinschätzung speichern",
 	"btn_request_external_assessment": "Fremdeinschätzung einfordern",
 	"btn_hide_external_assessment": "Fremdeinschätzung ausblenden",
@@ -117,6 +118,10 @@
 	"print_start": "Start",
 	"print_end": "Ende",
 	"print_no_animation": "Keine Animation verfügbar",
+	"animation_loading": "Lade Animation...",
+	"animation_error": "Fehler beim Laden der Animation",
+	"qr_loading": "QR-Code wird generiert...",
+	"qr_error": "QR-Code konnte nicht generiert werden",
 	
 	"placeholder_under_construction": "Diese Seite befindet sich noch im Aufbau.",
 	"placeholder_planner_title": "Erstelle und verwalte deine Trainingspläne",

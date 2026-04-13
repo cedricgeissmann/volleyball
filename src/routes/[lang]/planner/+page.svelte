@@ -1,15 +1,19 @@
+<script>
+	import { _ } from 'svelte-i18n';
+</script>
+
 <svelte:head>
-	<title>Trainingsplaner - TV Muttenz Volleyball</title>
-	<meta name="description" content="Trainingsplaner für Volleyball-Training" />
+	<title>{$_('nav_planner')} - TV Muttenz Volleyball</title>
+	<meta name="description" content={$_('meta_planner_desc')} />
 </svelte:head>
 
 <div class="planner-page">
-	<h1>Trainingsplaner</h1>
-	<p class="intro">Erstelle und verwalte deine Trainingspläne</p>
+	<h1>{$_('nav_planner')}</h1>
+	<p class="intro">{$_('placeholder_planner_title')}</p>
 
 	<div class="placeholder">
-		<p>Diese Seite befindet sich noch im Aufbau.</p>
-		<p>Hier kannst du Übungen auswählen und Trainingspläne erstellen.</p>
+		<p>{$_('placeholder_under_construction')}</p>
+		<p>{$_('placeholder_planner_desc')}</p>
 	</div>
 </div>
 

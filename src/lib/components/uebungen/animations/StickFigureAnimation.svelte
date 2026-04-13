@@ -3,6 +3,7 @@
 	import AnimationController from '../base/AnimationController.svelte';
 	import StickFigure from '../base/StickFigure.svelte';
 	import { loadAnimation } from '$lib/utils/contentLoader.js';
+	import { _ } from 'svelte-i18n';
 
 	let {
 		animationFile,
@@ -31,9 +32,9 @@
 </script>
 
 {#if loading}
-	<div class="animation-loading">Lade Animation...</div>
+	<div class="animation-loading">{$_('animation_loading')}</div>
 {:else if error}
-	<div class="animation-error">Fehler beim Laden der Animation</div>
+	<div class="animation-error">{$_('animation_error')}</div>
 {:else if animationData}
 	<div class="stickfigure-animation">
 		<AnimationController {animationData} {autoplay}>
@@ -50,7 +51,7 @@
 		</AnimationController>
 	</div>
 {:else}
-	<div class="animation-placeholder">Keine Animation verfügbar</div>
+	<div class="animation-placeholder">{$_('print_no_animation')}</div>
 {/if}
 
 <style>

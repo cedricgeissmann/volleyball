@@ -4,6 +4,7 @@
 	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
 	import { getAbsoluteURL } from '$lib/utils/qrGenerator.js';
 	import { browser } from '$app/environment';
+	import { _ } from 'svelte-i18n';
 
 	let { data } = $props();
 	const { rollen, isFallback } = data;
@@ -107,15 +108,15 @@
 </script>
 
 <svelte:head>
-	<title>Rollen - TV Muttenz Volleyball</title>
-	<meta name="description" content="Volleyball-Rollen und Positionen im CLA-Ansatz" />
+	<title>{$_('nav_roles')} - TV Muttenz Volleyball</title>
+	<meta name="description" content={$_('meta_roles_desc')} />
 </svelte:head>
 
 <div class="rollen-page">
 	<header class="page-header">
 		<div class="header-content">
-			<h1>Rollen</h1>
-			<p>Volleyball-Rollen und Positionen im Constraints-Led Approach</p>
+			<h1>{$_('nav_roles')}</h1>
+			<p>{$_('meta_roles_desc')}</p>
 		</div>
 	</header>
 
@@ -123,9 +124,9 @@
 
 	{#if rollen.length === 0}
 		<div class="empty-state">
-			<p>Noch keine Rollen vorhanden.</p>
+			<p>{$_('msg_no_roles_yet')}</p>
 			<p class="hint">
-				Rollen können als YAML-Dateien in <code>src/content/rollen/</code> hinzugefügt werden.
+				{$_('msg_roles_can_be_added')} <code>src/content/rollen/</code> {$_('msg_can_be_added')}
 			</p>
 		</div>
 	{:else}
@@ -147,12 +148,12 @@
 					<circle cx="11" cy="11" r="8"></circle>
 					<path d="m21 21-4.35-4.35"></path>
 				</svg>
-				<input
-					type="text"
-					placeholder="Rollen durchsuchen..."
-					bind:value={searchQuery}
-					class="search-input"
-				/>
+			<input
+				type="text"
+				placeholder={$_('form_search_roles')}
+				bind:value={searchQuery}
+				class="search-input"
+			/>
 				{#if searchQuery}
 					<button class="clear-search" onclick={() => (searchQuery = '')}>
 						<svg
@@ -177,12 +178,12 @@
 		<!-- Auswahl-Controls -->
 		<div class="filter-controls print-hide">
 			<div class="selection-info">
-				<strong>{selectedAndFilteredRollen.length}</strong> von
-				<strong>{filteredRollen.length}</strong> Rollen ausgewählt
+				<strong>{selectedAndFilteredRollen.length}</strong> {$_('selection_of')}
+				<strong>{filteredRollen.length}</strong> {$_('selection_roles_selected')}
 			</div>
 			<div class="button-group">
-				<button class="btn btn-secondary" onclick={selectAll}>Alle auswählen</button>
-				<button class="btn btn-secondary" onclick={deselectAll}>Alle abwählen</button>
+				<button class="btn btn-secondary" onclick={selectAll}>{$_('btn_select_all')}</button>
+				<button class="btn btn-secondary" onclick={deselectAll}>{$_('btn_deselect_all')}</button>
 				<button
 					class="btn btn-primary"
 					onclick={handlePrint}
@@ -204,7 +205,7 @@
 						></path>
 						<rect x="6" y="14" width="12" height="8"></rect>
 					</svg>
-					Drucken
+					{$_('btn_print')}
 				</button>
 			</div>
 		</div>
@@ -244,7 +245,7 @@
 
 		{#if filteredRollen.length === 0}
 			<div class="empty-state print-hide">
-				<p>Keine Rollen gefunden für "{searchQuery}"</p>
+				<p>{$_('msg_no_roles_found')} "{searchQuery}"</p>
 			</div>
 		{/if}
 
@@ -267,7 +268,7 @@
 
 							{#if rolle.aufgaben && rolle.aufgaben.length > 0}
 								<div class="card-aufgaben">
-									<h3>Aufgaben:</h3>
+									<h3>{$_('heading_tasks')}:</h3>
 									<ul>
 										{#each rolle.aufgaben as aufgabe}
 											<li>{aufgabe}</li>

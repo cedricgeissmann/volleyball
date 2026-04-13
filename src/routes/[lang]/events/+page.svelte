@@ -1,15 +1,19 @@
+<script>
+	import { _ } from 'svelte-i18n';
+</script>
+
 <svelte:head>
-	<title>Events - TV Muttenz Volleyball</title>
-	<meta name="description" content="Spiele, Turniere und Events" />
+	<title>{$_('nav_events')} - TV Muttenz Volleyball</title>
+	<meta name="description" content={$_('meta_events_desc')} />
 </svelte:head>
 
 <div class="events-page">
-	<h1>Events</h1>
-	<p class="intro">Spiele, Turniere und andere Veranstaltungen</p>
+	<h1>{$_('nav_events')}</h1>
+	<p class="intro">{$_('placeholder_events_title')}</p>
 
 	<div class="placeholder">
-		<p>Diese Seite befindet sich noch im Aufbau.</p>
-		<p>Hier werden anstehende Spiele und Events angezeigt.</p>
+		<p>{$_('placeholder_under_construction')}</p>
+		<p>{$_('placeholder_events_desc')}</p>
 	</div>
 </div>
 
