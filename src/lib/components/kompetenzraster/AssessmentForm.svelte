@@ -1,5 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
+	import { _ } from 'svelte-i18n';
 	import {
 		createKompetenzId,
 		saveAssessment,
@@ -77,7 +79,7 @@
 
 		if (onSaved) onSaved();
 
-		alert('Selbsteinschätzung gespeichert! ✅');
+		alert(get(_)('alert_self_saved'));
 	}
 
 	function handleSaveFremd() {
@@ -93,11 +95,11 @@
 		savedFremdeinschaetzung = loadFremdeinschaetzung(team.id);
 		fremdeinschaetzungWerte = {};
 
-		alert('Fremdeinschätzung gespeichert! (überschreibt vorherige) ✅');
+		alert(get(_)('alert_external_saved'));
 	}
 
 	function handleClearFremd() {
-		if (confirm('Fremdeinschätzung wirklich löschen?')) {
+		if (confirm(get(_)('confirm_delete_external'))) {
 			clearFremdeinschaetzung();
 			savedFremdeinschaetzung = null;
 		}
@@ -109,11 +111,11 @@
 	function getRatingLabel(value) {
 		/** @type {Record<number, string>} */
 		const labels = {
-			1: 'Noch nicht',
-			2: 'Teilweise',
-			3: 'Meistens',
-			4: 'Gut',
-			5: 'Sehr gut',
+			1: get(_)('rating_not_yet'),
+			2: get(_)('rating_partially'),
+			3: get(_)('rating_mostly'),
+			4: get(_)('rating_good'),
+			5: get(_)('rating_very_good'),
 		};
 		return labels[value] || '';
 	}
@@ -134,22 +136,22 @@
 
 <div class="assessment-form">
 	<header class="form-header">
-		<h2>Kompetenzraster: {team.name}</h2>
-		<p class="subtitle">Bewerte deine Kompetenzen nach dem heutigen Training</p>
+		<h2>{$_('heading_competency_matrix')}: {team.name}</h2>
+		<p class="subtitle">{$_('assessment_rate_after_training')}</p>
 	</header>
 
 	{#if savedFremdeinschaetzung}
 		<div class="fremd-info">
 			<div class="fremd-header">
 				<div>
-					<strong>📋 Fremdeinschätzung vorhanden</strong>
+					<strong>📋 {$_('form_external_assessment_available')}</strong>
 					<span class="fremd-date">
-						vom {new Date(savedFremdeinschaetzung.datum).toLocaleDateString('de-DE')}
+						{$_('form_from')} {new Date(savedFremdeinschaetzung.datum).toLocaleDateString('de-DE')}
 					</span>
 				</div>
-				<button class="btn-delete" onclick={handleClearFremd}> 🗑️ Löschen </button>
+				<button class="btn-delete" onclick={handleClearFremd}> 🗑️ {$_('btn_delete')} </button>
 			</div>
-			<p class="fremd-hint">Die Differenz zur Fremdeinschätzung wird bei jeder Kompetenz angezeigt.</p>
+			<p class="fremd-hint">{$_('assessment_difference_shown')}</p>
 		</div>
 	{/if}
 
@@ -167,7 +169,7 @@
 							class="focus-toggle"
 							class:active={isFokus}
 							onclick={() => handleFocusToggle(kompetenzId)}
-							title={isFokus ? 'Aus Fokus entfernen' : 'Als Fokus markieren'}
+							title={isFokus ? $_('aria_remove_from_focus') : $_('aria_mark_as_focus')}
 						>
 							{isFokus ? '⭐' : '☆'}
 						</button>
@@ -176,7 +178,7 @@
 				</div>
 
 				<div class="bewertung-section">
-					<label class="bewertung-label">Selbsteinschätzung:</label>
+					<label class="bewertung-label">{$_('form_self_assessment')}</label>
 					<div class="rating-group">
 						{#each [1, 2, 3, 4, 5] as value}
 							<label class="rating-option">
@@ -194,17 +196,17 @@
 						{/each}
 					</div>
 
-					{#if diff !== null}
-						<div class="diff-badge" class:positive={diff > 0} class:negative={diff < 0}>
-							{#if diff > 0}
-								↑ Fremd +{diff}
-							{:else if diff < 0}
-								↓ Fremd {diff}
-							{:else}
-								= Übereinstimmung
-							{/if}
-						</div>
-					{/if}
+				{#if diff !== null}
+					<div class="diff-badge" class:positive={diff > 0} class:negative={diff < 0}>
+						{#if diff > 0}
+							↑ {$_('comparison_external')} +{diff}
+						{:else if diff < 0}
+							↓ {$_('comparison_external')} {diff}
+						{:else}
+							= {$_('comparison_agreement')}
+						{/if}
+					</div>
+				{/if}
 				</div>
 			</div>
 		{/each}
@@ -212,19 +214,19 @@
 
 	<div class="form-actions">
 		<div class="notizen-section">
-			<label for="notizen">Notizen (optional):</label>
+			<label for="notizen">{$_('form_notes_optional')}</label>
 			<textarea
 				id="notizen"
 				bind:value={notizen}
-				placeholder="Gedanken zum Training, besondere Erkenntnisse..."
+				placeholder={$_('form_notes_placeholder')}
 				rows="3"
 			></textarea>
 		</div>
 
 		<div class="action-buttons">
-			<button class="btn-primary" onclick={handleSaveSelbst}> Selbsteinschätzung speichern </button>
+			<button class="btn-primary" onclick={handleSaveSelbst}>{$_('btn_save_self_assessment')}</button>
 			<button class="btn-secondary" onclick={() => (showFremdSection = !showFremdSection)}>
-				{showFremdSection ? 'Fremdeinschätzung ausblenden' : 'Fremdeinschätzung einfordern'}
+				{showFremdSection ? $_('btn_hide_external_assessment') : $_('btn_request_external_assessment')}
 			</button>
 		</div>
 	</div>
@@ -233,10 +235,9 @@
 	{#if showFremdSection}
 		<div class="fremd-section">
 		<header class="fremd-section-header">
-			<h3>Fremdeinschätzung abgeben</h3>
+			<h3>{$_('btn_submit_external_assessment')}</h3>
 			<p class="hint">
-				Eine andere Person kann hier unabhängig eine Einschätzung abgeben. Die Selbsteinschätzung
-				ist nicht sichtbar, um Ankereffekte zu vermeiden.
+				{$_('assessment_independent_rating')} {$_('assessment_self_not_visible')}
 			</p>
 		</header>
 
@@ -274,7 +275,7 @@
 		</div>
 
 		<div class="fremd-actions">
-			<button class="btn-primary" onclick={handleSaveFremd}> Fremdeinschätzung speichern </button>
+			<button class="btn-primary" onclick={handleSaveFremd}>{$_('btn_save_external_assessment')}</button>
 		</div>
 	</div>
 	{/if}

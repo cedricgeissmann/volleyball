@@ -1,5 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
+	import { _ } from 'svelte-i18n';
 	import {
 		loadAssessmentHistory,
 		clearAssessmentHistory,
@@ -38,7 +40,7 @@
 	}
 
 	function handleClear() {
-		if (confirm('Möchtest du wirklich die gesamte History löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) {
+		if (confirm(get(_)('confirm_delete_history') + ' ' + get(_)('confirm_cannot_undo'))) {
 			clearAssessmentHistory();
 			loadHistory();
 		}
@@ -83,23 +85,23 @@
 
 <div class="history-view">
 	<header class="history-header">
-		<h2>Meine Entwicklung: {team.name}</h2>
+		<h2>{$_('heading_my_development')}: {team.name}</h2>
 		<div class="header-actions">
-			<button class="btn-secondary" onclick={handleExport}> Export </button>
-			<button class="btn-danger" onclick={handleClear}> History löschen </button>
+			<button class="btn-secondary" onclick={handleExport}>{$_('btn_export')}</button>
+			<button class="btn-danger" onclick={handleClear}>{$_('btn_delete_history')}</button>
 		</div>
 	</header>
 
 	{#if history.length === 0}
 		<div class="empty-state">
-			<p>Noch keine Assessments vorhanden.</p>
-			<p class="subtitle">Fülle das Kompetenzraster nach dem Training aus, um deine Entwicklung zu verfolgen.</p>
+			<p>{$_('history_no_assessments')}</p>
+			<p class="subtitle">{$_('history_fill_to_track')}</p>
 		</div>
 	{:else}
 		<div class="stats-overview">
 			<div class="stat-card">
 				<div class="stat-value">{history.length}</div>
-				<div class="stat-label">Assessments</div>
+				<div class="stat-label">{$_('history_assessments')}</div>
 			</div>
 
 			{#if changes.size > 0}
@@ -108,13 +110,13 @@
 
 				<div class="stat-card positive">
 					<div class="stat-value">↑ {positiveChanges}</div>
-					<div class="stat-label">Verbesserungen</div>
+					<div class="stat-label">{$_('history_improvements')}</div>
 				</div>
 
 				{#if negativeChanges > 0}
 					<div class="stat-card negative">
 						<div class="stat-value">↓ {negativeChanges}</div>
-						<div class="stat-label">Verschlechterungen</div>
+						<div class="stat-label">{$_('history_deteriorations')}</div>
 					</div>
 				{/if}
 			{/if}
@@ -122,7 +124,7 @@
 
 		{#if changes.size > 0}
 			<section class="changes-section">
-				<h3>Veränderung seit letztem Assessment</h3>
+				<h3>{$_('heading_changes_since_last')}</h3>
 				<div class="changes-grid">
 					{#each Array.from(changes.entries()) as [kompetenzId, change]}
 						{@const isFokus = fokusKompetenzen.includes(kompetenzId)}
@@ -142,7 +144,7 @@
 		{/if}
 
 		<section class="timeline-section">
-			<h3>Timeline</h3>
+			<h3>{$_('heading_timeline')}</h3>
 			<div class="timeline">
 				{#each [...history].reverse() as entry}
 					<div class="timeline-entry">
@@ -158,12 +160,12 @@
 
 						{#if entry.notizen}
 							<div class="entry-notizen">
-								<strong>Notizen:</strong> {entry.notizen}
+								<strong>{$_('history_notes')}</strong> {entry.notizen}
 							</div>
 						{/if}
 
 						<details class="entry-details">
-							<summary>Bewertungen ansehen ({entry.bewertungen.length})</summary>
+							<summary>{$_('history_view_ratings')} ({entry.bewertungen.length})</summary>
 							<div class="bewertungen-grid">
 								{#each entry.bewertungen as bewertung}
 									<div class="bewertung-item">

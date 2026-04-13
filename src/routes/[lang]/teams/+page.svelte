@@ -1,6 +1,7 @@
 <script>
 	import TeamCard from '$lib/components/team/TeamCard.svelte';
 	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
+	import { _ } from 'svelte-i18n';
 
 	let { data } = $props();
 	const lang = data.lang ?? 'de';
@@ -8,17 +9,15 @@
 
 <svelte:head>
 	<title>Teams - TV Muttenz Volleyball</title>
-	<meta name="description" content="Unsere Volleyball-Teams beim TV Muttenz" />
+	<meta name="description" content={$_('meta_teams_desc')} />
 </svelte:head>
 
 <div class="container">
 	<TranslationFallbackBanner {lang} isFallback={data.isFallback} />
 
 	<header class="page-header">
-		<h1>Unsere Teams</h1>
-		<p class="lead">
-			Entdecken Sie unsere Volleyball-Teams, ihre Trainingszeiten und Ziele für die Saison.
-		</p>
+		<h1>{$_('heading_our_teams')}</h1>
+		<p class="lead">{$_('meta_teams_desc')}</p>
 	</header>
 
 	<div class="team-grid">

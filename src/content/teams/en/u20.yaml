@@ -1,0 +1,37 @@
+id: u20
+name: U20
+beschreibung: Youth development team focused on building technical skills
+trainingszeiten:
+  - tag: Tuesday
+    zeit: '18:50 - 20:30'
+    ort: Kriegacker
+  - tag: Thursday
+    zeit: '19:00 - 20:30'
+    ort: Kriegacker
+ziele:
+  - titel: Building Defense First
+    beschreibung: I'm developing an understanding of patient defensive play and learning to use solid defense as the foundation of my game
+  - titel: Playing Smart
+    beschreibung: I'm learning to recognize smart plays and can use controlled, well-placed balls intentionally
+  - titel: Reading the Game
+    beschreibung: I'm learning to read information from the game and developing the ability to send non-verbal signals through my body language
+  - titel: Moving as One (Tensegrity)
+    beschreibung: I'm building awareness of connected defensive play, where my movements expand the options available to my teammates
+  - titel: Legs as Foundation
+    beschreibung: I'm developing the ability to initiate every movement from my legs and building full-body coordination
+  - titel: Technical Control
+    beschreibung: I can apply different techniques to match the situation and am working on precise ball control
+  - titel: Simplify, don't Decompose
+    beschreibung: I'm learning to handle challenging exercises by slowing down or simplifying them rather than breaking them into isolated steps
+  - titel: Learning through Presence
+    beschreibung: I understand that showing up and being actively engaged in training creates important learning opportunities for everyone
+  - titel: Exploring Solutions
+    beschreibung: I try different approaches, stay open to new ideas, and see mistakes as a natural part of learning
+  - titel: Responsibility & Reliability
+    beschreibung: I'm on time, follow through on my commitments, and take responsibility for my role in the team
+  - titel: Team Spirit & Communication
+    beschreibung: I communicate actively with my teammates and support the team through positive behavior
+  - titel: Respect & Contribution
+    beschreibung: I show respect to everyone involved and contribute actively to club activities
+  - titel: Growth Mindset
+    beschreibung: I see mistakes as learning opportunities and build confidence through independent problem-solving

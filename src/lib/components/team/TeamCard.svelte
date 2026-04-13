@@ -1,6 +1,7 @@
 <script>
 	import { base } from '$app/paths';
 	import { page } from '$app/stores';
+	import { _ } from 'svelte-i18n';
 
 	/**
 	 * @type {{
@@ -28,7 +29,7 @@
 
 	{#if team.trainingszeiten && team.trainingszeiten.length > 0}
 		<div class="training-preview">
-			<strong>Trainingszeiten:</strong>
+			<strong>{$_('heading_training_times')}:</strong>
 			<ul>
 				{#each team.trainingszeiten.slice(0, 2) as training}
 					<li>{training.tag}: {training.zeit}</li>
@@ -37,7 +38,7 @@
 		</div>
 	{/if}
 
-	<a href="{base}/{currentLang}/teams/{team.id}" class="btn-primary"> Details anzeigen </a>
+	<a href="{base}/{currentLang}/teams/{team.id}" class="btn-primary">{$_('btn_show_details')}</a>
 </article>
 
 <style>

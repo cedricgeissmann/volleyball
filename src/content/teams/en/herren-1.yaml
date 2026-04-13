@@ -1,0 +1,37 @@
+id: herren-1
+name: Herren 1
+beschreibung: Men's team competing in the 3rd league
+trainingszeiten:
+  - tag: Tuesday
+    zeit: '20:30 - 22:00'
+    ort: Kriegacker
+  - tag: Thursday
+    zeit: '20:30 - 22:00'
+    ort: Kriegacker
+ziele:
+  - titel: Defense First
+    beschreibung: I play patiently and let the opponent make mistakes rather than taking unnecessary risks myself
+  - titel: Smart not Hard
+    beschreibung: I put pressure on the opponent with controlled, well-placed balls instead of relying on raw power
+  - titel: Read & Signal
+    beschreibung: I continuously read information from the game and send non-verbal signals to my teammates through body language and positioning
+  - titel: Connected Defense (Tensegrity)
+    beschreibung: In defense, I act as part of a connected system where my position and movement expands the options available to my teammates
+  - titel: Power from the Legs
+    beschreibung: I initiate every action from my legs and generate power through coordinated full-body movement
+  - titel: Technical Versatility
+    beschreibung: I have command of various techniques and can adapt my ball control to suit the situation
+  - titel: Simplify, don't Decompose
+    beschreibung: When an exercise feels overwhelming, I slow down and simplify rather than breaking it into isolated steps
+  - titel: Representative Learning
+    beschreibung: I understand that my active participation in training creates valuable learning opportunities for all my teammates
+  - titel: Exploratory Mindset
+    beschreibung: I'm open to experimentation, explore different solutions, and embrace uncertainty as part of the learning process
+  - titel: Reliability & Support
+    beschreibung: I show up on time, follow through on my commitments, and actively support the team wherever needed
+  - titel: Full Commitment on Game Days
+    beschreibung: On home game days I'm present for the whole day and actively contribute to the club
+  - titel: Team Spirit in Action
+    beschreibung: I take ownership of shared responsibilities and show up as a full member of the team
+  - titel: Welcoming Culture
+    beschreibung: I actively support new players as they get familiar with our playing philosophy and team culture

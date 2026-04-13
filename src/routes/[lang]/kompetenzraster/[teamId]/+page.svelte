@@ -1,6 +1,7 @@
 <script>
 	import AssessmentForm from '$lib/components/kompetenzraster/AssessmentForm.svelte';
 	import HistoryView from '$lib/components/kompetenzraster/HistoryView.svelte';
+	import { _ } from 'svelte-i18n';
 
 	/** @type {{ data: { team: any } }} */
 	let { data } = $props();
@@ -17,32 +18,32 @@
 </script>
 
 <svelte:head>
-	<title>Kompetenzraster {team.name} - TV Muttenz Volleyball</title>
-	<meta name="description" content="Persönliches Kompetenzraster für {team.name}" />
+	<title>{$_('heading_competency_matrix')} {team.name} - TV Muttenz Volleyball</title>
+	<meta name="description" content="{$_('meta_competency_desc')} {team.name}" />
 </svelte:head>
 
 <div class="container">
 	<header class="page-header">
-		<h1>Kompetenzraster</h1>
-		<p class="subtitle">Verfolge deine persönliche Entwicklung im Team {team.name}</p>
+		<h1>{$_('heading_competency_matrix')}</h1>
+		<p class="subtitle">{$_('assessment_track_development')} {team.name}</p>
 	</header>
 
 	<div class="info-box">
 		<p>
-			<strong>💾 Datenschutz:</strong> Alle Daten bleiben ausschließlich auf deinem Gerät gespeichert.
-			Niemand sonst hat Zugriff darauf.
+			<strong>💾 {$_('assessment_privacy')}</strong>
+			{$_('assessment_privacy_local')} {$_('assessment_privacy_no_access')}
 		</p>
 		<p>
-			<strong>⭐ Tipp:</strong> Markiere Kompetenzen als Fokus, um deine Entwicklung gezielt zu verfolgen.
+			<strong>⭐ {$_('assessment_tip')}</strong> {$_('assessment_tip_focus')}
 		</p>
 	</div>
 
 	<div class="tabs">
 		<button class="tab" class:active={activeTab === 'assessment'} onclick={() => (activeTab = 'assessment')}>
-			Assessment
+			{$_('heading_assessment')}
 		</button>
 		<button class="tab" class:active={activeTab === 'history'} onclick={() => (activeTab = 'history')}>
-			Meine Entwicklung
+			{$_('heading_my_development')}
 		</button>
 	</div>
 

@@ -2,6 +2,7 @@
 	import { base } from '$app/paths';
 	import GoalCard from '$lib/components/team/GoalCard.svelte';
 	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
+	import { _ } from 'svelte-i18n';
 
 	let { data } = $props();
 	const { team, isFallback } = data;
@@ -21,19 +22,19 @@
 			<h1>{team.name}</h1>
 			<p class="lead">{team.beschreibung}</p>
 			<a href="{base}/{lang}/kompetenzraster/{team.id}" class="btn-kompetenzraster">
-				📊 Mein Kompetenzraster
+				📊 {$_('heading_my_competency_matrix')}
 			</a>
 		</header>
 
 		<section id="trainingszeiten" class="section">
-			<h2>Trainingszeiten</h2>
+			<h2>{$_('heading_training_times')}</h2>
 			<div class="training-table-wrapper">
 				<table class="training-table">
 					<thead>
 						<tr>
-							<th>Tag</th>
-							<th>Zeit</th>
-							<th>Ort</th>
+							<th>{$_('table_day')}</th>
+							<th>{$_('table_time')}</th>
+							<th>{$_('table_location')}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -50,7 +51,7 @@
 		</section>
 
 		<section id="ziele" class="section">
-			<h2>Teamziele & Kompetenzen</h2>
+			<h2>{$_('heading_team_goals')}</h2>
 			<div class="goals-grid">
 				{#each team.ziele as goal}
 					<GoalCard {goal} />
