@@ -1,0 +1,14 @@
+id: kein-armschwung
+name: Kein Armschwung
+beschreibung: Beim Angriff ist kein Armschwung erlaubt — der Ball wird nur durch Körperrotation gespielt.
+erklaerung: |
+  Der Schlagarm bleibt beim Angriff gestreckt und fest. Der Ball wird ausschliesslich durch die Drehung von Hüfte, Rumpf und Schulter bewegt — kein aktiver Armzug.
+  Der Arm fungiert nur als verlängerter Hebel, nicht als eigenständige Schlagbewegung.
+  Wer aktiv mit dem Arm schwingt, verliert den Punkt.
+  Finten und Platzierungen ohne Körperrotation sind trotzdem erlaubt.
+nutzen: |
+  Dieser Constraint isoliert die Körperrotation als primäre Kraftquelle beim Angriff.
+  Er zeigt deutlich, wie viel Kraft aus Hüfte und Rumpf kommen kann — und wie wichtig diese Rotation für einen kraftvollen, technisch sauberen Angriff ist.
+  Langfristig verbessert er die Sequenzierung der Angriffsbewegung: Beine → Hüfte → Schulter → Arm, in der richtigen Reihenfolge.
+kategorie: Angriff
+schwierigkeit: schwer

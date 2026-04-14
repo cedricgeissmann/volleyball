@@ -1,0 +1,14 @@
+id: einarmiger-angriff
+name: Einarmiger Angriff
+beschreibung: Alle Angriffe müssen mit nur einem Arm gespielt werden — der andere bleibt am Körper.
+erklaerung: |
+  Beim Angriff darf nur ein Arm verwendet werden. Der andere Arm bleibt ruhig am Körper oder hinter dem Rücken.
+  Dies gilt für alle Angriffsformen: Schlag, Finte, Lob — alles einarmig.
+  Wer mit zwei Armen angreift, verliert den Punkt.
+  Welcher Arm verwendet wird, kann frei gewählt oder vom Trainer vorgegeben werden (z.B. immer die schwache Hand).
+nutzen: |
+  Dieser Constraint isoliert die Angriffsschulter und schult den einarmigen Krafteinsatz, die Balance und die Körperdrehung.
+  Er zeigt deutlich, wie wichtig die Körperrotation und der Rumpf für einen kraftvollen Angriff sind — da die Armkraft allein nicht ausreicht.
+  Ausserdem trainiert er die Koordination der nicht-dominanten Seite und bricht symmetrische Bewegungsmuster auf.
+kategorie: Angriff
+schwierigkeit: mittel

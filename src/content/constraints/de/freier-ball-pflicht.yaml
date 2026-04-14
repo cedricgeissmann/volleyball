@@ -1,0 +1,14 @@
+id: freier-ball-pflicht
+name: Freier-Ball-Pflicht
+beschreibung: Jedes Team muss mindestens einmal pro Satz einen freien Ball über das Netz schicken.
+erklaerung: |
+  Mindestens einmal pro Satz muss jedes Team einen kontrollierten freien Ball hoch über das Netz spielen, anstatt anzugreifen.
+  Der freie Ball muss klar als solcher erkennbar sein — kein flacher Angriffsversuch, sondern ein hoher, ruhiger Ball.
+  Wenn das Team den freien Ball nicht spielt, verliert es den nächsten Ballwechsel automatisch.
+  Der Zeitpunkt ist frei wählbar — das Team entscheidet selbst wann es diese "Chance" nutzt.
+nutzen: |
+  Dieser Constraint trainiert das bewusste Einsetzen des freien Balls als taktisches Mittel.
+  Er fördert das Lesen der Situation: Wann macht es Sinn, einen freien Ball zu spielen statt zu riskieren?
+  Gleichzeitig trainiert das empfangende Team den Umgang mit freien Bällen unter leichtem Druck, da es weiss, dass der freie Ball kommen wird — aber nicht wann.
+kategorie: Aufbau
+schwierigkeit: einfach

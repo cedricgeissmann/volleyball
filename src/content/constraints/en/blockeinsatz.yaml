@@ -1,0 +1,15 @@
+id: blockeinsatz
+name: Block Required
+beschreibung: Every point must be scored through a block touch or a full block.
+erklaerung: |
+  A point only counts if the ball was previously blocked or touched by at least one player at the net.
+  Direct points without a block action do not count — the rally is replayed.
+  This also applies to points after a tip if no block was involved.
+  The block action can also be a deflection touch — as long as a hand was at the net.
+nutzen: |
+  This constraint trains active blocking and prevents players from treating the block as optional.
+  It promotes jump coordination, timing, and net teamwork.
+  At the same time, it forces the attacking team to consciously factor in the block and find ways around it.
+  For teams that neglect blocking, this is a very effective intervention.
+kategorie: Angriff
+schwierigkeit: schwer

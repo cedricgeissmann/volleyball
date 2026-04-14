@@ -1,0 +1,15 @@
+id: linie-oder-diagonal
+name: Linie oder Diagonal
+beschreibung: Vor jedem Angriff muss die Richtung laut angesagt werden.
+erklaerung: |
+  Bevor der Angreifer den Ball spielt, muss er "Linie!" oder "Diagonal!" rufen — und dann auch tatsächlich in diese Richtung spielen.
+  Das Ansagen muss klar und rechtzeitig erfolgen, nicht erst im letzten Moment.
+  Das verteidigende Team weiss also, wohin der Ball kommt, muss aber trotzdem korrekt reagieren.
+  Wer in die falsche Richtung angreift oder das Ansagen vergisst, verliert den Punkt.
+nutzen: |
+  Dieser Constraint zwingt den Angreifer, bewusst und früh eine Entscheidung zu treffen — und diese dann auch sauber auszuführen.
+  Er fördert die technische Präzision, weil die Intention klar sein muss.
+  Gleichzeitig trainiert er die Verteidigung auf das bewusste Reagieren auf eine angekündigte Aktion — was die Positionierung und die Reaktionsfähigkeit schult.
+  Langfristig verbessert dieser Constraint die Entscheidungsqualität unter Druck.
+kategorie: Angriff
+schwierigkeit: mittel

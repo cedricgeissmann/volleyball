@@ -1,0 +1,14 @@
+id: baggerpflicht
+name: Bagger-Pflicht
+beschreibung: Alle Ballkontakte müssen als Bagger (Unterarmpass) gespielt werden.
+erklaerung: |
+  Jeder Ballkontakt im Spiel — Annahme, Zuspiel und Angriff — muss als Bagger mit beiden Unterarmen gespielt werden.
+  Fingerpass, Schlag, Finte mit der Handfläche oder einarmige Aktionen sind nicht erlaubt.
+  Wer nicht baggert, verliert den Punkt.
+  Dies gilt für alle drei Kontakte, auch wenn ein Fingerpass technisch einfacher wäre.
+nutzen: |
+  Dieser Constraint schult die Baggertechnik intensiv in allen Spielsituationen, nicht nur bei der Annahme.
+  Spieler müssen lernen, den Bagger für Zuspieler und Angriffsaktionen kreativ einzusetzen — was das Körpergefühl und die Kontrolle enorm verbessert.
+  Ausserdem deckt er technische Schwächen im Bagger auf, da keine Ausweichmöglichkeit besteht.
+kategorie: Allgemein
+schwierigkeit: schwer

@@ -1,0 +1,14 @@
+id: defensiv-punkt
+name: Defense Bonus
+beschreibung: Points count double when scored after a successful defensive action.
+erklaerung: |
+  When a team digs an opponent's attack and then wins the point, that point counts double.
+  A defensive action is any situation where an attack or hard ball is successfully received and continued.
+  A direct return without a defensive action counts normally.
+  The team must actively try to save attacks in order to earn the bonus.
+nutzen: |
+  This constraint creates a strong incentive for active defensive play — players run more, take more risks, and don't give up on balls as easily.
+  It shifts the balance between attack and defense and trains the willingness to save every ball.
+  It also promotes quick transitions from defense to attack, one of the most important qualities in volleyball.
+kategorie: Allgemein
+schwierigkeit: einfach

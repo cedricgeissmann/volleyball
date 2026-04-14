@@ -1,0 +1,14 @@
+id: serve-taktik
+name: Service Tactics
+beschreibung: Before every serve, the target zone on the court must be called out.
+erklaerung: |
+  The serving player must name the target zone before serving: "back left", "middle", or the name of the player who should receive.
+  The serve must then actually land in that zone — otherwise the other team gets a point.
+  The receiving team therefore knows where the ball is going, but must still react correctly.
+  This trains serve precision under the pressure of one's own call.
+nutzen: |
+  This constraint dramatically develops serve precision, because players are forced to make a conscious decision and then execute it.
+  It clearly shows where a player's serve control is still lacking.
+  The receiving team trains to receive under the condition that the direction is known — focusing attention on technique quality.
+kategorie: Allgemein
+schwierigkeit: mittel

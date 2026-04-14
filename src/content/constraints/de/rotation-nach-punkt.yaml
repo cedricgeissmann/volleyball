@@ -1,0 +1,15 @@
+id: rotation-nach-punkt
+name: Rotation nach Punkt
+beschreibung: Nach jedem gewonnenen Punkt rotieren alle Spieler eine Position weiter.
+erklaerung: |
+  Jedes Mal wenn ein Team einen Punkt gewinnt, rotieren alle Spieler dieses Teams eine Position im Uhrzeigersinn.
+  Das bedeutet, dass niemand dauerhaft auf einer Lieblingsposition bleibt.
+  Aufgaben wie Aufschlag, Annahme und Zuspiel wechseln ständig zwischen allen Spielern.
+  Wer nicht in der richtigen Position steht wenn der Ball gespielt wird, gibt dem Gegner einen Punkt.
+nutzen: |
+  Dieser Constraint stellt sicher, dass alle Spieler alle Positionen und Rollen wirklich beherrschen müssen.
+  Er verhindert, dass ein Team auf "Spezialisten" angewiesen ist, und fördert die Vielseitigkeit jedes Einzelnen.
+  Ausserdem schult er die Aufmerksamkeit für die eigene Position und die Absprachen im Team.
+  Besonders wertvoll für Teams, die dazu neigen, Aufgaben immer an dieselben Spieler zu delegieren.
+kategorie: Allgemein
+schwierigkeit: mittel

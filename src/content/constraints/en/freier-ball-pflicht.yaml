@@ -1,0 +1,14 @@
+id: freier-ball-pflicht
+name: Free Ball Required
+beschreibung: Each team must send at least one free ball over the net per set.
+erklaerung: |
+  At least once per set, each team must play a controlled free ball high over the net instead of attacking.
+  The free ball must be clearly recognizable as such — not a flat attack attempt, but a high, calm ball.
+  If the team does not play the free ball, they automatically lose the next rally.
+  The timing is freely chosen — the team decides when to use this opportunity.
+nutzen: |
+  This constraint trains the conscious use of the free ball as a tactical tool.
+  It promotes reading the situation: When does it make sense to play a free ball instead of taking a risk?
+  The receiving team trains handling free balls under light pressure, since it knows the free ball will come — but not when.
+kategorie: Aufbau
+schwierigkeit: einfach

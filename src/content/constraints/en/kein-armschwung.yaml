@@ -1,0 +1,14 @@
+id: kein-armschwung
+name: No Arm Swing
+beschreibung: No arm swing during attack — the ball is moved only through body rotation.
+erklaerung: |
+  The hitting arm stays straight and fixed during the attack. The ball is moved exclusively through rotation of hips, core, and shoulder — no active arm swing.
+  The arm serves only as an extended lever, not as an independent hitting movement.
+  Whoever actively swings with the arm loses the point.
+  Tips and placements without body rotation are still allowed.
+nutzen: |
+  This constraint isolates body rotation as the primary power source in the attack.
+  It shows how much power can come from the hips and core — and how important this rotation is for a clean attack.
+  Long term, it improves the sequencing of the attack movement: legs → hips → shoulder → arm, in the correct order.
+kategorie: Angriff
+schwierigkeit: schwer

@@ -1,0 +1,14 @@
+id: aufbau-richtung
+name: Aufbau-Richtung
+beschreibung: Das Zuspiel darf nur in eine vorher festgelegte Richtung gespielt werden.
+erklaerung: |
+  Vor dem Spiel wird eine Richtung für das Zuspiel festgelegt: zum Beispiel immer zur Aussenlinie, immer zur Mitte, oder immer nach hinten.
+  Der Zuspieler muss sich an diese Richtung halten — unabhängig davon, wie der erste Ball ankommt.
+  Das angreifende Team muss sich also anpassen und aus der vorgegebenen Position heraus angreifen.
+  Die Richtung kann nach jedem Satz gewechselt werden, um verschiedene Szenarien zu trainieren.
+nutzen: |
+  Dieser Constraint trainiert das Angreifen aus ungewohnten oder nicht-optimalen Zuspiel-Situationen.
+  Er verhindert, dass Angreifer immer auf "ihr" bevorzugtes Zuspiel warten, und fordert Flexibilität.
+  Ausserdem schult er den Zuspieler im bewussten Setzen von Bällen in eine bestimmte Richtung — auch wenn der Aufbau nicht ideal war.
+kategorie: Aufbau
+schwierigkeit: mittel

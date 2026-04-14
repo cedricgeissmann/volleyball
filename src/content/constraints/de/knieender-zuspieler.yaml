@@ -1,0 +1,14 @@
+id: knieender-zuspieler
+name: Knieender Zuspieler
+beschreibung: Der Zuspieler muss beim Zuspiel auf einem oder beiden Knien sein.
+erklaerung: |
+  Wer den zweiten Ball spielt (das Zuspiel), muss beim Ballkontakt auf einem Knie oder auf beiden Knien sein.
+  Der Zuspieler darf sich in Position knien, bevor er spielt — aber das Knie muss beim Ballkontakt den Boden berühren.
+  Wer stehend zuspielt, gibt dem Gegner einen Punkt.
+  Eine leichtere Variante: nur ein Knie muss den Boden berühren.
+nutzen: |
+  Dieser Constraint verändert die Körperhaltung des Zuspielers fundamental und schult das Spielen aus tiefer Position.
+  Er verbessert das Kniebeugen, die Rumpfstabilität und die Fähigkeit, auch aus unvorteilhaften Positionen einen guten Ball zu spielen.
+  Ausserdem schult er den Angreifer, mit Zuspielern umzugehen, die den Ball aus einer tiefen Flugbahn setzen — was die Anpassungsfähigkeit verbessert.
+kategorie: Aufbau
+schwierigkeit: schwer

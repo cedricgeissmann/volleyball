@@ -1,0 +1,14 @@
+id: serve-taktik
+name: Service-Taktik
+beschreibung: Vor jedem Service muss das Ziel auf dem Feld angesagt werden (Zone oder Spieler).
+erklaerung: |
+  Der aufschlagende Spieler muss vor dem Service die Zielzone nennen: zum Beispiel "hinten links", "Mitte", oder den Namen des Spielers der angenommen soll.
+  Der Service muss dann tatsächlich in diese Zone gespielt werden — sonst gibt es einen Punkt für das andere Team.
+  Das empfangende Team weiss also wohin der Ball kommt, muss aber trotzdem korrekt reagieren.
+  Dies trainiert die Präzision des Services unter dem Druck der eigenen Ansage.
+nutzen: |
+  Dieser Constraint entwickelt die Service-Präzision enorm, weil die Spieler gezwungen sind, einen bewussten Entscheid zu treffen und diesen dann umzusetzen.
+  Er zeigt deutlich, wo die eigene Servicekontrolle noch mangelhaft ist.
+  Gleichzeitig trainiert das empfangende Team die Annahme unter der Bedingung, dass die Richtung bekannt ist — was die Aufmerksamkeit auf die Qualität der Technik lenkt.
+kategorie: Allgemein
+schwierigkeit: mittel

@@ -1,0 +1,14 @@
+id: kurz-lang-wechsel
+name: Short-Long Alternation
+beschreibung: Attacks must alternate strictly between short (front court) and deep (back court).
+erklaerung: |
+  The team must strictly alternate attacks: once short into the opponent's front court, then deep into the back court, then short again, and so on.
+  The first attack of a rally sets the pattern for subsequent ones.
+  Whoever plays twice in a row to the same depth gives the opponent a point.
+  The defending team knows the depth will alternate — but must still be correctly positioned.
+nutzen: |
+  This constraint trains the conscious variation of attack depth, an important tactical weapon in real games.
+  It develops the ability to deliberately place the ball short or deep — and alternate between these under time pressure.
+  At the same time, it challenges the defense to monitor both court areas and switch quickly.
+kategorie: Angriff
+schwierigkeit: schwer

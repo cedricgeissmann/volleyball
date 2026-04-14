@@ -1,0 +1,15 @@
+id: linie-oder-diagonal
+name: Line or Diagonal
+beschreibung: Before every attack, the direction must be called out loud.
+erklaerung: |
+  Before the attacker plays the ball, they must shout "Line!" or "Diagonal!" — and then actually play in that direction.
+  The call must be clear and timely, not at the last moment.
+  The defending team therefore knows where the ball is going, but must still react correctly.
+  Whoever attacks in the wrong direction or forgets to call loses the point.
+nutzen: |
+  This constraint forces the attacker to make a conscious, early decision — and then execute it cleanly.
+  It promotes technical precision, because the intention must be clear.
+  At the same time, it trains the defense to consciously react to an announced action — sharpening positioning and reaction ability.
+  Long term, this constraint improves decision quality under pressure.
+kategorie: Angriff
+schwierigkeit: mittel

@@ -1,0 +1,15 @@
+id: positionswechsel-nach-fehler
+name: Positionswechsel nach Fehler
+beschreibung: Wer einen Fehler macht, wechselt sofort auf die schwierigste Position.
+erklaerung: |
+  Wenn ein Spieler einen direkten Fehler verursacht (Ball ins Netz, Ball aus, falscher Kontakt), wechselt er sofort auf die schwierigste Position im Team — zum Beispiel Annahmeposition oder direkt unter dem Netz.
+  Die anderen Spieler füllen die freigewordene Position auf.
+  Dies passiert sofort, ohne Pause, noch bevor der nächste Aufschlag gespielt wird.
+  Was die "schwierigste Position" ist, kann vor dem Training festgelegt oder spontan bestimmt werden.
+nutzen: |
+  Dieser Constraint schafft eine direkte Konsequenz für Fehler, ohne Strafe — einfach mehr Herausforderung.
+  Er trainiert die Anpassungsfähigkeit und das Spielen unter veränderten Bedingungen.
+  Ausserdem hält er alle Spieler fokussiert, da niemand dauerhaft auf einer komfortablen Position bleiben kann.
+  Gleichzeitig ist er fair: Die Konsequenz ist eine neue Aufgabe, kein Nachteil.
+kategorie: Allgemein
+schwierigkeit: einfach

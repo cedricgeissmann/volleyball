@@ -1,0 +1,14 @@
+id: sprung-service
+name: Sprung-Service
+beschreibung: Jeder Service muss als Sprungaufschlag ausgeführt werden.
+erklaerung: |
+  Alle Services müssen im Sprung gespielt werden — kein Stand- oder Floater-Service ist erlaubt.
+  Der Absprung muss klar erkennbar sein und vor der Grundlinie stattfinden.
+  Der Service muss trotzdem regelkonform über das Netz und in das gegnerische Feld gehen.
+  Wer nicht springt oder der Service landet aus, gibt einen Punkt an das andere Team.
+nutzen: |
+  Dieser Constraint schult das Timing, die Koordination und den Rhythmus des Sprungaufschlags unter Spielbedingungen.
+  Spieler die den Sprungaufschlag noch nicht sicher beherrschen, müssen ihn trotzdem anwenden — was die Entwicklung beschleunigt.
+  Ausserdem trainiert er das empfangende Team auf die Annahme von schnelleren, aggressiveren Services.
+kategorie: Allgemein
+schwierigkeit: mittel

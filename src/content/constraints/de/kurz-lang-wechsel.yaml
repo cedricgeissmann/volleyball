@@ -1,0 +1,14 @@
+id: kurz-lang-wechsel
+name: Kurz-Lang-Wechsel
+beschreibung: Angriffe müssen abwechselnd kurz (Vorderfeld) und lang (Hinterfeld) gespielt werden.
+erklaerung: |
+  Das Team muss seine Angriffe strikt abwechseln: einmal kurz ins Vorderfeld des Gegners, dann lang ins Hinterfeld, dann wieder kurz, und so weiter.
+  Der erste Angriff eines Ballwechsels bestimmt das Muster für die nächsten.
+  Wer zweimal hintereinander in dieselbe Tiefe spielt, gibt dem Gegner einen Punkt.
+  Das verteidigende Team weiss also, dass die Richtung (tief/kurz) wechseln wird — muss aber trotzdem korrekt positioniert sein.
+nutzen: |
+  Dieser Constraint schult das bewusste Variieren der Angriffstiefe, was im echten Spiel eine wichtige taktische Waffe ist.
+  Er trainiert die Fähigkeit, den Ball gezielt kurz oder lang zu platzieren — und das abwechselnd unter Zeitdruck.
+  Gleichzeitig fordert er die Verteidigung, beide Feldbereiche im Blick zu behalten und sich schnell umzustellen.
+kategorie: Angriff
+schwierigkeit: schwer

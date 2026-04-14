@@ -1,0 +1,15 @@
+id: positionswechsel-nach-fehler
+name: Switch After Error
+beschreibung: Whoever makes an error immediately moves to the most difficult position.
+erklaerung: |
+  If a player causes a direct error (ball into the net, ball out, wrong contact), they immediately move to the most difficult position — for example the reception spot or directly under the net.
+  The other players fill the vacated position.
+  This happens immediately, without a pause, before the next serve.
+  What the "most difficult position" is can be defined before training or determined spontaneously.
+nutzen: |
+  This constraint creates a direct consequence for errors, without punishment — simply more challenge.
+  It trains adaptability and the ability to play under changed conditions.
+  It keeps all players focused, since no one can stay permanently in a comfortable position.
+  At the same time it is fair: the consequence is a new task, not a disadvantage.
+kategorie: Allgemein
+schwierigkeit: einfach

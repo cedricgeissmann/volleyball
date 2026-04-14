@@ -1,0 +1,15 @@
+id: zonen-verteidigung
+name: Zone Defense
+beschreibung: Each player defends only their assigned zone — no leaving it allowed.
+erklaerung: |
+  Before the game, the court is divided into zones — one per player.
+  Each player may only play the ball in their own zone. Balls outside a player's zone are not played.
+  If a ball falls between two zones, it is a point for the opponent.
+  Zone size and layout can be adjusted depending on player count and difficulty level.
+nutzen: |
+  This constraint forces the team to explicitly discuss and maintain their court coverage.
+  It trains communication about responsibilities and prevents the same player from always taking every ball.
+  It develops awareness of one's own area and personal responsibility on the court.
+  Teams without clear court coverage recognize this immediately.
+kategorie: Allgemein
+schwierigkeit: mittel

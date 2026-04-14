@@ -1,0 +1,15 @@
+id: zonen-verteidigung
+name: Zonen-Verteidigung
+beschreibung: Jeder Spieler verteidigt nur seine fest zugewiesene Zone — kein Verlassen erlaubt.
+erklaerung: |
+  Vor dem Spiel wird das Feld in Zonen aufgeteilt — eine pro Spieler.
+  Jeder Spieler darf nur in seiner Zone den Ball spielen. Bälle ausserhalb der eigenen Zone werden nicht gespielt.
+  Wenn ein Ball zwischen zwei Zonen fällt, ist das ein Punkt für den Gegner.
+  Die Zonengrösse und -aufteilung kann je nach Spieleranzahl und Schwierigkeitsgrad angepasst werden.
+nutzen: |
+  Dieser Constraint zwingt das Team, die Feldaufteilung bewusst zu besprechen und einzuhalten.
+  Er schult die Kommunikation über Zuständigkeiten und verhindert, dass immer derselbe Spieler alle Bälle nimmt.
+  Ausserdem trainiert er das Bewusstsein für den eigenen Bereich und die eigene Verantwortung im Feld.
+  Teams, die keine klare Feldaufteilung haben, erkennen dies sofort.
+kategorie: Allgemein
+schwierigkeit: mittel

@@ -1,0 +1,14 @@
+id: stehender-angreifer
+name: Standing Attack
+beschreibung: No jumping allowed for attacks — both feet must remain on the ground.
+erklaerung: |
+  No player may jump when attacking. Both feet must remain on the ground at ball contact.
+  Tips, spikes, and all other attacking forms must be executed standing.
+  A jump during the attack counts as an error and gives the opponent a point.
+  Small hops already count as a jump.
+nutzen: |
+  This constraint forces players to develop attacks from a standing position — isolating body use, hip rotation, and arm swing.
+  It clearly shows how much power and technique is in a standing attack, and improves body awareness for the hitting movement without jump support.
+  Long term, it strengthens attack technique even with the jump, as the foundational movement becomes cleaner.
+kategorie: Allgemein
+schwierigkeit: mittel

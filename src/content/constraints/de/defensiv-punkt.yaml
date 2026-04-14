@@ -1,0 +1,14 @@
+id: defensiv-punkt
+name: Defensiv-Punkt
+beschreibung: Punkte zählen doppelt, wenn sie nach einer erfolgreichen Verteidigungsaktion erzielt werden.
+erklaerung: |
+  Wenn ein Team einen Ball verteidigt (also einen Angriff des Gegners annimmt und weiterspielt), und danach den Punkt macht, zählt dieser Punkt doppelt.
+  Eine Verteidigungsaktion ist jede Situation, in der ein Angriff oder ein harter Ball erfolgreich aufgenommen und weiterverarbeitet wird.
+  Ein direkter Return ohne Verteidigungsaktion zählt normal.
+  Das Team muss also aktiv versuchen, Angriffe zu retten, um den Bonus zu erhalten.
+nutzen: |
+  Dieser Constraint setzt einen starken Anreiz für aktives Defensivspiel — Spieler rennen mehr, riskieren mehr und geben Bälle nicht so schnell auf.
+  Er verändert das Verhältnis zwischen Angriff und Verteidigung und trainiert die Bereitschaft, jeden Ball zu retten.
+  Ausserdem fördert er das schnelle Umschalten von Verteidigung auf Angriff, was eine der wichtigsten Qualitäten im Volleyball ist.
+kategorie: Allgemein
+schwierigkeit: einfach

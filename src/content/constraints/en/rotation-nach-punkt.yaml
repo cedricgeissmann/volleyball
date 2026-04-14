@@ -1,0 +1,15 @@
+id: rotation-nach-punkt
+name: Rotate After Point
+beschreibung: After every point won, all players rotate one position clockwise.
+erklaerung: |
+  Every time a team wins a point, all players on that team rotate one position clockwise.
+  This means no one stays permanently in their favourite position.
+  Tasks like serving, receiving, and setting constantly shift between all players.
+  Whoever is not in the correct position when the ball is played gives the opponent a point.
+nutzen: |
+  This constraint ensures that all players must truly master all positions and roles.
+  It prevents a team from relying on specialists and encourages versatility of each individual.
+  It also trains awareness of one's own position and team communication.
+  Particularly valuable for teams that tend to always delegate tasks to the same players.
+kategorie: Allgemein
+schwierigkeit: mittel

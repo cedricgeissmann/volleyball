@@ -1,0 +1,15 @@
+id: blockeinsatz
+name: Block-Pflicht
+beschreibung: Jeder Punkt muss durch eine Blockberührung oder einen Block erzielt werden.
+erklaerung: |
+  Ein Punkt zählt nur, wenn der Ball vorher von mindestens einem Spieler geblockt oder blockberührt wurde.
+  Direktpunkte ohne Blockaktion zählen nicht — der Ballwechsel wird wiederholt.
+  Das gilt auch für Punkte nach einem Finte, wenn kein Block involviert war.
+  Die Blockaktion kann auch ein Touch sein, der den Ball abfälscht — Hauptsache eine Hand war am Netz.
+nutzen: |
+  Dieser Constraint schult das aktive Blockspiel und verhindert, dass Spieler den Block als optional betrachten.
+  Er fördert die Sprungkoordination, das Timing und die Zusammenarbeit am Netz.
+  Gleichzeitig zwingt er das angreifende Team, den Block bewusst einzukalkulieren und Wege um ihn herum zu suchen.
+  Für Teams, die den Block vernachlässigen, ist dies ein sehr wirksamer Eingriff.
+kategorie: Angriff
+schwierigkeit: schwer

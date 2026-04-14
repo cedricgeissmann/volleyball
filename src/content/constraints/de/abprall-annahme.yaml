@@ -1,0 +1,15 @@
+id: abprall-annahme
+name: Abprall-Annahme
+beschreibung: Jede Annahme muss den Ball zuerst vom Boden abprallen lassen, bevor er gespielt wird.
+erklaerung: |
+  Wenn ein Service oder ein Ball ins Feld kommt, muss er zuerst einmal den Boden berühren und abprallen, bevor ein Spieler ihn annimmt.
+  Der Spieler lässt den Ball absichtlich auftippen und spielt ihn dann beim Aufprallen oder danach.
+  Direktannahmen ohne Bodenberührung sind nicht erlaubt.
+  Natürlich führt dies zu einem flacheren, schwierigeren Ball — das ist der Sinn.
+nutzen: |
+  Dieser ungewöhnliche Constraint schult das Lesen der Ballflugkurve weit im Voraus, da der Spieler früh antizipieren muss, wo der Ball aufspringt.
+  Er verbessert die Fussarbeit und das frühzeitige Positionieren.
+  Ausserdem schult er das Spielen von tiefen, schwierigen Bällen direkt nach dem Abpraller — was die Tiefenwahrnehmung und die Reaktionsfähigkeit entwickelt.
+  Die veränderte Ballflugkurve nach dem Abprall trainiert Anpassungsfähigkeit.
+kategorie: Allgemein
+schwierigkeit: schwer

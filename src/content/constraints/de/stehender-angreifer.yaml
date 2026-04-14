@@ -1,0 +1,14 @@
+id: stehender-angreifer
+name: Stehender Angreifer
+beschreibung: Kein Absprung beim Angriff — alle Angriffe müssen mit beiden Füssen am Boden gespielt werden.
+erklaerung: |
+  Beim Angriff darf kein Spieler abspringen. Beide Füsse müssen beim Ballkontakt auf dem Boden bleiben.
+  Finten, Schläge und alle anderen Angriffsformen müssen stehend ausgeführt werden.
+  Ein Absprung beim Angriff gilt als Fehler und gibt dem Gegner einen Punkt.
+  Kleine Hüpfer zählen bereits als Absprung.
+nutzen: |
+  Dieser Constraint zwingt Spieler, Angriffe aus der Bodenposition heraus zu entwickeln — was den Körpereinsatz, die Hüftrotation und den Armzug isoliert trainiert.
+  Er zeigt deutlich, wie viel Kraft und Technik im stehenden Angriff steckt, und verbessert das Körpergefühl für die Schlagbewegung ohne Sprungunterstützung.
+  Langfristig stärkt er die Angriffstechnik auch im Sprung, da die Grundbewegung sauberer wird.
+kategorie: Allgemein
+schwierigkeit: mittel
