@@ -4,7 +4,7 @@
 	import { _ } from 'svelte-i18n';
 	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
 	import TaktikBoard from '$lib/components/uebungen/taktik/TaktikBoard.svelte';
-	import TaktikPrintView from '$lib/components/uebungen/taktik/TaktikPrintView.svelte';
+	import PrintCardBackTaktik from '$lib/components/uebungen/print/PrintCardBackTaktik.svelte';
 	import QRCode from '$lib/components/shared/QRCode.svelte';
 	import { getAbsoluteURL } from '$lib/utils/qrGenerator.js';
 	import { getStartPositions } from '$lib/utils/taktikEngine.js';
@@ -18,10 +18,8 @@
 
 	let searchQuery = $state('');
 
-	// LocalStorage Key
 	const STORAGE_KEY = 'volleyball-selected-taktik';
 
-	// Auswahl-State mit LocalStorage
 	let selectedUebungen = $state(loadSelected());
 
 	function loadSelected() {
@@ -30,7 +28,9 @@
 				const stored = localStorage.getItem(STORAGE_KEY);
 				if (stored) {
 					const parsed = JSON.parse(stored);
-					return parsed.filter((/** @type {string} */ id) => uebungen.some((/** @type {any} */ u) => u.id === id));
+					return parsed.filter((/** @type {string} */ id) =>
+						uebungen.some((/** @type {any} */ u) => u.id === id)
+					);
 				}
 			} catch (e) {
 				console.error('Error loading selected taktik:', e);
@@ -73,6 +73,17 @@
 		setTimeout(() => window.print(), 200);
 	}
 
+	/**
+	 * @param {string} uebungId
+	 * @param {MouseEvent} event
+	 */
+	function handleCardClick(uebungId, event) {
+		const target = event.target;
+		if (target instanceof HTMLElement && !target.closest('.checkbox-wrapper')) {
+			window.location.href = `${base}/${lang}/taktik/${uebungId}`;
+		}
+	}
+
 	const filteredUebungen = $derived(
 		uebungen.filter((/** @type {any} */ u) => {
 			const q = searchQuery.toLowerCase();
@@ -91,8 +102,7 @@
 	);
 
 	/**
-	 * Fork einer Übung: Animationsdaten via sessionStorage übergeben,
-	 * dann zum Editor navigieren.
+	 * Fork einer Übung: Animationsdaten via sessionStorage übergeben.
 	 */
 	function forkInEditor(/** @type {any} */ uebung, /** @type {MouseEvent} */ e) {
 		e.preventDefault();
@@ -115,14 +125,16 @@
 	<TranslationFallbackBanner {lang} {isFallback} />
 {/if}
 
-<div class="page-container">
-	<div class="page-header print-hide">
-		<h1>Taktik-Übungen</h1>
-		<p class="subtitle">Taktische Übungen mit animiertem Taktikboard</p>
-	</div>
+<div class="taktik-page">
+	<header class="page-header print-hide">
+		<div class="header-content">
+			<h1>Taktik-Übungen</h1>
+			<p>Taktische Übungen mit animiertem Taktikboard</p>
+		</div>
+	</header>
 
 	<!-- Suchfeld -->
-	<div class="search-bar print-hide">
+	<div class="search-section print-hide">
 		<input
 			type="search"
 			bind:value={searchQuery}
@@ -164,10 +176,10 @@
 			{/if}
 		</div>
 	{:else}
+		<!-- Karten-Grid mit Checkboxen -->
 		<div class="uebungen-grid print-hide">
 			{#each filteredUebungen as uebung (uebung.id)}
 				<div class="uebung-card-wrapper">
-					<!-- Checkbox -->
 					<div class="checkbox-wrapper" onclick={(e) => e.stopPropagation()}>
 						<input
 							type="checkbox"
@@ -178,12 +190,10 @@
 						/>
 						<label for="check-{uebung.id}" class="checkbox-label"></label>
 					</div>
-
-					<!-- Karte -->
-					<a
-						href="{base}/{lang}/taktik/{uebung.id}"
+					<div
 						class="uebung-card"
 						class:selected={selectedUebungen.includes(uebung.id)}
+						onclick={(e) => handleCardClick(uebung.id, e)}
 					>
 						{#if uebung.animationData}
 							<div class="card-preview">
@@ -201,37 +211,16 @@
 								<span>Kein Board</span>
 							</div>
 						{/if}
-
-						<div class="card-body">
-							<div class="card-meta">
-								<span class="badge badge--taktik">Taktik</span>
-								{#if uebung.fokus}
-									<span class="badge badge--fokus">{uebung.fokus}</span>
-								{/if}
-							</div>
-							<h2 class="card-titel">{uebung.titel}</h2>
-							<p class="card-beschreibung">{uebung.beschreibung}</p>
-							<div class="card-footer">
-								{#if uebung.dauer}
-									<span class="card-dauer">{uebung.dauer} Min.</span>
-								{/if}
-								{#if uebung.animationData}
-									<button
-										class="btn-fork-card"
-										onclick={(e) => forkInEditor(uebung, e)}
-										title="Im Editor bearbeiten"
-									>
-										<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-											<circle cx="18" cy="18" r="3"></circle>
-											<circle cx="6" cy="6" r="3"></circle>
-											<path d="M6 21V9a9 9 0 0 0 9 9"></path>
-										</svg>
-										Bearbeiten
-									</button>
-								{/if}
-							</div>
+						<div class="card-content">
+							<h3>{uebung.titel}</h3>
+							{#if uebung.fokus}
+								<p class="fokus">{uebung.fokus}</p>
+							{/if}
 						</div>
-					</a>
+						<div class="card-qr">
+							<QRCode url={getAbsoluteURL(`/${lang}/taktik/${uebung.id}`)} size={60} />
+						</div>
+					</div>
 				</div>
 			{/each}
 		</div>
@@ -248,67 +237,104 @@
 		</a>
 	</div>
 
-	<!-- ===== DRUCKBEREICH ===== -->
-	<!-- Jede Übung bekommt eine eigene Seite -->
-	<div class="print-pages">
+	<!-- ===== DRUCKBEREICH: Doppelseitige Karten (zum Falten) ===== -->
+	<div class="print-cards">
 		{#each selectedAndFiltered as uebung (uebung.id)}
-			<div class="print-page">
-				<div class="print-page-header">
-					<div class="print-page-titles">
-						<h1 class="print-titel">{uebung.titel}</h1>
+			<div class="card-wrapper-double">
+				<!-- Linke Seite: Vorderseite (Details) -->
+				<div class="exercise-card card-front">
+					<div class="card-header">
+						<h2 class="card-title">{uebung.titel}</h2>
 						{#if uebung.fokus}
-							<p class="print-fokus">{uebung.fokus}</p>
-						{/if}
-						{#if uebung.beschreibung}
-							<p class="print-beschreibung">{uebung.beschreibung}</p>
+							<span class="card-category">{uebung.fokus}</span>
 						{/if}
 					</div>
-					<div class="print-page-qr">
-						<QRCode url={getAbsoluteURL(`/${lang}/taktik/${uebung.id}`)} size={80} />
-						<p class="print-qr-label">Legende & Animation</p>
+
+					<div class="card-body">
+						{#if uebung.beschreibung}
+							<p class="card-description">{uebung.beschreibung}</p>
+						{/if}
+
+						{#if uebung.ziele && uebung.ziele.length > 0}
+							<div class="card-ziele">
+								<h3>Lernziele:</h3>
+								<ul>
+									{#each uebung.ziele as ziel}
+										<li>{ziel}</li>
+									{/each}
+								</ul>
+							</div>
+						{/if}
+
+						{#if uebung.anleitung && uebung.anleitung.length > 0}
+							<div class="card-anleitung">
+								<h3>Ablauf:</h3>
+								<ol>
+									{#each uebung.anleitung as schritt}
+										<li>{schritt}</li>
+									{/each}
+								</ol>
+							</div>
+						{/if}
+
+						{#if uebung.dauer}
+							<div class="card-dauer">
+								<strong>Dauer:</strong> {uebung.dauer} Min.
+							</div>
+						{/if}
+					</div>
+
+					<div class="card-footer">
+						<div class="qr-code-small">
+							<QRCode url={getAbsoluteURL(`/${lang}/taktik/${uebung.id}`)} size={80} />
+						</div>
 					</div>
 				</div>
 
-				{#if uebung.animationData}
-					<div class="print-board-area">
-						<TaktikPrintView
-							animation={uebung.animationData}
-							anleitung={uebung.anleitung}
-						/>
-					</div>
-				{:else}
-					<div class="print-no-board">Kein Taktikboard vorhanden</div>
-				{/if}
+				<!-- Rechte Seite: Rückseite (Taktikboard) -->
+				<div class="exercise-card card-back">
+					{#if uebung.animationData}
+						<PrintCardBackTaktik animation={uebung.animationData} />
+					{:else}
+						<div class="no-animation">
+							<p>Kein Taktikboard</p>
+						</div>
+					{/if}
+				</div>
 			</div>
 		{/each}
 	</div>
 </div>
 
 <style>
-	.page-container {
-		max-width: var(--max-width-content);
-		margin-inline: auto;
-		padding: var(--space-xl) var(--space-lg);
+	.taktik-page {
+		max-width: var(--content-width-wide);
+		margin: 0 auto;
+		padding: var(--spacing-lg);
 	}
 
 	.page-header {
-		margin-bottom: var(--space-xl);
+		margin-bottom: var(--spacing-xl);
+		text-align: center;
+	}
+
+	.header-content {
+		text-align: center;
 	}
 
 	.page-header h1 {
-		font-size: var(--font-size-4xl);
-		font-weight: var(--font-weight-bold);
-		margin: 0 0 var(--space-xs);
+		color: var(--color-primary);
+		margin-bottom: var(--spacing-sm);
 	}
 
-	.subtitle {
-		font-size: var(--font-size-lg);
+	.page-header p {
 		color: var(--color-text-secondary);
-		margin: 0;
+		font-size: var(--font-size-lg);
 	}
 
-	.search-bar {
-		margin-bottom: var(--space-md);
+	/* Suchfeld */
+	.search-section {
+		margin-bottom: var(--spacing-lg);
 	}
 
 	.search-input {
@@ -332,38 +358,41 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: var(--space-md) var(--space-lg);
-		background: var(--color-gray-50);
+		padding: var(--spacing-lg);
+		background-color: var(--color-gray-50);
 		border-radius: var(--radius-md);
-		margin-bottom: var(--space-xl);
-		gap: var(--space-md);
+		margin-bottom: var(--spacing-lg);
+		gap: var(--spacing-md);
 		flex-wrap: wrap;
 	}
 
 	.selection-info {
-		font-size: var(--font-size-sm);
-		color: var(--color-text-secondary);
+		color: var(--color-text);
+		font-size: var(--font-size-base);
 	}
 
 	.button-group {
 		display: flex;
-		gap: var(--space-sm);
+		gap: var(--spacing-sm);
 		flex-wrap: wrap;
 	}
 
 	.btn {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--space-xs);
-		padding: var(--space-sm) var(--space-md);
+		padding: var(--spacing-md) var(--spacing-xl);
+		border: 2px solid var(--color-border);
 		border-radius: var(--radius-md);
-		font-size: var(--font-size-sm);
-		font-weight: var(--font-weight-medium);
-		cursor: pointer;
-		border: 1.5px solid var(--color-gray-300);
-		background: var(--color-background);
+		background-color: var(--color-bg);
 		color: var(--color-text);
-		transition: all var(--transition-fast);
+		font-size: var(--font-size-lg);
+		font-weight: 600;
+		cursor: pointer;
+		transition: all var(--transition-normal);
+		white-space: nowrap;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--spacing-sm);
+		min-height: 50px;
 	}
 
 	.btn:disabled {
@@ -372,29 +401,29 @@
 	}
 
 	.btn:hover:not(:disabled) {
-		transform: translateY(-1px);
-		box-shadow: var(--shadow-sm);
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 	}
 
 	.btn-primary {
-		background: var(--color-primary);
+		background-color: var(--color-primary);
 		color: white;
 		border-color: var(--color-primary);
 	}
 
 	.btn-secondary {
-		background: var(--color-background);
+		background-color: var(--color-background);
+		border-color: var(--color-gray-300);
 	}
 
-	/* Grid */
+	/* Karten Grid */
 	.uebungen-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-		gap: var(--space-xl);
+		grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+		gap: var(--spacing-xl);
 		margin-bottom: var(--space-2xl);
 	}
 
-	/* Karten-Wrapper mit Checkbox */
 	.uebung-card-wrapper {
 		position: relative;
 		display: flex;
@@ -405,15 +434,23 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: rgba(21, 101, 192, 0.08);
+		background-color: rgba(21, 101, 192, 0.08);
 		border: 1px solid transparent;
 		border-right: none;
 		border-radius: var(--radius-lg);
 		border-top-right-radius: 0;
 		border-bottom-right-radius: 0;
-		padding: var(--space-sm);
-		min-width: 48px;
-		transition: all var(--transition-fast);
+		padding: var(--spacing-md);
+		min-width: 60px;
+		transition: all var(--transition-normal);
+	}
+
+	.uebung-card-wrapper:has(.selected) .checkbox-wrapper {
+		border-color: #90CAF9;
+	}
+
+	.uebung-card-wrapper:hover .checkbox-wrapper {
+		border-color: var(--color-primary);
 	}
 
 	.card-checkbox {
@@ -425,14 +462,14 @@
 
 	.checkbox-label {
 		display: block;
-		width: 24px;
-		height: 24px;
-		border: 2.5px solid var(--color-gray-400);
-		border-radius: var(--radius-sm);
+		width: 28px;
+		height: 28px;
+		border: 3px solid var(--color-gray-400);
+		border-radius: var(--radius-md);
 		cursor: pointer;
 		position: relative;
 		transition: all var(--transition-fast);
-		background: white;
+		background-color: white;
 	}
 
 	.checkbox-label:hover {
@@ -441,35 +478,39 @@
 	}
 
 	.card-checkbox:checked + .checkbox-label {
-		background: #1565C0;
+		background-color: #1565C0;
 		border-color: #1565C0;
 	}
 
 	.card-checkbox:checked + .checkbox-label::after {
 		content: '';
 		position: absolute;
-		left: 6px;
-		top: 2px;
-		width: 7px;
-		height: 12px;
+		left: 8px;
+		top: 3px;
+		width: 8px;
+		height: 14px;
 		border: solid white;
-		border-width: 0 2.5px 2.5px 0;
+		border-width: 0 3px 3px 0;
 		transform: rotate(45deg);
 	}
 
-	/* Karte */
+	/* Screen-Karte */
 	.uebung-card {
-		display: flex;
-		flex-direction: column;
-		background: var(--color-background-elevated);
-		border: 1px solid var(--color-gray-200);
+		display: grid;
+		grid-template-columns: 1fr auto;
+		grid-template-rows: auto 1fr;
+		gap: var(--spacing-md);
+		align-items: start;
+		background-color: var(--color-background-elevated, var(--color-bg));
+		border: 1px solid transparent;
 		border-radius: var(--radius-lg);
 		border-top-left-radius: 0;
 		border-bottom-left-radius: 0;
 		overflow: hidden;
 		text-decoration: none;
 		color: inherit;
-		transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+		transition: all var(--transition-normal);
+		cursor: pointer;
 		flex: 1;
 	}
 
@@ -478,19 +519,18 @@
 	}
 
 	.uebung-card:hover {
-		box-shadow: var(--shadow-lg);
-		transform: translateY(-2px);
-		text-decoration: none;
+		border-color: var(--color-primary);
 	}
 
 	.card-preview {
+		grid-column: 1 / -1;
 		background: var(--color-gray-100);
 		padding: var(--space-sm);
 		border-bottom: 1px solid var(--color-gray-200);
 	}
 
 	.card-preview--empty {
-		height: 160px;
+		height: 120px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -498,98 +538,48 @@
 		font-size: var(--font-size-sm);
 	}
 
-	.card-body {
-		padding: var(--space-md);
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-xs);
-		flex: 1;
+	.card-content {
+		padding: var(--spacing-md);
 	}
 
-	.card-meta {
-		display: flex;
-		gap: var(--space-xs);
-		flex-wrap: wrap;
+	.uebung-card h3 {
+		color: var(--color-primary);
+		margin: 0 0 var(--spacing-sm) 0;
+		font-size: var(--font-size-xl);
+		line-height: 1.3;
 	}
 
-	.badge {
-		display: inline-block;
-		padding: 2px var(--space-xs);
-		border-radius: var(--radius-sm);
-		font-size: var(--font-size-xs);
-		font-weight: var(--font-weight-medium);
-	}
-
-	.badge--taktik {
-		background: #E3F2FD;
-		color: #1565C0;
-	}
-
-	.badge--fokus {
-		background: var(--color-gray-100);
+	.fokus {
 		color: var(--color-text-secondary);
-	}
-
-	.card-titel {
-		font-size: var(--font-size-lg);
-		font-weight: var(--font-weight-bold);
-		margin: 0;
-	}
-
-	.card-beschreibung {
 		font-size: var(--font-size-sm);
-		color: var(--color-text-secondary);
 		margin: 0;
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
+		font-style: italic;
 	}
 
-	.card-footer {
+	.card-qr {
 		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin-top: auto;
-		gap: var(--space-xs);
-	}
-
-	.card-dauer {
-		font-size: var(--font-size-xs);
-		color: var(--color-text-muted);
-	}
-
-	.btn-fork-card {
-		display: inline-flex;
-		align-items: center;
-		gap: 4px;
-		padding: 2px var(--space-sm);
+		align-items: flex-start;
+		justify-content: center;
+		padding: var(--spacing-xs);
+		background-color: white;
 		border-radius: var(--radius-sm);
-		border: 1px solid #90CAF9;
-		background: transparent;
-		color: #1565C0;
-		font-size: var(--font-size-xs);
-		cursor: pointer;
-		transition: all var(--transition-fast);
-	}
-
-	.btn-fork-card:hover {
-		background: #E3F2FD;
-		border-color: #1565C0;
+		border: 1px solid var(--color-border);
+		margin: var(--spacing-md);
+		margin-left: 0;
 	}
 
 	/* Empty state */
 	.empty-state {
 		text-align: center;
-		padding: var(--space-3xl);
-		color: var(--color-text-muted);
+		padding: var(--spacing-xl);
+		color: var(--color-text-secondary);
 	}
 
 	/* Editor-Link */
 	.editor-link {
 		display: flex;
 		justify-content: flex-end;
-		margin-top: var(--space-lg);
+		margin-top: var(--spacing-lg);
 	}
 
 	.btn-editor {
@@ -611,102 +601,245 @@
 		text-decoration: none;
 	}
 
-	/* ===== DRUCKBEREICH ===== */
-	.print-pages {
+	/* ===== DRUCK-KARTEN (screen: hidden) ===== */
+	.print-cards {
 		display: none;
 	}
 
-	.print-page {
-		width: 100%;
+	.card-wrapper-double {
+		break-inside: avoid;
+		page-break-inside: avoid;
+		display: flex;
+		flex-direction: row;
+		gap: 0;
+		position: relative;
+	}
+
+	/* Schnittmarkierungen an den Ecken */
+	.card-wrapper-double::before,
+	.card-wrapper-double::after {
+		content: '';
+		position: absolute;
+		width: 3mm;
+		height: 3mm;
+		border: 1px solid var(--color-gray-400);
+	}
+
+	.card-wrapper-double::before {
+		top: -1mm;
+		left: -1mm;
+		border-right: none;
+		border-bottom: none;
+	}
+
+	.card-wrapper-double::after {
+		bottom: -1mm;
+		right: -1mm;
+		border-left: none;
+		border-top: none;
+	}
+
+	.exercise-card {
+		width: 63mm;
+		height: 88mm;
+		border: 2px solid var(--color-gray-300);
+		padding: 8px;
+		background-color: white;
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		overflow: hidden;
 		box-sizing: border-box;
 	}
 
-	.print-page-header {
+	.card-front {
+		border-radius: 6px 0 0 6px;
+		border-right: 1px dashed var(--color-gray-400);
+	}
+
+	.card-back {
+		border-radius: 0 6px 6px 0;
+		border-left: 1px dashed var(--color-gray-400);
+		padding: 0;
+		overflow: hidden;
+		position: relative;
+	}
+
+	.no-animation {
+		width: 100%;
+		height: 100%;
 		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		gap: 16px;
-		margin-bottom: 12px;
+		align-items: center;
+		justify-content: center;
+		color: var(--color-text-secondary);
+		font-size: 9pt;
+		text-align: center;
 	}
 
-	.print-page-titles {
-		flex: 1;
+	/* Karten-Inhalt (Vorderseite) */
+	.card-header {
+		margin-bottom: 6px;
+		border-bottom: 1px solid var(--color-gray-200);
+		padding-bottom: 4px;
 	}
 
-	.print-titel {
-		font-size: 18pt;
+	.card-title {
+		font-size: 11pt;
 		font-weight: 700;
-		margin: 0 0 4px;
+		color: var(--color-primary);
+		margin: 0 0 2px 0;
 		line-height: 1.2;
 	}
 
-	.print-fokus {
-		font-size: 10pt;
-		color: #555;
-		font-style: italic;
-		margin: 0 0 4px;
-	}
-
-	.print-beschreibung {
-		font-size: 10pt;
-		color: #333;
-		margin: 0;
-	}
-
-	.print-page-qr {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 4px;
-		flex-shrink: 0;
-	}
-
-	.print-qr-label {
+	.card-category {
+		display: inline-block;
+		background-color: #1565C0;
+		color: white;
+		padding: 2px 6px;
+		border-radius: 3px;
 		font-size: 7pt;
-		color: #666;
-		text-align: center;
-		margin: 0;
+		font-weight: 600;
 	}
 
-	.print-no-board {
-		padding: 24px;
-		text-align: center;
-		color: #999;
-		font-size: 10pt;
-		border: 1px dashed #ccc;
-		border-radius: 4px;
+	.card-body {
+		flex: 1;
+		overflow: hidden;
+		font-size: 8pt;
+		line-height: 1.4;
 	}
 
-	/* ===== PRINT MEDIA ===== */
+	.card-description {
+		margin: 0 0 5px 0;
+		color: var(--color-text);
+		font-size: 8pt;
+	}
+
+	.card-ziele h3,
+	.card-anleitung h3 {
+		font-size: 8pt;
+		font-weight: 600;
+		margin: 0 0 2px 0;
+		color: var(--color-text);
+		text-transform: uppercase;
+		letter-spacing: 0.03em;
+	}
+
+	.card-ziele ul {
+		margin: 0 0 5px 0;
+		padding-left: 10px;
+		list-style: none;
+	}
+
+	.card-ziele li {
+		margin-bottom: 1px;
+		position: relative;
+		font-size: 7pt;
+		line-height: 1.3;
+	}
+
+	.card-ziele li::before {
+		content: '•';
+		position: absolute;
+		left: -8px;
+		color: #1565C0;
+		font-weight: bold;
+	}
+
+	.card-anleitung ol {
+		margin: 0 0 5px 0;
+		padding-left: 12px;
+		font-size: 7pt;
+		line-height: 1.3;
+	}
+
+	.card-anleitung li {
+		margin-bottom: 1px;
+	}
+
+	.card-dauer {
+		margin-top: 4px;
+		font-size: 7.5pt;
+		color: var(--color-text);
+	}
+
+	.card-footer {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-top: 4px;
+		padding-top: 4px;
+		border-top: 1px solid var(--color-gray-200);
+	}
+
+	.qr-code-small {
+		width: 70px;
+		height: 70px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	/* Responsive */
+	@media (max-width: 768px) {
+		.taktik-page {
+			padding: var(--spacing-md);
+		}
+
+		.filter-controls {
+			flex-direction: column;
+			align-items: stretch;
+		}
+
+		.button-group {
+			width: 100%;
+		}
+
+		.btn {
+			flex: 1;
+		}
+
+		.uebungen-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* ===== PRINT STYLES ===== */
 	@media print {
 		.print-hide {
 			display: none !important;
 		}
 
-		.page-container {
+		.taktik-page {
 			max-width: none;
 			padding: 0;
 			margin: 0;
 		}
 
-		.print-pages {
-			display: block;
-		}
-
-		.print-page {
-			page-break-after: always;
-			break-after: page;
-			padding: 0;
-		}
-
-		.print-page:last-child {
-			page-break-after: avoid;
-			break-after: avoid;
+		.print-cards {
+			display: grid;
+			grid-template-columns: repeat(1, 126mm);
+			grid-auto-rows: 88mm;
+			gap: 5mm;
+			padding: 10mm;
 		}
 
 		@page {
-			size: A4 portrait;
-			margin: 15mm;
+			size: A4;
+			margin: 10mm;
+		}
+
+		.card-wrapper-double {
+			width: 126mm;
+			height: 88mm;
+		}
+
+		.exercise-card {
+			box-shadow: 0 0 0 0.5pt var(--color-gray-300);
+		}
+
+		.card-wrapper-double {
+			break-inside: avoid;
+			page-break-inside: avoid;
 		}
 	}
 </style>
