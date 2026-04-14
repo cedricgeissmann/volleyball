@@ -36,6 +36,12 @@ export const PLAYER_MOVE_STYLES = {
  * @type {Record<string, {color: string, width: number, dashArray: string, label: string}>}
  */
 export const BALL_MOVE_STYLES = {
+	ball: {
+		color: '#757575',
+		width: 3,
+		dashArray: '6,4',
+		label: 'Ball (gespielt)',
+	},
 	angriff: {
 		color: '#D32F2F',
 		width: 4,
@@ -58,7 +64,19 @@ export const BALL_MOVE_STYLES = {
 		color: '#2E7D32',
 		width: 3,
 		dashArray: '8,5',
-		label: 'Pass',
+		label: 'Zuspiel',
+	},
+	annahme: {
+		color: '#00897B',
+		width: 3,
+		dashArray: '8,5',
+		label: 'Annahme',
+	},
+	verteidigung: {
+		color: '#0277BD',
+		width: 3,
+		dashArray: '5,4',
+		label: 'Verteidigung',
 	},
 	gratisball: {
 		color: '#558B2F',
@@ -76,7 +94,7 @@ export const BALL_MOVE_STYLES = {
 
 /** Standard-Stil wenn kein moveType angegeben */
 export const DEFAULT_PLAYER_STYLE = PLAYER_MOVE_STYLES.lauf;
-export const DEFAULT_BALL_STYLE = BALL_MOVE_STYLES.pass;
+export const DEFAULT_BALL_STYLE = BALL_MOVE_STYLES.ball;
 
 // ---------------------------------------------------------------------------
 // Koordinaten-Helpers
@@ -180,8 +198,54 @@ export function getTotalDuration(animation) {
  * @property {number} y2 - Endpunkt Y (normalisiert)
  * @property {string} moveType - Bewegungstyp
  * @property {number} stepIndex - Schritt-Index aus dem dieser Pfeil stammt
- * @property {number} arrowIndex - Globaler Pfeil-Index (für Nummerierung)
+ * @property {number} arrowIndex - Übergangs-Nummer (1-basiert, alle Pfeile eines Übergangs teilen diese Nummer)
  */
+
+/**
+ * Generiert die Pfeile für einen einzelnen Übergang (von steps[i] nach steps[i+1]).
+ * @param {import('./taktikEngine.js').TaktikAnimation} animation
+ * @param {Record<string, {type: string, label?: string, team?: string}>} objects
+ * @param {number} transitionIndex - Index des Ausgangsschritts (0-basiert)
+ * @returns {Arrow[]}
+ */
+export function generateArrowsForTransition(animation, objects, transitionIndex) {
+	const arrows = [];
+	const steps = animation.steps;
+	if (!steps || steps.length < 2) return arrows;
+	if (transitionIndex < 0 || transitionIndex >= steps.length - 1) return arrows;
+
+	const stepFrom = steps[transitionIndex];
+	const stepTo = steps[transitionIndex + 1];
+	const arrowOverrides = stepFrom.arrows ?? {};
+	const transitionNumber = transitionIndex + 1;
+
+	for (const objectId of Object.keys(stepFrom.positions)) {
+		const posFrom = stepFrom.positions[objectId];
+		const posTo = stepTo.positions[objectId];
+		if (!posTo) continue;
+		const dx = posTo.x - posFrom.x;
+		const dy = posTo.y - posFrom.y;
+		if (Math.sqrt(dx * dx + dy * dy) < 0.005) continue;
+
+		const objectDef = objects[objectId];
+		const objectType = objectDef?.type ?? 'player';
+		const arrowOverride = arrowOverrides[objectId];
+		const moveType = arrowOverride?.moveType ?? (objectType === 'ball' ? 'ball' : 'lauf');
+
+		arrows.push({
+			objectId,
+			objectType,
+			x1: posFrom.x,
+			y1: posFrom.y,
+			x2: posTo.x,
+			y2: posTo.y,
+			moveType,
+			stepIndex: transitionIndex,
+			arrowIndex: transitionNumber,
+		});
+	}
+	return arrows;
+}
 
 /**
  * Generiert alle Pfeile aus der Animation (für Playback: nur bis zum aktuellen Schritt).
@@ -197,11 +261,12 @@ export function generateArrows(animation, objects, upToStepIndex = -1) {
 
 	const limit = upToStepIndex === -1 ? steps.length - 1 : Math.min(upToStepIndex, steps.length - 1);
 
-	let arrowIndex = 1;
 	for (let i = 0; i < limit; i++) {
 		const stepFrom = steps[i];
 		const stepTo = steps[i + 1];
 		const arrowOverrides = stepFrom.arrows ?? {};
+		// Übergangs-Nummer (1-basiert): alle Pfeile eines Übergangs teilen diese Nummer
+		const transitionNumber = i + 1;
 
 		for (const objectId of Object.keys(stepFrom.positions)) {
 			const posFrom = stepFrom.positions[objectId];
@@ -217,7 +282,7 @@ export function generateArrows(animation, objects, upToStepIndex = -1) {
 			const objectDef = objects[objectId];
 			const objectType = objectDef?.type ?? 'player';
 			const arrowOverride = arrowOverrides[objectId];
-			const moveType = arrowOverride?.moveType ?? (objectType === 'ball' ? 'pass' : 'lauf');
+			const moveType = arrowOverride?.moveType ?? (objectType === 'ball' ? 'ball' : 'lauf');
 
 			arrows.push({
 				objectId,
@@ -228,7 +293,7 @@ export function generateArrows(animation, objects, upToStepIndex = -1) {
 				y2: posTo.y,
 				moveType,
 				stepIndex: i,
-				arrowIndex: arrowIndex++,
+				arrowIndex: transitionNumber,
 			});
 		}
 	}

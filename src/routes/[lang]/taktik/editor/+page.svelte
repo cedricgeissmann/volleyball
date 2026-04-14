@@ -16,11 +16,38 @@
 	import { onMount } from 'svelte';
 	import TaktikBoard from '$lib/components/uebungen/taktik/TaktikBoard.svelte';
 	import TaktikAnimation from '$lib/components/uebungen/taktik/TaktikAnimation.svelte';
+	import TaktikPrintView from '$lib/components/uebungen/taktik/TaktikPrintView.svelte';
 	import {
 		generateArrows,
 		PLAYER_MOVE_STYLES,
 		BALL_MOVE_STYLES,
 	} from '$lib/utils/taktikEngine.js';
+
+	// ---------------------------------------------------------------------------
+	// Hilfsfunktion: Objekte die sich zwischen zwei Schritten bewegen
+	// ---------------------------------------------------------------------------
+
+	/**
+	 * Gibt alle Objekt-IDs zurück, die sich zwischen step[i] und step[i+1] bewegen.
+	 * @param {number} fromStepIndex
+	 * @returns {string[]}
+	 */
+	function getMovingObjects(fromStepIndex) {
+		const steps = animation.steps;
+		if (fromStepIndex >= steps.length - 1) return [];
+		const from = steps[fromStepIndex];
+		const to = steps[fromStepIndex + 1];
+		const moving = [];
+		for (const id of Object.keys(from.positions)) {
+			const posFrom = from.positions[id];
+			const posTo = to.positions[id];
+			if (!posTo) continue;
+			const dx = posTo.x - posFrom.x;
+			const dy = posTo.y - posFrom.y;
+			if (Math.sqrt(dx * dx + dy * dy) >= 0.005) moving.push(id);
+		}
+		return moving;
+	}
 	import {
 		saveDraft,
 		loadDraft,
@@ -47,11 +74,18 @@
 
 	let activeStepIndex = $state(0);
 
+	/**
+	 * Aufgeklappte Übergänge (Set von Schritt-Indizes i, d.h. Übergang von steps[i] nach steps[i+1])
+	 * @type {Set<number>}
+	 */
+	let expandedTransitions = $state(new Set([0]));
+
 	/** @type {'select' | 'player-home' | 'player-away' | 'ball'} */
 	let activeTool = $state('select');
 
 	let nextPlayerLabel = $state('A');
 	let showPreview = $state(false);
+	let showPrint = $state(false);
 	let showDraftPanel = $state(false);
 	let importError = $state('');
 	let saveStatus = $state(/** @type {'idle'|'saved'|'error'} */('idle'));
@@ -75,7 +109,7 @@
 		beschreibung: '',
 		objects: {},
 		zones: [],
-		steps: [{ duration: 0, positions: {} }],
+		steps: [{ duration: 1500, positions: {} }],
 	});
 
 	// Court-Typ mit Animation sync halten
@@ -87,10 +121,23 @@
 	// Initialisierung: URL-Parameter auswerten
 	// ---------------------------------------------------------------------------
 
+	/**
+	 * Setzt die URL auf ?draft=<id> ohne Seitenreload (für Reload-Persistenz)
+	 * @param {string} id
+	 */
+	function updateUrlDraftId(id) {
+		const url = new URL(window.location.href);
+		url.searchParams.set('draft', id);
+		// Alle anderen Parameter entfernen (fork etc.)
+		url.searchParams.delete('fork');
+		url.searchParams.delete('title');
+		history.replaceState(null, '', url.toString());
+	}
+
 	onMount(() => {
 		allDrafts = loadAllDrafts();
 
-		// Bestehenden Entwurf laden
+		// 1. Expliziter ?draft=<id> Parameter → diesen Entwurf laden
 		if (draftIdParam) {
 			const draft = loadDraft(draftIdParam);
 			if (draft) {
@@ -99,13 +146,11 @@
 			}
 		}
 
-		// Fork einer bestehenden Übung
+		// 2. Fork einer bestehenden Übung
 		if (forkSourceId) {
 			currentSourceId = forkSourceId;
 			currentSourceTitel = forkSourceTitel || forkSourceId;
 			currentDraftTitel = `${currentSourceTitel} (Entwurf)`;
-			// Die Animationsdaten kommen via postMessage von der Detailseite ODER
-			// via sessionStorage (robustere Methode für statische Sites)
 			const sessionData = sessionStorage.getItem('taktik-fork-data');
 			if (sessionData) {
 				try {
@@ -121,6 +166,14 @@
 			}
 			return;
 		}
+
+		// 3. Kein URL-Parameter → letzten gespeicherten Entwurf laden
+		if (allDrafts.length > 0) {
+			loadDraftIntoEditor(allDrafts[0]);
+			return;
+		}
+
+		// 4. Noch gar keine Entwürfe → leerer Zustand bleibt
 	});
 
 	// ---------------------------------------------------------------------------
@@ -148,6 +201,10 @@
 				sourceId: currentSourceId,
 				sourceTitel: currentSourceTitel,
 			});
+			// URL aktualisieren wenn neue Draft-ID vergeben wurde
+			if (draft.id !== currentDraftId) {
+				updateUrlDraftId(draft.id);
+			}
 			currentDraftId = draft.id;
 			allDrafts = loadAllDrafts();
 			saveStatus = 'saved';
@@ -170,6 +227,7 @@
 		currentSourceTitel = draft.sourceTitel;
 		activeStepIndex = 0;
 		showDraftPanel = false;
+		updateUrlDraftId(draft.id);
 	}
 
 	function newDraft() {
@@ -185,11 +243,17 @@
 			beschreibung: '',
 			objects: {},
 			zones: [],
-			steps: [{ duration: 0, positions: {} }],
+			steps: [{ duration: 1500, positions: {} }],
 		};
 		nextPlayerLabel = 'A';
 		activeStepIndex = 0;
 		showDraftPanel = false;
+		// URL-Parameter zurücksetzen (neuer Entwurf hat noch keine ID)
+		const url = new URL(window.location.href);
+		url.searchParams.delete('draft');
+		url.searchParams.delete('fork');
+		url.searchParams.delete('title');
+		history.replaceState(null, '', url.toString());
 	}
 
 	function removeDraft(/** @type {string} */ id) {
@@ -368,19 +432,65 @@
 
 	function addStep() {
 		const last = animation.steps[animation.steps.length - 1];
+		const newIndex = animation.steps.length - 1; // Übergang vom letzten zum neuen Schritt
 		animation.steps = [...animation.steps, { duration: 1500, positions: { ...last.positions } }];
 		activeStepIndex = animation.steps.length - 1;
+		// Neuen Übergang automatisch aufklappen
+		expandedTransitions = new Set([...expandedTransitions, newIndex]);
 	}
 
 	function removeStep(/** @type {number} */ i) {
 		if (animation.steps.length <= 1) return;
 		animation.steps = animation.steps.filter((_, idx) => idx !== i);
 		if (activeStepIndex >= animation.steps.length) activeStepIndex = animation.steps.length - 1;
+		// Übergänge neu nummerieren
+		const newExpanded = new Set();
+		for (const idx of expandedTransitions) {
+			if (idx < i) newExpanded.add(idx);
+			else if (idx > i) newExpanded.add(idx - 1);
+		}
+		expandedTransitions = newExpanded;
 	}
 
 	function updateStepDuration(/** @type {number} */ i, /** @type {string|number} */ v) {
 		const steps = [...animation.steps];
 		steps[i] = { ...steps[i], duration: Number(v) };
+		animation.steps = steps;
+	}
+
+	function toggleTransition(/** @type {number} */ i) {
+		const next = new Set(expandedTransitions);
+		if (next.has(i)) next.delete(i);
+		else next.add(i);
+		expandedTransitions = next;
+	}
+
+	/**
+	 * Löscht einen einzelnen Pfeil im Übergang i→i+1, indem die Position
+	 * des Objekts in steps[i+1] auf die gleiche wie in steps[i] gesetzt wird.
+	 * Auch allfällige moveType-Überschreibung wird entfernt.
+	 * @param {string} objectId
+	 * @param {number} fromStepIndex
+	 */
+	function removeArrow(objectId, fromStepIndex) {
+		const steps = [...animation.steps];
+		const posFrom = steps[fromStepIndex]?.positions[objectId];
+		if (!posFrom) return;
+
+		// Position im Zielschritt auf Startposition setzen → kein Pfeil mehr
+		const toStep = { ...steps[fromStepIndex + 1] };
+		toStep.positions = { ...toStep.positions, [objectId]: { ...posFrom } };
+
+		// Allfällige moveType-Überschreibung für dieses Objekt im Ausgangsschritt löschen
+		const fromStep = { ...steps[fromStepIndex] };
+		if (fromStep.arrows?.[objectId]) {
+			const arrows = { ...fromStep.arrows };
+			delete arrows[objectId];
+			fromStep.arrows = arrows;
+		}
+
+		steps[fromStepIndex] = fromStep;
+		steps[fromStepIndex + 1] = toStep;
 		animation.steps = steps;
 	}
 
@@ -405,14 +515,14 @@
 	// Pfeile
 	// ---------------------------------------------------------------------------
 
-	function setArrowType(/** @type {string} */ objectId, /** @type {string} */ moveType) {
+	function setArrowType(/** @type {string} */ objectId, /** @type {string} */ moveType, /** @type {number} */ stepIndex) {
 		const steps = [...animation.steps];
-		const step = { ...steps[activeStepIndex] };
+		const step = { ...steps[stepIndex] };
 		const arrows = { ...(step.arrows ?? {}) };
 		if (moveType) { arrows[objectId] = { moveType }; }
 		else { delete arrows[objectId]; }
 		step.arrows = arrows;
-		steps[activeStepIndex] = step;
+		steps[stepIndex] = step;
 		animation.steps = steps;
 	}
 
@@ -424,7 +534,7 @@
 	<title>Taktikboard Editor – TV Muttenz Volleyball</title>
 </svelte:head>
 
-<div class="editor-page">
+<div class="editor-page" class:print-active={showPreview && showPrint}>
 
 	<!-- ===== HEADER ===== -->
 	<div class="editor-header">
@@ -527,7 +637,23 @@
 	{#if showPreview}
 		<!-- ===== VORSCHAU ===== -->
 		<div class="preview-mode">
-			<TaktikAnimation {animation} autoplay={false} maxWidth={600} />
+			<div class="preview-toggle">
+				<button
+					class="btn-option"
+					class:active={!showPrint}
+					onclick={() => showPrint = false}
+				>Animation</button>
+				<button
+					class="btn-option"
+					class:active={showPrint}
+					onclick={() => showPrint = true}
+				>Druckansicht</button>
+			</div>
+			{#if showPrint}
+				<TaktikPrintView {animation} titel={currentDraftTitel} beschreibung={animation.beschreibung} />
+			{:else}
+				<TaktikAnimation {animation} autoplay={false} maxWidth={600} />
+			{/if}
 		</div>
 	{:else}
 		<!-- ===== EDITOR ===== -->
@@ -600,27 +726,6 @@
 										<span class="object-name">Ball</span>
 									{/if}
 
-									<!-- Pfeil-Typ für aktuellen Schritt (nicht letzter Schritt) -->
-									{#if activeStepIndex < animation.steps.length - 1}
-										<select
-											class="arrow-select"
-											value={activeStep.arrows?.[id]?.moveType ?? ''}
-											onchange={(e) => setArrowType(id, e.currentTarget.value)}
-											title="Bewegungstyp ab diesem Schritt"
-										>
-											<option value="">Standard</option>
-											{#if obj.type === 'ball'}
-												{#each allBallMoveTypes as [key, style]}
-													<option value={key}>{style.label}</option>
-												{/each}
-											{:else}
-												{#each allPlayerMoveTypes as [key, style]}
-													<option value={key}>{style.label}</option>
-												{/each}
-											{/if}
-										</select>
-									{/if}
-
 									<button class="btn-icon btn-danger-sm" onclick={() => removeObject(id)} title="Entfernen">✕</button>
 								</div>
 							{/each}
@@ -628,29 +733,98 @@
 					{/if}
 				</div>
 
-				<!-- Schritte -->
+				<!-- Konfigurationen & Übergänge -->
 				<div class="sidebar-section">
-					<h3>Schritte</h3>
+					<h3>Konfigurationen</h3>
 					<div class="steps-list">
 						{#each animation.steps as step, i}
-							<div class="step-row" class:active={i === activeStepIndex}>
-								<button class="step-btn" onclick={() => activeStepIndex = i}>
-									{i + 1}
+							<!-- Konfiguration -->
+							<div class="konfig-row" class:active={i === activeStepIndex}>
+								<button class="konfig-btn" onclick={() => activeStepIndex = i}>
+									<span class="konfig-icon">■</span>
+									Konfiguration {i + 1}
 								</button>
-								<input
-									type="number" min="0" max="10000" step="100"
-									value={step.duration}
-									class="duration-input"
-									title="Dauer in ms bis zum nächsten Schritt"
-									onchange={(e) => updateStepDuration(i, e.currentTarget.value)}
-								/>
-								<span class="ms-label">ms</span>
 								{#if animation.steps.length > 1}
-									<button class="btn-icon btn-danger-sm" onclick={() => removeStep(i)} title="Schritt löschen">✕</button>
+									<button class="btn-icon btn-danger-sm" onclick={() => removeStep(i)} title="Konfiguration löschen">✕</button>
 								{/if}
 							</div>
+
+							<!-- Übergang (nach jeder Konfiguration ausser der letzten) -->
+							{#if i < animation.steps.length - 1}
+								{@const movingIds = getMovingObjects(i)}
+								<div class="transition-block">
+									<button
+										class="transition-header"
+										onclick={() => toggleTransition(i)}
+										title="Übergang konfigurieren"
+									>
+										<span class="transition-arrow">→</span>
+										<span class="transition-label">Übergang</span>
+										<input
+											type="number" min="0" max="10000" step="100"
+											value={step.duration}
+											class="duration-input"
+											title="Dauer in ms"
+											onclick={(e) => e.stopPropagation()}
+											onchange={(e) => { e.stopPropagation(); updateStepDuration(i, e.currentTarget.value); }}
+										/>
+										<span class="ms-label">ms</span>
+										<span class="transition-chevron" class:open={expandedTransitions.has(i)}>▾</span>
+									</button>
+
+									{#if expandedTransitions.has(i)}
+										<div class="transition-body">
+											{#if movingIds.length === 0}
+												<p class="hint-sm">Keine Bewegung in diesem Übergang.</p>
+											{:else}
+												{#each movingIds as id}
+													{@const obj = animation.objects[id]}
+													{@const currentMoveType = step.arrows?.[id]?.moveType ?? ''}
+													{@const moveTypes = obj?.type === 'ball' ? allBallMoveTypes : allPlayerMoveTypes}
+													{@const defaultKey = obj?.type === 'ball' ? 'ball' : 'lauf'}
+													{@const activeKey = currentMoveType || defaultKey}
+													<div class="transition-object-row">
+														<span
+															class="object-dot-sm"
+															style="background: {obj?.type === 'ball' ? '#555' : obj?.team === 'away' ? '#C62828' : '#1565C0'}"
+														>{obj?.type === 'ball' ? '●' : (obj?.label ?? '?')}</span>
+														<div class="move-type-picker">
+															{#each moveTypes as [key, style]}
+																<button
+																	class="move-type-btn"
+																	class:active={activeKey === key}
+																	style="--swatch-color: {style.color}"
+																	title={style.label}
+																	onclick={() => setArrowType(id, key === defaultKey ? '' : key, i)}
+																>
+																	<svg width="22" height="8" aria-hidden="true">
+																		<line
+																			x1="0" y1="4" x2="16" y2="4"
+																			stroke={style.color}
+																			stroke-width={style.width}
+																			stroke-dasharray={style.dashArray === 'none' ? undefined : style.dashArray}
+																			stroke-linecap="round"
+																		/>
+																		<polygon points="16,4 11,1.5 11,6.5" fill={style.color} />
+																	</svg>
+																	<span class="move-type-label">{style.label}</span>
+																</button>
+															{/each}
+														</div>
+														<button
+															class="btn-icon btn-danger-sm"
+															onclick={() => removeArrow(id, i)}
+															title="Weg löschen"
+														>✕</button>
+													</div>
+												{/each}
+											{/if}
+										</div>
+									{/if}
+								</div>
+							{/if}
 						{/each}
-						<button class="btn-add-step" onclick={addStep}>+ Schritt</button>
+						<button class="btn-add-step" onclick={addStep}>+ Konfiguration</button>
 					</div>
 				</div>
 
@@ -667,8 +841,9 @@
 			<!-- BOARD -->
 			<div class="board-area">
 				<div class="board-hint">
+					<span class="board-hint-badge">■ Konfiguration {activeStepIndex + 1}</span>
 					{#if activeTool === 'select'}
-						Spieler/Ball ziehen um zu verschieben (Schritt {activeStepIndex + 1})
+						Spieler/Ball ziehen um zu verschieben
 					{:else if activeTool === 'ball'}
 						Klicken um den Ball zu platzieren
 					{:else}
@@ -704,16 +879,18 @@
 							{/await}
 						{/if}
 
-						<!-- Pfeile -->
-						{#each previewArrows as arrow (arrow.objectId + '-' + arrow.stepIndex)}
-							{#await import('$lib/components/uebungen/taktik/TaktikArrow.svelte') then { default: TaktikArrow }}
-								<TaktikArrow
-									x1={arrow.x1} y1={arrow.y1} x2={arrow.x2} y2={arrow.y2}
-									moveType={arrow.moveType} objectType={arrow.objectType}
-									fieldWidth={FIELD_W} fieldHeight={fieldHeight}
-								/>
-							{/await}
-						{/each}
+					<!-- Pfeile -->
+					{#each previewArrows as arrow (arrow.objectId + '-' + arrow.stepIndex)}
+						{#await import('$lib/components/uebungen/taktik/TaktikArrow.svelte') then { default: TaktikArrow }}
+							<TaktikArrow
+								x1={arrow.x1} y1={arrow.y1} x2={arrow.x2} y2={arrow.y2}
+								moveType={arrow.moveType} objectType={arrow.objectType}
+								fieldWidth={FIELD_W} fieldHeight={fieldHeight}
+								arrowIndex={arrow.arrowIndex}
+								showNumber={true}
+							/>
+						{/await}
+					{/each}
 
 						<!-- Objekte -->
 						{#each Object.entries(animation.objects) as [id, obj] (id)}
@@ -1129,6 +1306,14 @@
 		flex-shrink: 0;
 	}
 
+	.object-dot-sm {
+		display: inline-flex; align-items: center; justify-content: center;
+		width: 16px; height: 16px;
+		border-radius: 50%;
+		font-size: 9px; font-weight: bold; color: white;
+		flex-shrink: 0;
+	}
+
 	.label-input {
 		width: 36px;
 		padding: 1px 3px;
@@ -1144,45 +1329,157 @@
 		color: var(--color-text-secondary);
 	}
 
-	.arrow-select {
+	/* Bewegungstyp-Picker (Farb-Swatches) */
+	.move-type-picker {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 2px;
 		flex: 1;
-		font-size: 10px;
-		padding: 1px 2px;
-		border: 1px solid var(--color-gray-300);
-		border-radius: var(--radius-sm);
 		min-width: 0;
 	}
 
-	/* Schritte */
+	.move-type-btn {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1px;
+		padding: 3px 4px;
+		border-radius: var(--radius-sm);
+		border: 1.5px solid transparent;
+		background: var(--color-gray-50);
+		cursor: pointer;
+		transition: all var(--transition-fast);
+		min-width: 0;
+	}
+	.move-type-btn:hover {
+		background: var(--color-gray-100);
+		border-color: var(--color-gray-300);
+	}
+	.move-type-btn.active {
+		background: color-mix(in srgb, var(--swatch-color) 12%, white);
+		border-color: var(--swatch-color);
+	}
+
+	.move-type-label {
+		font-size: 9px;
+		color: var(--color-text-secondary);
+		white-space: nowrap;
+		line-height: 1;
+	}
+	.move-type-btn.active .move-type-label {
+		color: var(--swatch-color);
+		font-weight: var(--font-weight-bold);
+	}
+
+	/* Konfigurationen & Übergänge */
 	.steps-list {
 		display: flex;
 		flex-direction: column;
-		gap: 3px;
+		gap: 2px;
 	}
 
-	.step-row {
+	/* Konfiguration-Zeile */
+	.konfig-row {
 		display: flex;
 		align-items: center;
 		gap: 4px;
 	}
 
-	.step-btn {
-		width: 24px; height: 24px;
+	.konfig-btn {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 5px var(--space-sm);
 		border-radius: var(--radius-sm);
 		border: 1.5px solid var(--color-gray-300);
 		background: var(--color-background);
 		font-size: var(--font-size-xs);
-		font-weight: var(--font-weight-bold);
+		font-weight: var(--font-weight-medium);
 		cursor: pointer;
 		transition: all var(--transition-fast);
+		text-align: left;
+	}
+	.konfig-row.active .konfig-btn {
+		background: var(--color-primary);
+		color: white;
+		border-color: var(--color-primary);
+	}
+	.konfig-btn:not(.konfig-row.active .konfig-btn):hover {
+		background: var(--color-gray-100);
+	}
+
+	.konfig-icon {
+		font-size: 8px;
+		opacity: 0.7;
+	}
+
+	/* Übergangs-Block */
+	.transition-block {
+		margin-left: 10px;
+		border-left: 2px solid var(--color-gray-200);
+		padding-left: 8px;
+	}
+
+	.transition-header {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		width: 100%;
+		padding: 3px var(--space-xs);
+		background: none;
+		border: none;
+		cursor: pointer;
+		border-radius: var(--radius-sm);
+		transition: background var(--transition-fast);
+		text-align: left;
+	}
+	.transition-header:hover { background: var(--color-gray-100); }
+
+	.transition-arrow {
+		font-size: 12px;
+		color: var(--color-text-secondary);
 		flex-shrink: 0;
 	}
-	.step-row.active .step-btn {
-		background: var(--color-primary); color: white; border-color: var(--color-primary);
+
+	.transition-label {
+		font-size: 10px;
+		color: var(--color-text-secondary);
+		flex-shrink: 0;
+	}
+
+	.transition-chevron {
+		font-size: 12px;
+		color: var(--color-text-muted);
+		margin-left: auto;
+		transition: transform var(--transition-fast);
+	}
+	.transition-chevron.open {
+		transform: rotate(180deg);
+	}
+
+	.transition-body {
+		padding: 4px 0 6px 4px;
+		display: flex;
+		flex-direction: column;
+		gap: 3px;
+	}
+
+	.transition-object-row {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+	}
+
+	.hint-sm {
+		font-size: 10px;
+		color: var(--color-text-muted);
+		margin: 0;
+		padding: 2px 0;
 	}
 
 	.duration-input {
-		width: 58px;
+		width: 52px;
 		padding: 2px 4px;
 		border: 1px solid var(--color-gray-300);
 		border-radius: var(--radius-sm);
@@ -1205,7 +1502,7 @@
 		color: var(--color-text-secondary);
 		cursor: pointer;
 		transition: all var(--transition-fast);
-		margin-top: 2px;
+		margin-top: 4px;
 	}
 	.btn-add-step:hover { border-color: var(--color-primary); color: var(--color-primary); }
 
@@ -1223,12 +1520,26 @@
 	}
 
 	.board-hint {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
 		font-size: var(--font-size-sm);
 		color: var(--color-text-secondary);
 		background: var(--color-gray-50);
 		padding: var(--space-xs) var(--space-md);
 		border-radius: var(--radius-md);
 		border: 1px solid var(--color-gray-200);
+	}
+
+	.board-hint-badge {
+		font-size: var(--font-size-xs);
+		font-weight: var(--font-weight-bold);
+		padding: 2px var(--space-xs);
+		background: var(--color-primary);
+		color: white;
+		border-radius: var(--radius-sm);
+		white-space: nowrap;
+		flex-shrink: 0;
 	}
 
 	.board-container {
@@ -1263,11 +1574,45 @@
 
 	/* Vorschau */
 	.preview-mode {
-		max-width: 600px;
+		max-width: 640px;
 		margin-inline: auto;
 		flex: 1;
 		min-height: 0;
 		overflow-y: auto;
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+	}
+
+	.preview-toggle {
+		display: flex;
+		gap: 4px;
+		align-self: center;
+	}
+
+	/* Druck */
+	@media print {
+		/* Alles ausblenden – nur Druckansicht bleibt */
+		.editor-header,
+		.draft-manager,
+		.preview-toggle,
+		.editor-layout {
+			display: none !important;
+		}
+
+		/* editor-page: kein Overflow, kein festes Height */
+		.editor-page {
+			height: auto;
+			overflow: visible;
+			background: white;
+		}
+
+		/* Wenn Druckansicht aktiv: preview-mode auf volle Seite */
+		.print-active .preview-mode {
+			max-width: 100%;
+			margin: 0;
+			overflow: visible;
+		}
 	}
 
 	/* Responsive */

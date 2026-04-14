@@ -8,8 +8,7 @@
 	import {
 		getPositionsAtTime,
 		getTotalDuration,
-		generateArrows,
-		getStartPositions,
+		generateArrowsForTransition,
 	} from '$lib/utils/taktikEngine.js';
 
 	/** @typedef {import('$lib/utils/taktikEngine.js').TaktikAnimation} TaktikAnimation */
@@ -43,9 +42,11 @@
 	const currentPositions = $derived(currentState.positions);
 	const currentStepIndex = $derived(currentState.stepIndex);
 
-	// Pfeile: alle abgeschlossenen Schritte + laufender Schritt
+	// Pfeile: nur der aktive Übergang (sobald er läuft, also progress > 0)
 	const visibleArrows = $derived(
-		generateArrows(animation, animation.objects, currentStepIndex + (currentState.progress < 0.05 ? 0 : 1))
+		currentState.progress > 0
+			? generateArrowsForTransition(animation, animation.objects, currentStepIndex)
+			: []
 	);
 
 	// Fortschritts-Prozent
@@ -247,35 +248,47 @@
 					</span>
 				</div>
 			</div>
-			<div class="legend-section">
-				<span class="legend-title">Ballwege</span>
-				<div class="legend-items">
-					<span class="legend-item">
-						<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#D32F2F" stroke-width="4" stroke-dasharray="7,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#D32F2F" /></svg>
-						Angriff
-					</span>
-					<span class="legend-item">
-						<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#E64A19" stroke-width="3" stroke-dasharray="5,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#E64A19" /></svg>
-						Finte
-					</span>
-					<span class="legend-item">
-						<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#F57C00" stroke-width="3" stroke-dasharray="11,5" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#F57C00" /></svg>
-						Downball
-					</span>
-					<span class="legend-item">
-						<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#2E7D32" stroke-width="3" stroke-dasharray="7,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#2E7D32" /></svg>
-						Pass
-					</span>
-					<span class="legend-item">
-						<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#558B2F" stroke-width="3" stroke-dasharray="3,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#558B2F" /></svg>
-						Gratisball
-					</span>
-					<span class="legend-item">
-						<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#6A1B9A" stroke-width="3" stroke-dasharray="7,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#6A1B9A" /></svg>
-						Aufschlag
-					</span>
-				</div>
+		<div class="legend-section">
+			<span class="legend-title">Ballwege</span>
+			<div class="legend-items">
+				<span class="legend-item">
+					<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#757575" stroke-width="3" stroke-dasharray="6,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#757575" /></svg>
+					Ball (gespielt)
+				</span>
+				<span class="legend-item">
+					<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#D32F2F" stroke-width="4" stroke-dasharray="8,5" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#D32F2F" /></svg>
+					Angriff
+				</span>
+				<span class="legend-item">
+					<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#E64A19" stroke-width="3" stroke-dasharray="5,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#E64A19" /></svg>
+					Finte
+				</span>
+				<span class="legend-item">
+					<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#F57C00" stroke-width="3" stroke-dasharray="12,5" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#F57C00" /></svg>
+					Downball
+				</span>
+				<span class="legend-item">
+					<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#2E7D32" stroke-width="3" stroke-dasharray="8,5" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#2E7D32" /></svg>
+					Zuspiel
+				</span>
+				<span class="legend-item">
+					<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#00897B" stroke-width="3" stroke-dasharray="8,5" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#00897B" /></svg>
+					Annahme
+				</span>
+				<span class="legend-item">
+					<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#0277BD" stroke-width="3" stroke-dasharray="5,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#0277BD" /></svg>
+					Verteidigung
+				</span>
+				<span class="legend-item">
+					<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#558B2F" stroke-width="3" stroke-dasharray="3,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#558B2F" /></svg>
+					Gratisball
+				</span>
+				<span class="legend-item">
+					<svg width="28" height="10"><line x1="0" y1="5" x2="22" y2="5" stroke="#6A1B9A" stroke-width="3" stroke-dasharray="8,5" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#6A1B9A" /></svg>
+					Aufschlag
+				</span>
 			</div>
+		</div>
 		</div>
 	{/if}
 </div>

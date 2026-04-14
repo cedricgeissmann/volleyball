@@ -63,14 +63,18 @@
 					<span>Lauf</span>
 				</div>
 				<div class="legend-row">
-					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#90CAF9" stroke-width="2" stroke-dasharray="5,3" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#90CAF9" /></svg>
+					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#90CAF9" stroke-width="2" stroke-dasharray="6,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#90CAF9" /></svg>
 					<span>Schritt</span>
 				</div>
 			</div>
 			<div class="legend-col">
 				<strong>Ballwege</strong>
 				<div class="legend-row">
-					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#D32F2F" stroke-width="4" stroke-dasharray="7,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#D32F2F" /></svg>
+					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#757575" stroke-width="3" stroke-dasharray="6,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#757575" /></svg>
+					<span>Ball (gespielt)</span>
+				</div>
+				<div class="legend-row">
+					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#D32F2F" stroke-width="4" stroke-dasharray="8,5" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#D32F2F" /></svg>
 					<span>Angriff</span>
 				</div>
 				<div class="legend-row">
@@ -78,19 +82,27 @@
 					<span>Finte</span>
 				</div>
 				<div class="legend-row">
-					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#F57C00" stroke-width="3" stroke-dasharray="11,5" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#F57C00" /></svg>
+					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#F57C00" stroke-width="3" stroke-dasharray="12,5" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#F57C00" /></svg>
 					<span>Downball</span>
 				</div>
 				<div class="legend-row">
-					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#2E7D32" stroke-width="3" stroke-dasharray="7,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#2E7D32" /></svg>
-					<span>Pass</span>
+					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#2E7D32" stroke-width="3" stroke-dasharray="8,5" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#2E7D32" /></svg>
+					<span>Zuspiel</span>
+				</div>
+				<div class="legend-row">
+					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#00897B" stroke-width="3" stroke-dasharray="8,5" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#00897B" /></svg>
+					<span>Annahme</span>
+				</div>
+				<div class="legend-row">
+					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#0277BD" stroke-width="3" stroke-dasharray="5,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#0277BD" /></svg>
+					<span>Verteidigung</span>
 				</div>
 				<div class="legend-row">
 					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#558B2F" stroke-width="3" stroke-dasharray="3,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#558B2F" /></svg>
 					<span>Gratisball</span>
 				</div>
 				<div class="legend-row">
-					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#6A1B9A" stroke-width="3" stroke-dasharray="7,4" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#6A1B9A" /></svg>
+					<svg width="28" height="10"><line x1="0" y1="5" x2="20" y2="5" stroke="#6A1B9A" stroke-width="3" stroke-dasharray="8,5" stroke-linecap="round" /><polygon points="22,5 16,2 16,8" fill="#6A1B9A" /></svg>
 					<span>Aufschlag</span>
 				</div>
 			</div>
@@ -195,6 +207,10 @@
 
 	/* Druckstile */
 	@media print {
+		.print-view {
+			padding: 0;
+		}
+
 		.print-titel {
 			font-size: 14pt;
 		}
@@ -203,12 +219,37 @@
 			font-size: 9pt;
 		}
 
+		/* Legende und Caption im Druck ausblenden – Legende via QR-Code zugänglich */
 		.print-legend {
-			font-size: 8pt;
+			display: none;
+		}
+
+		.print-board-caption {
+			display: none;
+		}
+
+		/* Board nimmt volle Druckbreite ein */
+		.print-content {
+			display: block;
+		}
+
+		.print-board {
+			width: 100%;
+		}
+
+		.print-anleitung {
+			max-width: 100%;
 		}
 
 		.print-anleitung ol {
 			font-size: 8pt;
+		}
+	}
+
+	/* Board-Wrapper aus TaktikBoard im Druck auf volle Breite */
+	@media print {
+		:global(.print-board .taktik-board-wrapper) {
+			max-width: 100% !important;
 		}
 	}
 </style>
