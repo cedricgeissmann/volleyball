@@ -2,6 +2,7 @@
 	import { base } from '$app/paths';
 	import { parseRepetitions, getRandomReps, formatReps } from '$lib/utils/contentLoader.js';
 	import StickFigureAnimation from '$lib/components/uebungen/animations/StickFigureAnimation.svelte';
+	import TaktikAnimation from '$lib/components/uebungen/taktik/TaktikAnimation.svelte';
 	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
 	import { _ } from 'svelte-i18n';
 
@@ -40,6 +41,11 @@
 			<section class="card animation-card">
 				<h2>{$_('heading_exercise_animation')}</h2>
 				<StickFigureAnimation animationFile={uebung.animation} />
+			</section>
+		{:else if uebung.animationData && uebung.typ === 'taktik'}
+			<section class="card animation-card">
+				<h2>{$_('heading_exercise_animation')}</h2>
+				<TaktikAnimation animation={uebung.animationData} autoplay={false} />
 			</section>
 		{/if}
 
