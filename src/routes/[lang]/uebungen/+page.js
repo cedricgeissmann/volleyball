@@ -1,4 +1,4 @@
-import { loadUebungenWithFallback } from '$lib/utils/contentLoader.js';
+import { loadUebungenWithFallback, loadAnimation } from '$lib/utils/contentLoader.js';
 
 export const prerender = true;
 
@@ -14,8 +14,20 @@ export function entries() {
 export async function load({ params }) {
 	const { lang } = params;
 	const { items: uebungen, isFallback } = await loadUebungenWithFallback(lang);
+
+	// Animationsdaten für alle Übungen parallel laden
+	const uebungenMitAnimation = await Promise.all(
+		uebungen.map(async (/** @type {any} */ uebung) => {
+			if (uebung.animation) {
+				const animationData = await loadAnimation(uebung.animation);
+				return { ...uebung, animationData };
+			}
+			return uebung;
+		})
+	);
+
 	return {
-		uebungen,
+		uebungen: uebungenMitAnimation,
 		isFallback,
 		lang,
 	};
