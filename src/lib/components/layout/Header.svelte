@@ -52,6 +52,13 @@
 				{$_('nav_exercises')}
 			</a>
 			<a
+				href="{base}/{currentLang}/taktik"
+				class:active={$page.url.pathname.includes('/taktik')}
+				on:click={closeMobileMenu}
+			>
+				{$_('nav_taktik')}
+			</a>
+			<a
 				href="{base}/{currentLang}/rollen"
 				class:active={$page.url.pathname.includes('/rollen')}
 				on:click={closeMobileMenu}

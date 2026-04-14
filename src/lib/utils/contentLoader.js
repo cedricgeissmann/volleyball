@@ -403,3 +403,108 @@ export async function loadAnimation(filename) {
 		return null;
 	}
 }
+
+// ---------------------------------------------------------------------------
+// Taktik-Übungen
+// ---------------------------------------------------------------------------
+
+/**
+ * @typedef {Object} TaktikUebung
+ * @property {string} id - Eindeutige ID
+ * @property {string} titel - Titel
+ * @property {string} beschreibung - Beschreibung
+ * @property {string} kategorie - Kategorie
+ * @property {string[]} ziele - Lernziele
+ * @property {string} fokus - Fokus-Bereich
+ * @property {number} [dauer] - Dauer in Minuten
+ * @property {'taktik'} typ - Übungstyp (immer 'taktik')
+ * @property {string} [animation] - Pfad zur .taktik.json Datei
+ * @property {string[]} [anleitung] - Schritt-für-Schritt Anleitung
+ * @property {any} [animationData] - Geladene Animationsdaten (zur Laufzeit befüllt)
+ */
+
+/**
+ * Lädt alle Taktik-Übungen für eine Locale
+ * @param {string} [locale='de']
+ * @returns {Promise<TaktikUebung[]>}
+ */
+export async function loadTaktikUebungen(locale = 'de') {
+	const modules = import.meta.glob('/src/content/uebungen/**/taktik/*.yaml', {
+		eager: true,
+		query: '?raw',
+	});
+	const uebungen = [];
+
+	for (const path in modules) {
+		if (!path.includes(`/uebungen/${locale}/`)) continue;
+		const module = /** @type {any} */ (modules[path]);
+		const uebung = /** @type {TaktikUebung} */ (yaml.load(module.default));
+		uebungen.push(uebung);
+	}
+
+	if (uebungen.length === 0 && locale !== 'de') {
+		return loadTaktikUebungen('de');
+	}
+
+	return uebungen.sort((a, b) => a.titel.localeCompare(b.titel));
+}
+
+/**
+ * Lädt alle Taktik-Übungen mit isFallback-Flag
+ * @param {string} [locale='de']
+ * @returns {Promise<{items: TaktikUebung[], isFallback: boolean}>}
+ */
+export async function loadTaktikUebungenWithFallback(locale = 'de') {
+	const items = await loadTaktikUebungen(locale);
+	if (locale !== 'de') {
+		const modules = import.meta.glob('/src/content/uebungen/**/taktik/*.yaml', { eager: true, query: '?raw' });
+		const hasLocale = Object.keys(modules).some((p) => p.includes(`/uebungen/${locale}/`));
+		return { items, isFallback: !hasLocale };
+	}
+	return { items, isFallback: false };
+}
+
+/**
+ * Lädt eine Taktik-Übung nach ID
+ * @param {string} id
+ * @param {string} [locale='de']
+ * @returns {Promise<TaktikUebung|null>}
+ */
+export async function loadTaktikUebungById(id, locale = 'de') {
+	const modules = import.meta.glob('/src/content/uebungen/**/taktik/*.yaml', {
+		eager: true,
+		query: '?raw',
+	});
+
+	for (const path in modules) {
+		if (!path.includes(`/uebungen/${locale}/`)) continue;
+		const module = /** @type {any} */ (modules[path]);
+		const uebung = /** @type {TaktikUebung} */ (yaml.load(module.default));
+		if (uebung.id === id) return uebung;
+	}
+
+	if (locale !== 'de') return loadTaktikUebungById(id, 'de');
+	return null;
+}
+
+/**
+ * Lädt eine Taktik-Übung nach ID mit isFallback-Flag
+ * @param {string} id
+ * @param {string} [locale='de']
+ * @returns {Promise<{item: TaktikUebung|null, isFallback: boolean}>}
+ */
+export async function loadTaktikUebungByIdWithFallback(id, locale = 'de') {
+	if (locale !== 'de') {
+		const modules = import.meta.glob('/src/content/uebungen/**/taktik/*.yaml', { eager: true, query: '?raw' });
+		for (const path in modules) {
+			if (!path.includes(`/uebungen/${locale}/`)) continue;
+			const module = /** @type {any} */ (modules[path]);
+			const uebung = /** @type {TaktikUebung} */ (yaml.load(module.default));
+			if (uebung.id === id) return { item: uebung, isFallback: false };
+		}
+		const item = await loadTaktikUebungById(id, 'de');
+		return { item, isFallback: true };
+	}
+	const item = await loadTaktikUebungById(id, 'de');
+	return { item, isFallback: false };
+}

@@ -1,6 +1,7 @@
 {
 	"nav_teams": "Teams",
 	"nav_exercises": "Übungen",
+	"nav_taktik": "Taktik",
 	"nav_roles": "Rollen",
 	"nav_planner": "Trainingsplaner",
 	"nav_cla": "CLA-Theorie",
@@ -136,6 +137,7 @@
 	
 	"meta_teams_desc": "Entdecken Sie unsere Volleyball-Teams, ihre Trainingszeiten und Ziele für die Saison.",
 	"meta_exercises_desc": "Volleyball-Übungen basierend auf dem Constraints-Led Approach",
+	"meta_taktik_desc": "Taktische Volleyball-Übungen mit animiertem Taktikboard",
 	"meta_roles_desc": "Volleyball-Rollen und Positionen im Constraints-Led Approach",
 	"meta_competency_desc": "Persönliches Kompetenzraster für",
 	"meta_planner_desc": "Trainingsplaner für Volleyball-Training",

@@ -1,0 +1,111 @@
+{
+  "type": "taktik",
+  "court": "volleyball-full",
+  "loop": false,
+  "beschreibung": "Doppelblock gegen Außenangreifer mit Feldverteidigung",
+  "objects": {
+    "h1": { "type": "player", "label": "Z",  "team": "home" },
+    "h2": { "type": "player", "label": "A1", "team": "home" },
+    "h3": { "type": "player", "label": "M",  "team": "home" },
+    "h4": { "type": "player", "label": "D",  "team": "home" },
+    "h5": { "type": "player", "label": "A2", "team": "home" },
+    "h6": { "type": "player", "label": "L",  "team": "home" },
+    "g1": { "type": "player", "label": "X",  "team": "away" },
+    "g2": { "type": "player", "label": "Y",  "team": "away" },
+    "g3": { "type": "player", "label": "Z",  "team": "away" },
+    "ball": { "type": "ball" }
+  },
+  "zones": [
+    {
+      "id": "angriffszone-home",
+      "x": 0.0, "y": 0.667,
+      "width": 1.0, "height": 0.167,
+      "color": "#1E88E510",
+      "label": "3m-Zone"
+    },
+    {
+      "id": "angriffszone-away",
+      "x": 0.0, "y": 0.167,
+      "width": 1.0, "height": 0.167,
+      "color": "#D32F2F10",
+      "label": "3m-Zone"
+    }
+  ],
+  "steps": [
+    {
+      "duration": 0,
+      "positions": {
+        "h1": { "x": 0.65, "y": 0.75 },
+        "h2": { "x": 0.17, "y": 0.75 },
+        "h3": { "x": 0.5,  "y": 0.75 },
+        "h4": { "x": 0.83, "y": 0.75 },
+        "h5": { "x": 0.83, "y": 0.9  },
+        "h6": { "x": 0.17, "y": 0.9  },
+        "g1": { "x": 0.1,  "y": 0.15 },
+        "g2": { "x": 0.5,  "y": 0.3  },
+        "g3": { "x": 0.9,  "y": 0.15 },
+        "ball": { "x": 0.9, "y": 0.15 }
+      }
+    },
+    {
+      "duration": 2000,
+      "positions": {
+        "h1": { "x": 0.65, "y": 0.75 },
+        "h2": { "x": 0.17, "y": 0.75 },
+        "h3": { "x": 0.5,  "y": 0.75 },
+        "h4": { "x": 0.83, "y": 0.75 },
+        "h5": { "x": 0.83, "y": 0.9  },
+        "h6": { "x": 0.17, "y": 0.9  },
+        "g1": { "x": 0.1,  "y": 0.15 },
+        "g2": { "x": 0.5,  "y": 0.3  },
+        "g3": { "x": 0.9,  "y": 0.15 },
+        "ball": { "x": 0.5, "y": 0.28 }
+      },
+      "arrows": {
+        "ball": { "moveType": "pass" }
+      }
+    },
+    {
+      "duration": 1800,
+      "positions": {
+        "h1": { "x": 0.65, "y": 0.75 },
+        "h2": { "x": 0.15, "y": 0.72 },
+        "h3": { "x": 0.22, "y": 0.72 },
+        "h4": { "x": 0.83, "y": 0.75 },
+        "h5": { "x": 0.83, "y": 0.9  },
+        "h6": { "x": 0.17, "y": 0.9  },
+        "g1": { "x": 0.1,  "y": 0.18 },
+        "g2": { "x": 0.5,  "y": 0.3  },
+        "g3": { "x": 0.9,  "y": 0.15 },
+        "ball": { "x": 0.12, "y": 0.2 }
+      },
+      "arrows": {
+        "h2": { "moveType": "sprint" },
+        "h3": { "moveType": "sprint" },
+        "ball": { "moveType": "angriff" }
+      }
+    },
+    {
+      "duration": 1500,
+      "positions": {
+        "h1": { "x": 0.5,  "y": 0.7  },
+        "h2": { "x": 0.15, "y": 0.72 },
+        "h3": { "x": 0.22, "y": 0.72 },
+        "h4": { "x": 0.5,  "y": 0.65 },
+        "h5": { "x": 0.75, "y": 0.85 },
+        "h6": { "x": 0.25, "y": 0.85 },
+        "g1": { "x": 0.1,  "y": 0.18 },
+        "g2": { "x": 0.5,  "y": 0.3  },
+        "g3": { "x": 0.9,  "y": 0.15 },
+        "ball": { "x": 0.5, "y": 0.65 }
+      },
+      "arrows": {
+        "h1": { "moveType": "lauf" },
+        "h4": { "moveType": "lauf" },
+        "h5": { "moveType": "schritt" },
+        "h6": { "moveType": "schritt" },
+        "ball": { "moveType": "pass" }
+      }
+    }
+  ]
+}

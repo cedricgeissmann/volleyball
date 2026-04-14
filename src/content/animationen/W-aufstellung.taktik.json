@@ -1,0 +1,86 @@
+{
+  "type": "taktik",
+  "court": "volleyball-half",
+  "loop": false,
+  "beschreibung": "W-Aufstellung für die Ballannahme nach Aufschlag",
+  "objects": {
+    "s1": { "type": "player", "label": "Z",  "team": "home" },
+    "s2": { "type": "player", "label": "A1", "team": "home" },
+    "s3": { "type": "player", "label": "M1", "team": "home" },
+    "s4": { "type": "player", "label": "M2", "team": "home" },
+    "s5": { "type": "player", "label": "A2", "team": "home" },
+    "s6": { "type": "player", "label": "L",  "team": "home" },
+    "ball": { "type": "ball" }
+  },
+  "zones": [
+    {
+      "id": "angriffszone",
+      "x": 0.0, "y": 0.0,
+      "width": 1.0, "height": 0.333,
+      "color": "#1E88E515",
+      "label": "Angriffszone"
+    }
+  ],
+  "steps": [
+    {
+      "duration": 0,
+      "positions": {
+        "s1": { "x": 0.83, "y": 0.2  },
+        "s2": { "x": 0.17, "y": 0.65 },
+        "s3": { "x": 0.4,  "y": 0.5  },
+        "s4": { "x": 0.6,  "y": 0.65 },
+        "s5": { "x": 0.83, "y": 0.5  },
+        "s6": { "x": 0.17, "y": 0.5  },
+        "ball": { "x": 0.5, "y": 0.02 }
+      }
+    },
+    {
+      "duration": 2500,
+      "positions": {
+        "s1": { "x": 0.83, "y": 0.2  },
+        "s2": { "x": 0.17, "y": 0.65 },
+        "s3": { "x": 0.4,  "y": 0.5  },
+        "s4": { "x": 0.6,  "y": 0.65 },
+        "s5": { "x": 0.83, "y": 0.5  },
+        "s6": { "x": 0.17, "y": 0.5  },
+        "ball": { "x": 0.4, "y": 0.6 }
+      },
+      "arrows": {
+        "ball": { "moveType": "gratisball" }
+      }
+    },
+    {
+      "duration": 1800,
+      "positions": {
+        "s1": { "x": 0.7,  "y": 0.22 },
+        "s2": { "x": 0.17, "y": 0.65 },
+        "s3": { "x": 0.4,  "y": 0.5  },
+        "s4": { "x": 0.6,  "y": 0.65 },
+        "s5": { "x": 0.83, "y": 0.5  },
+        "s6": { "x": 0.17, "y": 0.5  },
+        "ball": { "x": 0.7, "y": 0.22 }
+      },
+      "arrows": {
+        "s1": { "moveType": "schritt" },
+        "ball": { "moveType": "pass" }
+      }
+    },
+    {
+      "duration": 1500,
+      "positions": {
+        "s1": { "x": 0.7,  "y": 0.22 },
+        "s2": { "x": 0.17, "y": 0.25 },
+        "s3": { "x": 0.5,  "y": 0.15 },
+        "s4": { "x": 0.6,  "y": 0.65 },
+        "s5": { "x": 0.83, "y": 0.5  },
+        "s6": { "x": 0.17, "y": 0.5  },
+        "ball": { "x": 0.5, "y": 0.1 }
+      },
+      "arrows": {
+        "s2": { "moveType": "sprint" },
+        "s3": { "moveType": "sprint" },
+        "ball": { "moveType": "angriff" }
+      }
+    }
+  ]
+}

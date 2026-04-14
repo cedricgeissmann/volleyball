@@ -1,0 +1,17 @@
+id: doppelblock
+typ: taktik
+titel: Doppelblock Außen mit Feldverteidigung
+beschreibung: Organisierter Doppelblock auf der Außenposition gegen den gegnerischen Außenangreifer, mit anschliessender Feldverteidigung.
+kategorie: Taktik
+dauer: 20
+ziele:
+  - Doppelblock-Positionierung auf der Außenposition verstehen
+  - Feldverteidigung hinter dem Block koordinieren
+  - Kommunikation zwischen Blockspielern trainieren
+fokus: Block & Verteidigung
+animation: doppelblock.taktik.json
+anleitung:
+  - Gäste-Zuspiel kommt von der Mitte, der Ball wird nach außen gespielt
+  - Außenspieler (A1) und Mittelblock (M) bilden den Doppelblock
+  - Libero und Diagonal sichern die Feldpositionen hinter dem Block
+  - Nach dem Block-Touch Übergang in die Angriffsorganisation

@@ -1,0 +1,18 @@
+id: W-aufstellung
+typ: taktik
+titel: W-Aufstellung Ballannahme
+beschreibung: Die klassische W-Aufstellung für die Annahme nach gegnerischem Aufschlag. Sechs Spieler positionieren sich in einem W-Muster um das Feld optimal abzudecken.
+kategorie: Taktik
+dauer: 15
+ziele:
+  - Korrekte Ausgangsposition der W-Aufstellung kennenlernen
+  - Kommunikation bei der Annahme verbessern
+  - Reaktionsschnelligkeit auf verschiedene Aufschlagvarianten
+fokus: Ballannahme
+animation: W-aufstellung.taktik.json
+anleitung:
+  - Spieler nehmen die W-Grundaufstellung ein (Zuspielerin hinten rechts)
+  - Gegnerischer Aufschlag kommt von der Netzseite
+  - Gratisball wird von Libero oder Außenangreifer angenommen
+  - Zuspielerin läuft zur Angriffsposition
+  - Angriff wird eingeleitet
