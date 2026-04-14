@@ -22,6 +22,7 @@
 		PLAYER_MOVE_STYLES,
 		BALL_MOVE_STYLES,
 	} from '$lib/utils/taktikEngine.js';
+	import { draftToYaml } from '$lib/utils/taktikDrafts.js';
 
 	// ---------------------------------------------------------------------------
 	// Hilfsfunktion: Objekte die sich zwischen zwei Schritten bewegen
@@ -95,6 +96,20 @@
 	let currentDraftTitel = $state('Neuer Entwurf');
 	let currentSourceId = $state(/** @type {string|null} */(null));
 	let currentSourceTitel = $state(/** @type {string|null} */(null));
+
+	// Aufgaben-Metadaten (für Taktik-Übungs-Karten)
+	let metaBeschreibung = $state('');
+	let metaFokus = $state('');
+	let metaKategorie = $state('Taktik');
+	let metaZiele = $state(/** @type {string[]} */([]));
+	let metaAnleitung = $state(/** @type {string[]} */([]));
+	let metaDauer = $state(/** @type {number|undefined} */(undefined));
+
+	// Hilfsvariablen für Ziele/Anleitung Eingabe
+	let newZielInput = $state('');
+	let newAnleitungInput = $state('');
+
+	let showMetaPanel = $state(false);
 
 	// Alle gespeicherten Entwürfe (für Panel)
 	let allDrafts = $state(/** @type {import('$lib/utils/taktikDrafts.js').TaktikDraft[]} */([]));
@@ -183,9 +198,15 @@
 	let autosaveTimer = /** @type {ReturnType<typeof setTimeout>|null} */(null);
 
 	$effect(() => {
-		// Trigger bei jeder Änderung von animation (deep tracking via JSON)
+		// Trigger bei jeder Änderung von animation oder Metadaten (deep tracking via JSON)
 		const _ = JSON.stringify(animation);
 		const titel = currentDraftTitel;
+		const beschreibung = metaBeschreibung;
+		const fokus = metaFokus;
+		const kategorie = metaKategorie;
+		const ziele = JSON.stringify(metaZiele);
+		const anleitung = JSON.stringify(metaAnleitung);
+		const dauer = metaDauer;
 
 		if (autosaveTimer) clearTimeout(autosaveTimer);
 		autosaveTimer = setTimeout(() => {
@@ -200,6 +221,12 @@
 				titel: currentDraftTitel,
 				sourceId: currentSourceId,
 				sourceTitel: currentSourceTitel,
+				beschreibung: metaBeschreibung,
+				fokus: metaFokus,
+				kategorie: metaKategorie,
+				ziele: metaZiele,
+				anleitung: metaAnleitung,
+				dauer: metaDauer,
 			});
 			// URL aktualisieren wenn neue Draft-ID vergeben wurde
 			if (draft.id !== currentDraftId) {
@@ -225,6 +252,12 @@
 		currentDraftTitel = draft.titel;
 		currentSourceId = draft.sourceId;
 		currentSourceTitel = draft.sourceTitel;
+		metaBeschreibung = draft.beschreibung ?? '';
+		metaFokus = draft.fokus ?? '';
+		metaKategorie = draft.kategorie ?? 'Taktik';
+		metaZiele = draft.ziele ? [...draft.ziele] : [];
+		metaAnleitung = draft.anleitung ? [...draft.anleitung] : [];
+		metaDauer = draft.dauer;
 		activeStepIndex = 0;
 		showDraftPanel = false;
 		updateUrlDraftId(draft.id);
@@ -245,6 +278,12 @@
 			zones: [],
 			steps: [{ duration: 1500, positions: {} }],
 		};
+		metaBeschreibung = '';
+		metaFokus = '';
+		metaKategorie = 'Taktik';
+		metaZiele = [];
+		metaAnleitung = [];
+		metaDauer = undefined;
 		nextPlayerLabel = 'A';
 		activeStepIndex = 0;
 		showDraftPanel = false;
@@ -270,17 +309,21 @@
 	}
 
 	// ---------------------------------------------------------------------------
-	// Datei-Export (Download als .taktik.json)
+	// Datei-Export (Download als .taktik.json + .yaml)
 	// ---------------------------------------------------------------------------
 
-	function saveAsFile() {
-		// Dateiname: aus Titel ableiten (slug)
-		const slug = currentDraftTitel
+	/** Erzeugt den Slug aus dem aktuellen Titel */
+	function titleSlug() {
+		return currentDraftTitel
 			.toLowerCase()
 			.replace(/[äöü]/g, (c) => ({ ä: 'ae', ö: 'oe', ü: 'ue' }[c] ?? c))
 			.replace(/[^a-z0-9]+/g, '-')
-			.replace(/^-|-$/g, '');
-		const filename = `${slug || 'taktik'}.taktik.json`;
+			.replace(/^-|-$/g, '') || 'taktik';
+	}
+
+	function saveAsFile() {
+		const slug = titleSlug();
+		const filename = `${slug}.taktik.json`;
 
 		const json = JSON.stringify(animation, null, 2);
 		const blob = new Blob([json], { type: 'application/json' });
@@ -288,6 +331,34 @@
 		const a = document.createElement('a');
 		a.href = url;
 		a.download = filename;
+		a.click();
+		URL.revokeObjectURL(url);
+	}
+
+	function saveYamlFile() {
+		// Aktuellen Draft zusammenbauen und als YAML exportieren
+		const draft = /** @type {import('$lib/utils/taktikDrafts.js').TaktikDraft} */ ({
+			id: currentDraftId ?? titleSlug(),
+			titel: currentDraftTitel,
+			beschreibung: metaBeschreibung,
+			fokus: metaFokus,
+			kategorie: metaKategorie,
+			ziele: metaZiele,
+			anleitung: metaAnleitung,
+			dauer: metaDauer,
+			animation,
+			sourceId: currentSourceId,
+			sourceTitel: currentSourceTitel,
+			createdAt: Date.now(),
+			updatedAt: Date.now(),
+		});
+		const yaml = draftToYaml(draft);
+		const slug = titleSlug();
+		const blob = new Blob([yaml], { type: 'text/yaml' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = `${slug}.yaml`;
 		a.click();
 		URL.revokeObjectURL(url);
 	}
@@ -572,8 +643,19 @@
 				Importieren
 				<input type="file" accept=".json" onchange={handleImport} style="display:none" />
 			</label>
+			<button
+				class="btn-secondary"
+				onclick={() => showMetaPanel = !showMetaPanel}
+				class:active={showMetaPanel}
+				title="Aufgaben-Details bearbeiten"
+			>
+				Aufgaben-Details
+			</button>
 			<button class="btn-primary" onclick={saveAsFile} title="Als .taktik.json herunterladen">
-				Datei speichern
+				JSON speichern
+			</button>
+			<button class="btn-secondary" onclick={saveYamlFile} title="Als .yaml herunterladen (für Repo)">
+				YAML exportieren
 			</button>
 			<button
 				class="btn-secondary"
@@ -631,6 +713,128 @@
 					{/each}
 				</div>
 			{/if}
+		</div>
+	{/if}
+
+	<!-- ===== AUFGABEN-DETAILS PANEL ===== -->
+	{#if showMetaPanel}
+		<div class="meta-panel">
+			<div class="meta-panel-header">
+				<h2>Aufgaben-Details</h2>
+				<p class="meta-panel-hint">Diese Informationen erscheinen auf der Druckkarte und in der Übungsübersicht.</p>
+				<button class="btn-icon" onclick={() => showMetaPanel = false} aria-label="Schliessen">✕</button>
+			</div>
+
+			<div class="meta-form">
+				<!-- Beschreibung -->
+				<div class="meta-field">
+					<label for="meta-beschreibung">Beschreibung</label>
+					<textarea
+						id="meta-beschreibung"
+						bind:value={metaBeschreibung}
+						placeholder="Kurze Beschreibung der Übung..."
+						rows="3"
+						class="meta-textarea"
+					></textarea>
+				</div>
+
+				<!-- Fokus -->
+				<div class="meta-row">
+					<div class="meta-field">
+						<label for="meta-fokus">Fokus</label>
+						<input
+							id="meta-fokus"
+							type="text"
+							bind:value={metaFokus}
+							placeholder="z.B. Block & Verteidigung"
+							class="meta-input"
+						/>
+					</div>
+					<div class="meta-field">
+						<label for="meta-dauer">Dauer (Min.)</label>
+						<input
+							id="meta-dauer"
+							type="number"
+							min="1"
+							max="120"
+							bind:value={metaDauer}
+							placeholder="15"
+							class="meta-input meta-input--short"
+						/>
+					</div>
+				</div>
+
+				<!-- Lernziele -->
+				<div class="meta-field">
+					<label>Lernziele</label>
+					<div class="meta-list">
+						{#each metaZiele as ziel, i}
+							<div class="meta-list-row">
+								<input
+									type="text"
+									value={ziel}
+									class="meta-input"
+									onchange={(e) => { metaZiele[i] = e.currentTarget.value; metaZiele = [...metaZiele]; }}
+								/>
+								<button
+									class="btn-icon btn-danger-sm"
+									onclick={() => { metaZiele = metaZiele.filter((_, j) => j !== i); }}
+									aria-label="Lernziel entfernen"
+								>✕</button>
+							</div>
+						{/each}
+						<div class="meta-list-add">
+							<input
+								type="text"
+								bind:value={newZielInput}
+								placeholder="Neues Lernziel..."
+								class="meta-input"
+								onkeydown={(e) => { if (e.key === 'Enter' && newZielInput.trim()) { metaZiele = [...metaZiele, newZielInput.trim()]; newZielInput = ''; } }}
+							/>
+							<button
+								class="btn-add"
+								onclick={() => { if (newZielInput.trim()) { metaZiele = [...metaZiele, newZielInput.trim()]; newZielInput = ''; } }}
+							>+ Hinzufügen</button>
+						</div>
+					</div>
+				</div>
+
+				<!-- Anleitung / Ablauf-Schritte -->
+				<div class="meta-field">
+					<label>Ablauf-Schritte</label>
+					<div class="meta-list">
+						{#each metaAnleitung as schritt, i}
+							<div class="meta-list-row">
+								<span class="meta-step-nr">{i + 1}.</span>
+								<input
+									type="text"
+									value={schritt}
+									class="meta-input"
+									onchange={(e) => { metaAnleitung[i] = e.currentTarget.value; metaAnleitung = [...metaAnleitung]; }}
+								/>
+								<button
+									class="btn-icon btn-danger-sm"
+									onclick={() => { metaAnleitung = metaAnleitung.filter((_, j) => j !== i); }}
+									aria-label="Schritt entfernen"
+								>✕</button>
+							</div>
+						{/each}
+						<div class="meta-list-add">
+							<input
+								type="text"
+								bind:value={newAnleitungInput}
+								placeholder="Neuer Schritt..."
+								class="meta-input"
+								onkeydown={(e) => { if (e.key === 'Enter' && newAnleitungInput.trim()) { metaAnleitung = [...metaAnleitung, newAnleitungInput.trim()]; newAnleitungInput = ''; } }}
+							/>
+							<button
+								class="btn-add"
+								onclick={() => { if (newAnleitungInput.trim()) { metaAnleitung = [...metaAnleitung, newAnleitungInput.trim()]; newAnleitungInput = ''; } }}
+							>+ Hinzufügen</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	{/if}
 
@@ -1613,6 +1817,149 @@
 			margin: 0;
 			overflow: visible;
 		}
+	}
+
+	/* ===== AUFGABEN-DETAILS PANEL ===== */
+	.meta-panel {
+		background: var(--color-background-elevated);
+		border-bottom: 1px solid var(--color-gray-200);
+		padding: var(--space-md) var(--space-lg);
+		max-height: 60vh;
+		overflow-y: auto;
+	}
+
+	.meta-panel-header {
+		display: flex;
+		align-items: baseline;
+		gap: var(--space-md);
+		margin-bottom: var(--space-md);
+	}
+
+	.meta-panel-header h2 {
+		font-size: var(--font-size-lg);
+		font-weight: var(--font-weight-bold);
+		margin: 0;
+		white-space: nowrap;
+	}
+
+	.meta-panel-hint {
+		font-size: var(--font-size-xs);
+		color: var(--color-text-muted);
+		margin: 0;
+		flex: 1;
+	}
+
+	.meta-form {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--space-md);
+	}
+
+	.meta-field {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.meta-field:first-child {
+		grid-column: 1 / -1;
+	}
+
+	.meta-field label {
+		font-size: var(--font-size-xs);
+		font-weight: var(--font-weight-medium);
+		color: var(--color-text-secondary);
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+
+	.meta-row {
+		display: flex;
+		gap: var(--space-md);
+	}
+
+	.meta-row .meta-field {
+		flex: 1;
+	}
+
+	.meta-input {
+		padding: 5px 8px;
+		border: 1.5px solid var(--color-gray-300);
+		border-radius: var(--radius-sm);
+		font-size: var(--font-size-sm);
+		background: var(--color-background);
+		color: var(--color-text);
+		transition: border-color var(--transition-fast);
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.meta-input:focus {
+		outline: none;
+		border-color: var(--color-primary);
+	}
+
+	.meta-input--short {
+		max-width: 80px;
+	}
+
+	.meta-textarea {
+		padding: 6px 8px;
+		border: 1.5px solid var(--color-gray-300);
+		border-radius: var(--radius-sm);
+		font-size: var(--font-size-sm);
+		background: var(--color-background);
+		color: var(--color-text);
+		resize: vertical;
+		font-family: inherit;
+		transition: border-color var(--transition-fast);
+	}
+
+	.meta-textarea:focus {
+		outline: none;
+		border-color: var(--color-primary);
+	}
+
+	.meta-list {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.meta-list-row {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+	}
+
+	.meta-step-nr {
+		font-size: var(--font-size-xs);
+		color: var(--color-text-muted);
+		min-width: 18px;
+		text-align: right;
+	}
+
+	.meta-list-add {
+		display: flex;
+		gap: 4px;
+		margin-top: 2px;
+	}
+
+	.btn-add {
+		padding: 4px 10px;
+		border-radius: var(--radius-sm);
+		border: 1.5px solid var(--color-primary);
+		background: transparent;
+		color: var(--color-primary);
+		font-size: var(--font-size-xs);
+		cursor: pointer;
+		white-space: nowrap;
+		transition: all var(--transition-fast);
+	}
+
+	.btn-add:hover {
+		background: var(--color-primary);
+		color: white;
 	}
 
 	/* Responsive */

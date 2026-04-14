@@ -1,6 +1,7 @@
 <script>
 	import { base } from '$app/paths';
 	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 	import { _ } from 'svelte-i18n';
 	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
 	import TaktikBoard from '$lib/components/uebungen/taktik/TaktikBoard.svelte';
@@ -8,6 +9,7 @@
 	import QRCode from '$lib/components/shared/QRCode.svelte';
 	import { getAbsoluteURL } from '$lib/utils/qrGenerator.js';
 	import { getStartPositions } from '$lib/utils/taktikEngine.js';
+	import { loadAllDrafts, deleteDraft, draftToYaml } from '$lib/utils/taktikDrafts.js';
 
 	/** @type {{ data: import('./$types').PageData }} */
 	let { data } = $props();
@@ -18,6 +20,51 @@
 
 	let searchQuery = $state('');
 
+	// ---- Lokale Entwürfe aus localStorage ----
+	/** @type {import('$lib/utils/taktikDrafts.js').TaktikDraft[]} */
+	let localDrafts = $state([]);
+
+	onMount(() => {
+		localDrafts = loadAllDrafts();
+	});
+
+	function removeLocalDraft(/** @type {string} */ id) {
+		deleteDraft(id);
+		localDrafts = loadAllDrafts();
+		// Auch aus Selektion entfernen
+		selectedUebungen = selectedUebungen.filter((s) => s !== `local:${id}`);
+		saveSelected();
+	}
+
+	/** Exportiert einen Entwurf als YAML + JSON (zwei Dateien) */
+	function exportDraft(/** @type {import('$lib/utils/taktikDrafts.js').TaktikDraft} */ draft) {
+		const slug = draft.titel
+			.toLowerCase()
+			.replace(/[äöü]/g, (c) => ({ ä: 'ae', ö: 'oe', ü: 'ue' }[c] ?? c))
+			.replace(/[^a-z0-9]+/g, '-')
+			.replace(/^-|-$/g, '') || 'entwurf';
+
+		// YAML
+		const yaml = draftToYaml(draft);
+		downloadBlob(yaml, `${slug}.yaml`, 'text/yaml');
+
+		// JSON (animation)
+		const json = JSON.stringify(draft.animation, null, 2);
+		downloadBlob(json, `${slug}.taktik.json`, 'application/json');
+	}
+
+	/** @param {string} content @param {string} filename @param {string} type */
+	function downloadBlob(content, filename, type) {
+		const blob = new Blob([content], { type });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = filename;
+		a.click();
+		URL.revokeObjectURL(url);
+	}
+
+	// ---- Auswahl (statische Übungen + lokale Entwürfe gemischt) ----
 	const STORAGE_KEY = 'volleyball-selected-taktik';
 
 	let selectedUebungen = $state(loadSelected());
@@ -26,12 +73,7 @@
 		if (browser) {
 			try {
 				const stored = localStorage.getItem(STORAGE_KEY);
-				if (stored) {
-					const parsed = JSON.parse(stored);
-					return parsed.filter((/** @type {string} */ id) =>
-						uebungen.some((/** @type {any} */ u) => u.id === id)
-					);
-				}
+				if (stored) return JSON.parse(stored);
 			} catch (e) {
 				console.error('Error loading selected taktik:', e);
 			}
@@ -60,7 +102,9 @@
 	}
 
 	function selectAll() {
-		selectedUebungen = filteredUebungen.map((/** @type {any} */ u) => u.id);
+		const staticIds = filteredUebungen.map((/** @type {any} */ u) => u.id);
+		const localIds = filteredLocalDrafts.map((d) => `local:${d.id}`);
+		selectedUebungen = [...staticIds, ...localIds];
 		saveSelected();
 	}
 
@@ -79,7 +123,7 @@
 	 */
 	function handleCardClick(uebungId, event) {
 		const target = event.target;
-		if (target instanceof HTMLElement && !target.closest('.checkbox-wrapper')) {
+		if (target instanceof HTMLElement && !target.closest('.checkbox-wrapper') && !target.closest('.local-actions')) {
 			window.location.href = `${base}/${lang}/taktik/${uebungId}`;
 		}
 	}
@@ -97,9 +141,28 @@
 		})
 	);
 
+	const filteredLocalDrafts = $derived(
+		localDrafts.filter((d) => {
+			const q = searchQuery.toLowerCase();
+			return (
+				!q ||
+				d.titel.toLowerCase().includes(q) ||
+				(d.beschreibung ?? '').toLowerCase().includes(q) ||
+				(d.fokus ?? '').toLowerCase().includes(q)
+			);
+		})
+	);
+
 	const selectedAndFiltered = $derived(
 		filteredUebungen.filter((/** @type {any} */ u) => selectedUebungen.includes(u.id))
 	);
+
+	const selectedLocalDrafts = $derived(
+		filteredLocalDrafts.filter((d) => selectedUebungen.includes(`local:${d.id}`))
+	);
+
+	const totalSelected = $derived(selectedAndFiltered.length + selectedLocalDrafts.length);
+	const totalFiltered = $derived(filteredUebungen.length + filteredLocalDrafts.length);
 
 	/**
 	 * Fork einer Übung: Animationsdaten via sessionStorage übergeben.
@@ -113,6 +176,13 @@
 		} catch { /* ignore */ }
 		const titleEncoded = encodeURIComponent(uebung.titel);
 		window.location.href = `${base}/${lang}/taktik/editor?fork=${encodeURIComponent(uebung.id)}&title=${titleEncoded}`;
+	}
+
+	/** Öffnet den Editor mit einem bestehenden lokalen Entwurf */
+	function editLocalDraft(/** @type {import('$lib/utils/taktikDrafts.js').TaktikDraft} */ draft, /** @type {MouseEvent} */ e) {
+		e.preventDefault();
+		e.stopPropagation();
+		window.location.href = `${base}/${lang}/taktik/editor?draft=${draft.id}`;
 	}
 </script>
 
@@ -146,8 +216,8 @@
 	<!-- Auswahl-Controls -->
 	<div class="filter-controls print-hide">
 		<div class="selection-info">
-			<strong>{selectedAndFiltered.length}</strong> von
-			<strong>{filteredUebungen.length}</strong> Übungen ausgewählt
+			<strong>{totalSelected}</strong> von
+			<strong>{totalFiltered}</strong> Übungen ausgewählt
 		</div>
 		<div class="button-group">
 			<button class="btn btn-secondary" onclick={selectAll}>Alle auswählen</button>
@@ -155,7 +225,7 @@
 			<button
 				class="btn btn-primary"
 				onclick={handlePrint}
-				disabled={selectedAndFiltered.length === 0}
+				disabled={totalSelected === 0}
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 					<polyline points="6 9 6 2 18 2 18 9"></polyline>
@@ -226,6 +296,92 @@
 		</div>
 	{/if}
 
+	<!-- ===== LOKALE ENTWÜRFE ===== -->
+	{#if localDrafts.length > 0}
+		<div class="local-section print-hide">
+			<h2 class="local-section-title">
+				Meine Entwürfe
+				<span class="local-count">{localDrafts.length}</span>
+			</h2>
+			<p class="local-section-hint">Diese Übungen sind lokal auf diesem Gerät gespeichert. Exportiere sie als YAML + JSON um sie dauerhaft ins Repository zu integrieren.</p>
+
+			<div class="uebungen-grid">
+				{#each filteredLocalDrafts as draft (draft.id)}
+					<div class="uebung-card-wrapper">
+						<div class="checkbox-wrapper" onclick={(e) => e.stopPropagation()}>
+							<input
+								type="checkbox"
+								checked={selectedUebungen.includes(`local:${draft.id}`)}
+								onchange={() => toggleUebung(`local:${draft.id}`)}
+								class="card-checkbox"
+								id="check-local-{draft.id}"
+							/>
+							<label for="check-local-{draft.id}" class="checkbox-label"></label>
+						</div>
+						<div
+							class="uebung-card local-card"
+							class:selected={selectedUebungen.includes(`local:${draft.id}`)}
+						>
+							{#if draft.animation}
+								<div class="card-preview">
+									<TaktikBoard
+										animation={draft.animation}
+										positions={getStartPositions(draft.animation)}
+										arrows={[]}
+										showCourtLabels={false}
+										showZoneLabels={false}
+										maxWidth={300}
+									/>
+								</div>
+							{:else}
+								<div class="card-preview card-preview--empty">
+									<span>Kein Board</span>
+								</div>
+							{/if}
+
+							<div class="card-content">
+								<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:4px;">
+									<span class="badge-local">Lokal</span>
+									{#if draft.fokus}
+										<span class="badge badge--fokus">{draft.fokus}</span>
+									{/if}
+								</div>
+								<h3>{draft.titel}</h3>
+								{#if draft.beschreibung}
+									<p class="fokus">{draft.beschreibung}</p>
+								{/if}
+							</div>
+
+							<div class="local-actions">
+								<button
+									class="btn-action"
+									onclick={(e) => editLocalDraft(draft, e)}
+									title="Im Editor bearbeiten"
+								>
+									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+									Bearbeiten
+								</button>
+								<button
+									class="btn-action"
+									onclick={(e) => { e.stopPropagation(); exportDraft(draft); }}
+									title="Als YAML + JSON exportieren"
+								>
+									<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+									Exportieren
+								</button>
+								<button
+									class="btn-action btn-action--danger"
+									onclick={(e) => { e.stopPropagation(); removeLocalDraft(draft.id); }}
+									title="Entwurf löschen"
+								>✕</button>
+							</div>
+						</div>
+					</div>
+				{/each}
+			</div>
+		</div>
+	{/if}
+
 	<!-- Link zum Editor -->
 	<div class="editor-link print-hide">
 		<a href="{base}/{lang}/taktik/editor" class="btn-editor">
@@ -239,6 +395,7 @@
 
 	<!-- ===== DRUCKBEREICH: Doppelseitige Karten (zum Falten) ===== -->
 	<div class="print-cards">
+		<!-- Statische Übungen -->
 		{#each selectedAndFiltered as uebung (uebung.id)}
 			<div class="card-wrapper-double">
 				<!-- Linke Seite: Vorderseite (Details) -->
@@ -295,6 +452,70 @@
 				<div class="exercise-card card-back">
 					{#if uebung.animationData}
 						<PrintCardBackTaktik animation={uebung.animationData} />
+					{:else}
+						<div class="no-animation">
+							<p>Kein Taktikboard</p>
+						</div>
+					{/if}
+				</div>
+			</div>
+		{/each}
+
+		<!-- Lokale Entwürfe -->
+		{#each selectedLocalDrafts as draft (draft.id)}
+			<div class="card-wrapper-double">
+				<!-- Vorderseite -->
+				<div class="exercise-card card-front">
+					<div class="card-header">
+						<h2 class="card-title">{draft.titel}</h2>
+						{#if draft.fokus}
+							<span class="card-category">{draft.fokus}</span>
+						{/if}
+					</div>
+
+					<div class="card-body">
+						{#if draft.beschreibung}
+							<p class="card-description">{draft.beschreibung}</p>
+						{/if}
+
+						{#if draft.ziele && draft.ziele.length > 0}
+							<div class="card-ziele">
+								<h3>Lernziele:</h3>
+								<ul>
+									{#each draft.ziele as ziel}
+										<li>{ziel}</li>
+									{/each}
+								</ul>
+							</div>
+						{/if}
+
+						{#if draft.anleitung && draft.anleitung.length > 0}
+							<div class="card-anleitung">
+								<h3>Ablauf:</h3>
+								<ol>
+									{#each draft.anleitung as schritt}
+										<li>{schritt}</li>
+									{/each}
+								</ol>
+							</div>
+						{/if}
+
+						{#if draft.dauer}
+							<div class="card-dauer">
+								<strong>Dauer:</strong> {draft.dauer} Min.
+							</div>
+						{/if}
+					</div>
+
+					<div class="card-footer">
+						<div class="card-local-badge">Lokal</div>
+					</div>
+				</div>
+
+				<!-- Rückseite (Taktikboard) -->
+				<div class="exercise-card card-back">
+					{#if draft.animation}
+						<PrintCardBackTaktik animation={draft.animation} />
 					{:else}
 						<div class="no-animation">
 							<p>Kein Taktikboard</p>
@@ -573,6 +794,106 @@
 		text-align: center;
 		padding: var(--spacing-xl);
 		color: var(--color-text-secondary);
+	}
+
+	/* ===== LOKALE ENTWÜRFE ===== */
+	.local-section {
+		margin-top: var(--spacing-xl);
+		padding-top: var(--spacing-xl);
+		border-top: 2px solid var(--color-gray-200);
+	}
+
+	.local-section-title {
+		font-size: var(--font-size-xl);
+		font-weight: var(--font-weight-bold);
+		margin: 0 0 var(--spacing-sm);
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		color: var(--color-text);
+	}
+
+	.local-count {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 24px;
+		height: 24px;
+		padding: 0 6px;
+		background: #1565C0;
+		color: white;
+		border-radius: 12px;
+		font-size: var(--font-size-xs);
+		font-weight: var(--font-weight-bold);
+	}
+
+	.local-section-hint {
+		font-size: var(--font-size-sm);
+		color: var(--color-text-muted);
+		margin: 0 0 var(--spacing-lg);
+	}
+
+	.badge-local {
+		display: inline-block;
+		padding: 2px 6px;
+		border-radius: var(--radius-sm);
+		font-size: var(--font-size-xs);
+		font-weight: var(--font-weight-medium);
+		background: #FFF3E0;
+		color: #E65100;
+		border: 1px solid #FFCC80;
+	}
+
+	.local-card {
+		border-color: #FFCC80 !important;
+	}
+
+	.local-card.selected {
+		border-color: #FF9800 !important;
+	}
+
+	.local-actions {
+		display: flex;
+		gap: 4px;
+		padding: var(--spacing-sm) var(--spacing-md);
+		border-top: 1px solid var(--color-gray-100);
+		background: var(--color-gray-50);
+	}
+
+	.btn-action {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 3px 8px;
+		border-radius: var(--radius-sm);
+		border: 1px solid var(--color-gray-300);
+		background: white;
+		color: var(--color-text-secondary);
+		font-size: var(--font-size-xs);
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.btn-action:hover {
+		border-color: var(--color-primary);
+		color: var(--color-primary);
+	}
+
+	.btn-action--danger {
+		margin-left: auto;
+	}
+
+	.btn-action--danger:hover {
+		border-color: var(--color-error, #C62828);
+		color: var(--color-error, #C62828);
+	}
+
+	/* Badge auf der Druckkarte */
+	.card-local-badge {
+		font-size: 7pt;
+		color: #E65100;
+		font-weight: 600;
+		letter-spacing: 0.04em;
 	}
 
 	/* Editor-Link */
