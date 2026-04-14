@@ -13,6 +13,9 @@
 	// Suchfunktion
 	let searchQuery = $state('');
 
+	// Typ-Filter: '' = Alle, 'technisch', 'taktisch'
+	let typeFilter = $state('');
+
 	// LocalStorage Key
 	const STORAGE_KEY = 'volleyball-selected-constraints';
 
@@ -104,15 +107,27 @@
 		return map[kategorie] ?? kategorie;
 	}
 
+	/** @param {string} typ */
+	function getTypeKey(typ) {
+		const map = /** @type {Record<string,string>} */ ({
+			'technisch': 'constraint_type_technical',
+			'taktisch': 'constraint_type_tactical',
+		});
+		return map[typ] ?? typ;
+	}
+
 	const filteredConstraints = $derived(
 		constraints.filter((/** @type {any} */ c) => {
 			const query = searchQuery.toLowerCase();
-			return (
+			const matchesSearch = (
 				c.name.toLowerCase().includes(query) ||
 				c.beschreibung?.toLowerCase().includes(query) ||
 				c.kategorie?.toLowerCase().includes(query) ||
-				c.schwierigkeit?.toLowerCase().includes(query)
+				c.schwierigkeit?.toLowerCase().includes(query) ||
+				c.typ?.toLowerCase().includes(query)
 			);
+			const matchesType = typeFilter === '' || c.typ === typeFilter;
+			return matchesSearch && matchesType;
 		})
 	);
 
@@ -162,6 +177,33 @@
 					</button>
 				{/if}
 			</div>
+			<!-- Typ-Filter -->
+			<div class="type-filter">
+				<span class="type-filter-label">{$_('filter_type_label')}:</span>
+				<div class="type-filter-buttons">
+					<button
+						class="type-btn"
+						class:active={typeFilter === ''}
+						onclick={() => (typeFilter = '')}
+					>
+						{$_('filter_type_all')}
+					</button>
+					<button
+						class="type-btn type-btn--technical"
+						class:active={typeFilter === 'technisch'}
+						onclick={() => (typeFilter = 'technisch')}
+					>
+						{$_('constraint_type_technical')}
+					</button>
+					<button
+						class="type-btn type-btn--tactical"
+						class:active={typeFilter === 'taktisch'}
+						onclick={() => (typeFilter = 'taktisch')}
+					>
+						{$_('constraint_type_tactical')}
+					</button>
+				</div>
+			</div>
 		</div>
 
 		<!-- Auswahl-Controls -->
@@ -209,16 +251,21 @@
 					>
 						<div class="card-content">
 							<h3>{constraint.name}</h3>
-							<div class="card-badges">
-								{#if constraint.kategorie}
-									<span class="badge badge-category">{$_(getCategoryKey(constraint.kategorie))}</span>
-								{/if}
-								{#if constraint.schwierigkeit}
-									<span class="badge badge-difficulty badge-difficulty--{constraint.schwierigkeit}">
-										{$_(getDifficultyKey(constraint.schwierigkeit))}
-									</span>
-								{/if}
-							</div>
+						<div class="card-badges">
+							{#if constraint.typ}
+								<span class="badge badge-type badge-type--{constraint.typ}">
+									{$_(getTypeKey(constraint.typ))}
+								</span>
+							{/if}
+							{#if constraint.kategorie}
+								<span class="badge badge-category">{$_(getCategoryKey(constraint.kategorie))}</span>
+							{/if}
+							{#if constraint.schwierigkeit}
+								<span class="badge badge-difficulty badge-difficulty--{constraint.schwierigkeit}">
+									{$_(getDifficultyKey(constraint.schwierigkeit))}
+								</span>
+							{/if}
+						</div>
 							{#if constraint.beschreibung}
 								<p class="beschreibung">{constraint.beschreibung}</p>
 							{/if}
@@ -241,18 +288,23 @@
 		<div class="print-cards">
 			{#each selectedAndFilteredConstraints as constraint}
 				<div class="card-wrapper">
-					<div class="constraint-print-card">
-						<div class="card-header">
-							<h2 class="card-title">{constraint.name}</h2>
-							<div class="card-badges-print">
-								{#if constraint.kategorie}
-									<span class="badge-print badge-category-print">{$_(getCategoryKey(constraint.kategorie))}</span>
-								{/if}
-								{#if constraint.schwierigkeit}
-									<span class="badge-print badge-difficulty-print">{$_(getDifficultyKey(constraint.schwierigkeit))}</span>
-								{/if}
+				<div class="constraint-print-card">
+					<div class="card-header">
+						{#if constraint.typ}
+							<div class="card-type-banner card-type-banner--{constraint.typ}">
+								{$_(getTypeKey(constraint.typ))}
 							</div>
+						{/if}
+						<h2 class="card-title">{constraint.name}</h2>
+						<div class="card-badges-print">
+							{#if constraint.kategorie}
+								<span class="badge-print badge-category-print">{$_(getCategoryKey(constraint.kategorie))}</span>
+							{/if}
+							{#if constraint.schwierigkeit}
+								<span class="badge-print badge-difficulty-print">{$_(getDifficultyKey(constraint.schwierigkeit))}</span>
+							{/if}
 						</div>
+					</div>
 
 						<div class="card-body">
 							{#if constraint.beschreibung}
@@ -352,6 +404,78 @@
 	.clear-search:hover {
 		color: var(--color-primary);
 		background-color: var(--color-gray-50);
+	}
+
+	/* Typ-Filter */
+	.type-filter {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-md);
+		margin-top: var(--spacing-md);
+		flex-wrap: wrap;
+	}
+
+	.type-filter-label {
+		font-size: var(--font-size-base);
+		font-weight: 600;
+		color: var(--color-text-secondary);
+		white-space: nowrap;
+	}
+
+	.type-filter-buttons {
+		display: flex;
+		gap: var(--spacing-xs);
+		flex-wrap: wrap;
+	}
+
+	.type-btn {
+		padding: var(--spacing-sm) var(--spacing-lg);
+		border: 2px solid var(--color-border);
+		border-radius: 99px;
+		background-color: var(--color-bg);
+		color: var(--color-text-secondary);
+		font-size: var(--font-size-base);
+		font-weight: 600;
+		cursor: pointer;
+		transition: all var(--transition-normal);
+		white-space: nowrap;
+	}
+
+	.type-btn:hover {
+		border-color: var(--color-primary);
+		color: var(--color-primary);
+	}
+
+	.type-btn.active {
+		border-color: var(--color-gray-400);
+		background-color: var(--color-gray-100);
+		color: var(--color-text);
+	}
+
+	.type-btn--technical {
+		border-color: #bfdbfe;
+		color: #1d4ed8;
+		background-color: #eff6ff;
+	}
+
+	.type-btn--technical.active,
+	.type-btn--technical:hover {
+		background-color: #1d4ed8;
+		color: white;
+		border-color: #1d4ed8;
+	}
+
+	.type-btn--tactical {
+		border-color: #fed7aa;
+		color: #c2410c;
+		background-color: #fff7ed;
+	}
+
+	.type-btn--tactical.active,
+	.type-btn--tactical:hover {
+		background-color: #c2410c;
+		color: white;
+		border-color: #c2410c;
 	}
 
 	/* Filter Controls */
@@ -568,6 +692,18 @@
 		line-height: 1.5;
 	}
 
+	.badge-type--technisch {
+		background-color: #eff6ff;
+		color: #1d4ed8;
+		border: 1px solid #bfdbfe;
+	}
+
+	.badge-type--taktisch {
+		background-color: #fff7ed;
+		color: #c2410c;
+		border: 1px solid #fed7aa;
+	}
+
 	.badge-category {
 		background-color: rgba(255, 53, 0, 0.1);
 		color: var(--color-primary);
@@ -675,6 +811,28 @@
 		color: #374151;
 	}
 
+	/* Typ-Banner auf Druck-Karte (prominent, oben) */
+	.card-type-banner {
+		display: inline-block;
+		padding: 2px 8px;
+		border-radius: 4px;
+		font-size: 7pt;
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin-bottom: 4px;
+	}
+
+	.card-type-banner--technisch {
+		background-color: #1d4ed8;
+		color: white;
+	}
+
+	.card-type-banner--taktisch {
+		background-color: #c2410c;
+		color: white;
+	}
+
 	.card-body {
 		flex: 1;
 		overflow: hidden;
@@ -767,7 +925,12 @@
 		}
 
 		.constraint-print-card {
-			/* Roter Border bleibt im Druck erhalten */
+			/* Roter Border und Typ-Farben bleiben im Druck erhalten */
+			-webkit-print-color-adjust: exact;
+			print-color-adjust: exact;
+		}
+
+		.card-type-banner {
 			-webkit-print-color-adjust: exact;
 			print-color-adjust: exact;
 		}

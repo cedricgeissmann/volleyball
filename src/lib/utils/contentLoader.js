@@ -346,6 +346,7 @@ export async function loadRolleByIdWithFallback(id, locale = 'de') {
  * @property {string} nutzen - Nutzen dieses Constraints
  * @property {string} kategorie - Kategorie (Angriff, Verteidigung, Aufbau, Allgemein)
  * @property {string} schwierigkeit - Schwierigkeit (einfach, mittel, schwer)
+ * @property {string} typ - Typ (technisch, taktisch)
  */
 
 /**
