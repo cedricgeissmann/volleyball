@@ -441,8 +441,8 @@
 				<span class="fork-badge">Basiert auf: {currentSourceTitel}</span>
 			{/if}
 			<span class="save-status" class:visible={saveStatus !== 'idle'}>
-				{#if saveStatus === 'saved'}✓ Gespeichert{/if}
-				{#if saveStatus === 'error'}⚠ Fehler beim Speichern{/if}
+				<span class="save-msg" class:active={saveStatus === 'saved'}>✓ Gespeichert</span>
+				<span class="save-msg" class:active={saveStatus === 'error'}>⚠ Fehler beim Speichern</span>
 			</span>
 		</div>
 
@@ -823,8 +823,24 @@
 		color: var(--color-text-muted);
 		opacity: 0;
 		transition: opacity var(--transition-fast);
+		/* Reserve fixed space to prevent layout reflow when text appears */
+		display: inline-block;
+		width: 12ch;
+		height: 1.2em;
+		position: relative;
+		vertical-align: middle;
 	}
 	.save-status.visible { opacity: 1; }
+	.save-msg {
+		position: absolute;
+		left: 0;
+		top: 0;
+		white-space: nowrap;
+		visibility: hidden;
+	}
+	.save-msg.active {
+		visibility: visible;
+	}
 
 	.header-actions {
 		display: flex;
