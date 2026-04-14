@@ -88,7 +88,7 @@
 		// Nur navigieren wenn nicht auf Checkbox geklickt wurde
 		const target = event.target;
 		if (target instanceof HTMLElement && !target.closest('.checkbox-wrapper')) {
-			window.location.href = `${base}/uebungen/${uebungId}`;
+			window.location.href = `${base}/${lang}/uebungen/${uebungId}`;
 		}
 	}
 
@@ -280,7 +280,7 @@
 										</div>
 									</div>
 									<div class="card-qr">
-										<QRCode url={getAbsoluteURL(`/uebungen/${uebung.id}`)} size={60} />
+										<QRCode url={getAbsoluteURL(`/uebungen/${uebung.id}`, lang)} size={60} />
 									</div>
 								</div>
 							</div>
@@ -345,7 +345,7 @@
 
 						<div class="card-footer">
 							<div class="qr-code-small">
-								<QRCode url={getAbsoluteURL(`/uebungen/${uebung.id}`)} size={80} />
+								<QRCode url={getAbsoluteURL(`/uebungen/${uebung.id}`, lang)} size={80} />
 							</div>
 						</div>
 					</div>
