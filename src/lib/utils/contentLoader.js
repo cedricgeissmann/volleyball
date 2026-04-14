@@ -394,9 +394,17 @@ export function formatReps(reps) {
  * @param {string} filename - Animation-Dateiname (ohne Pfad)
  * @returns {Promise<any>}
  */
+const animationModules = import.meta.glob('../../content/animationen/*.json', { eager: false });
+
 export async function loadAnimation(filename) {
 	try {
-		const module = await import(`../../content/animationen/${filename}`);
+		const key = `../../content/animationen/${filename}`;
+		const loader = animationModules[key];
+		if (!loader) {
+			console.error(`Animation not found: ${filename}`);
+			return null;
+		}
+		const module = await loader();
 		return module.default;
 	} catch (error) {
 		console.error(`Failed to load animation: ${filename}`, error);

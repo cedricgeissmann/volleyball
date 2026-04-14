@@ -5,6 +5,9 @@
 	import { browser } from '$app/environment';
 	import { parseRepetitions, formatReps } from '$lib/utils/contentLoader.js';
 	import PrintCardBackKraft from '$lib/components/uebungen/print/PrintCardBackKraft.svelte';
+	import PrintCardBackTaktik from '$lib/components/uebungen/print/PrintCardBackTaktik.svelte';
+	import TaktikBoard from '$lib/components/uebungen/taktik/TaktikBoard.svelte';
+	import { getStartPositions } from '$lib/utils/taktikEngine.js';
 	import TranslationFallbackBanner from '$lib/components/shared/TranslationFallbackBanner.svelte';
 	import { _ } from 'svelte-i18n';
 
@@ -254,35 +257,47 @@
 									/>
 									<label for="checkbox-{uebung.id}" class="checkbox-label"></label>
 								</div>
-								<div
-									class="uebung-card"
-									class:selected={selectedUebungen.includes(uebung.id)}
-									onclick={(e) => handleCardClick(uebung.id, e)}
-								>
-									<div class="card-content">
-										<h3>{uebung.titel}</h3>
-										{#if uebung.beschreibung}
-											<p class="description">{uebung.beschreibung}</p>
-										{/if}
-										<div class="setup-info">
-											{#if uebung.typ}
-												<span class="badge badge-typ">{uebung.typ}</span>
-											{/if}
-											{#if uebung.wiederholungen}
-												{@const reps = parseRepetitions(uebung.wiederholungen)}
-												<span class="badge">{formatReps(reps)}</span>
-											{:else if uebung.dauer}
-												<span class="badge">{uebung.dauer} Min</span>
-											{/if}
-											{#if uebung.fokus}
-												<span class="badge">{uebung.fokus}</span>
-											{/if}
-										</div>
+							<div
+								class="uebung-card"
+								class:selected={selectedUebungen.includes(uebung.id)}
+								onclick={(e) => handleCardClick(uebung.id, e)}
+							>
+								{#if uebung.animationData && uebung.typ === 'taktik'}
+									<div class="card-preview">
+										<TaktikBoard
+											animation={uebung.animationData}
+											positions={getStartPositions(uebung.animationData)}
+											arrows={[]}
+											showCourtLabels={false}
+											showZoneLabels={false}
+											maxWidth={300}
+										/>
 									</div>
-									<div class="card-qr">
-										<QRCode url={getAbsoluteURL(`/uebungen/${uebung.id}`, lang)} size={60} />
+								{/if}
+								<div class="card-content">
+									<h3>{uebung.titel}</h3>
+									{#if uebung.beschreibung}
+										<p class="description">{uebung.beschreibung}</p>
+									{/if}
+									<div class="setup-info">
+										{#if uebung.typ}
+											<span class="badge badge-typ">{uebung.typ}</span>
+										{/if}
+										{#if uebung.wiederholungen}
+											{@const reps = parseRepetitions(uebung.wiederholungen)}
+											<span class="badge">{formatReps(reps)}</span>
+										{:else if uebung.dauer}
+											<span class="badge">{uebung.dauer} Min</span>
+										{/if}
+										{#if uebung.fokus}
+											<span class="badge">{uebung.fokus}</span>
+										{/if}
 									</div>
 								</div>
+								<div class="card-qr">
+									<QRCode url={getAbsoluteURL(`/uebungen/${uebung.id}`, lang)} size={60} />
+								</div>
+							</div>
 							</div>
 						{/each}
 					</div>
@@ -350,16 +365,18 @@
 						</div>
 					</div>
 
-					<!-- Rechte Seite: Rückseite (Animation) -->
-					<div class="exercise-card card-back">
-						{#if uebung.animationData}
-							<PrintCardBackKraft animation={uebung.animationData} />
+				<!-- Rechte Seite: Rückseite (Animation) -->
+				<div class="exercise-card card-back">
+					{#if uebung.animationData && uebung.typ === 'kraft'}
+						<PrintCardBackKraft animation={uebung.animationData} />
+					{:else if uebung.animationData && uebung.typ === 'taktik'}
+						<PrintCardBackTaktik animation={uebung.animationData} />
 					{:else}
 						<div class="no-animation">
 							<p>{$_('print_no_animation')}</p>
 						</div>
 					{/if}
-					</div>
+				</div>
 				</div>
 			{/each}
 		</div>
@@ -570,6 +587,7 @@
 	.uebung-card {
 		display: grid;
 		grid-template-columns: 1fr auto;
+		grid-template-rows: auto 1fr;
 		gap: var(--spacing-md);
 		align-items: start;
 		background-color: var(--color-bg);
@@ -577,13 +595,20 @@
 		border-radius: var(--radius-lg);
 		border-top-left-radius: 0;
 		border-bottom-left-radius: 0;
-		padding: var(--spacing-md);
+		overflow: hidden;
 		text-decoration: none;
 		color: inherit;
 		transition: all var(--transition-normal);
 		cursor: pointer;
 		position: relative;
 		flex: 1;
+	}
+
+	.card-preview {
+		grid-column: 1 / -1;
+		background: var(--color-gray-100);
+		padding: var(--spacing-sm);
+		border-bottom: 1px solid var(--color-gray-200);
 	}
 
 	.uebung-card.selected {
