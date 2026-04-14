@@ -1,0 +1,16 @@
+id: nur-linie
+name: Nur Linie
+beschreibung: Alle Angriffe müssen über die Linie gespielt werden — kein Diagonalangriff erlaubt.
+erklaerung: |
+  Jeder Angriff muss parallel zur Seitenlinie gespielt werden — direkt an der Linie entlang.
+  Ein Diagonalangriff oder ein Angriff in die Mitte des gegnerischen Feldes ist nicht erlaubt und gibt dem Gegner einen Punkt.
+  Der Ball muss klar erkennbar parallel zur Seitenlinie fliegen — ein Ball der nur leicht gerade fliegt, gilt nicht als Linie.
+  Das verteidigende Team weiss, wohin der Angriff kommt — trotzdem muss er erfolgreich platziert werden.
+nutzen: |
+  Der Linienangriff ist für viele Spieler technisch anspruchsvoller als die Diagonale, da er eine präzisere Körperrotation und einen veränderten Treffpunkt erfordert.
+  Dieser Constraint zwingt Angreifer, den Linienangriff unter Spielbedingungen zu üben statt ihn zu meiden.
+  Gleichzeitig trainiert er das Verteidigungsteam auf die Linienabdeckung — eine häufige Schwäche in der Verteidigung.
+  Die bekannte Angriffsrichtung erhöht den Druck auf den Angreifer und simuliert Situationen, in denen die Diagonale gesperrt ist.
+kategorie: Angriff
+schwierigkeit: mittel
+typ: taktisch

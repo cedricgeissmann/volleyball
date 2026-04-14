@@ -1,0 +1,16 @@
+id: doppelpass
+name: Double Pass
+beschreibung: A pass between two players counts as a single ball contact.
+erklaerung: |
+  Two players may pass the ball between each other, and this combination counts as one shared contact.
+  The first player deliberately passes to the second, who immediately redirects it — this entire sequence counts as one contact in the three-contact system.
+  The double pass must be clearly recognizable as a deliberate action: both players touch the ball one directly after the other.
+  A normal ball exchange where each player has their own separate contact does not qualify.
+nutzen: |
+  This constraint promotes close teamwork and communication between two players in tight spaces.
+  It trains precise, fast ball redirection and mutual anticipation of movements.
+  Teams are forced to be creative in their build-up and to develop new combinations.
+  At the same time, the double pass trains the receiving team to react to unexpected play patterns.
+kategorie: Aufbau
+schwierigkeit: mittel
+typ: taktisch

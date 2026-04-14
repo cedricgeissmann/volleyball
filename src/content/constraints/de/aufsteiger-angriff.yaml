@@ -1,0 +1,16 @@
+id: aufsteiger-angriff
+name: Aufsteiger-Angriff
+beschreibung: Der Ball darf beim Angriff nur im Aufsteigen getroffen werden — kein Schlag auf dem Höhepunkt oder im Absteigen.
+erklaerung: |
+  Der Angreifer muss den Ball treffen, bevor dieser seinen Höhepunkt erreicht — also noch während er steigt.
+  Ein Schlag auf dem Höhepunkt oder beim Fallen des Balls gilt als Fehler und gibt dem Gegner einen Punkt.
+  Dies erfordert ein sehr frühes Timing: der Absprung muss früher erfolgen als gewohnt.
+  Der Coach oder ein Beobachter beurteilt, ob der Ball noch im Aufsteigen war, als er getroffen wurde.
+nutzen: |
+  Dieser Constraint trainiert gezielt das frühe Schlagtiming — eine Schlüsselkompetenz im Hochleistungs-Volleyball.
+  Früh gespielte Bälle lassen dem gegnerischen Block deutlich weniger Zeit zur Reaktion.
+  Spieler müssen lernen, die Ballflugkurve des Zuspiels sehr schnell zu lesen und den Absprungmoment konsequent früh zu wählen.
+  Langfristig macht dieser Constraint Angriffe schneller und unberechenbarer für den Gegner.
+kategorie: Angriff
+schwierigkeit: schwer
+typ: technisch

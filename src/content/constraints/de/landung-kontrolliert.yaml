@@ -1,0 +1,16 @@
+id: landung-kontrolliert
+name: Kontrollierte Landung
+beschreibung: Nach jedem Sprung muss die Landung beidbeinig und kontrolliert erfolgen — kein Einfuss-Landen oder Stolpern erlaubt.
+erklaerung: |
+  Nach jedem Sprung — ob Angriff, Block, Sprungaufschlag oder Abwehrsprung — muss der Spieler beidbeinig und kontrolliert landen.
+  Eine Landung auf einem Fuss, ein Stolpern oder ein unkontrolliertes Fallen nach dem Sprung gibt dem Gegner einen Punkt.
+  Die Landung muss im Gleichgewicht enden: beide Füsse berühren gleichzeitig den Boden, der Spieler steht stabil.
+  Der Coach oder Beobachter beurteilt, ob die Landung kontrolliert war.
+nutzen: |
+  Dieser Constraint schult die Landungsqualität — ein oft vernachlässigter aber verletzungspräventiv entscheidender Aspekt.
+  Er zwingt Spieler, den gesamten Sprung bis zur Landung zu kontrollieren statt den Fokus nach dem Schlag zu verlieren.
+  Kontrollierte Landungen verbessern die Umschaltvorbereitung: Wer stabil landet, ist schneller wieder spielbereit.
+  Langfristig reduziert dieser Constraint das Verletzungsrisiko bei Knie und Sprunggelenk erheblich.
+kategorie: Allgemein
+schwierigkeit: mittel
+typ: technisch

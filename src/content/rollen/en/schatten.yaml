@@ -1,0 +1,9 @@
+id: schatten
+name: Shadow
+beschreibung: Movement imitation of a specific person without touching the ball — synchronous, right beside or behind them
+aufgaben:
+  - I constantly watch my target player and copy their movements immediately
+  - I do not touch the ball — my only task is movement imitation
+  - I position myself directly beside or behind my target player
+  - I perform every movement at the exact same moment — no delay allowed
+fokus: Synchronous movement awareness through immediate imitation of a fixed target player

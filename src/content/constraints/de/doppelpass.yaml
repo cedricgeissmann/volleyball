@@ -1,0 +1,16 @@
+id: doppelpass
+name: Doppelpass
+beschreibung: Ein Zwischenpass zwischen zwei Spielern zählt als eine einzige Ballberührung.
+erklaerung: |
+  Zwei Spieler dürfen den Ball zwischen sich hin- und herspielen, wobei dieses Zusammenspiel als eine gemeinsame Berührung gilt.
+  Der erste Spieler spielt den Ball gezielt zum zweiten, der ihn sofort weiterleitet — das alles zählt als ein Kontakt im Dreikontakt-System.
+  Der Doppelpass muss sichtbar als bewusste Aktion erkennbar sein: beide Spieler berühren den Ball direkt nacheinander.
+  Ein normaler Ballwechsel zwischen zwei Spielern, bei dem jeder seinen eigenen Kontakt hat, ist damit nicht gemeint.
+nutzen: |
+  Dieser Constraint fördert das enge Zusammenspiel und die Kommunikation zwischen zwei Spielern auf engem Raum.
+  Er schult das präzise, schnelle Weiterleiten des Balls und das gegenseitige Antizipieren von Bewegungen.
+  Teams werden gezwungen, kreativ im Aufbau zu sein und neue Kombinationen zu entwickeln.
+  Gleichzeitig trainiert der Doppelpass das empfangende Team, auf unerwartete Spielzüge zu reagieren.
+kategorie: Aufbau
+schwierigkeit: mittel
+typ: taktisch

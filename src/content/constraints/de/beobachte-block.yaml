@@ -1,0 +1,16 @@
+id: beobachte-block
+name: Augen auf den Block
+beschreibung: Angreifer müssen beim Anlauf und Absprung den gegnerischen Block fixieren — kein Blick auf das freie Feld.
+erklaerung: |
+  Beim Angriff müssen die Augen des Angreifers auf die Hände und die Position des gegnerischen Blocks gerichtet sein.
+  Der Blick auf das freie Feld oder die Abwehr ist nicht erlaubt — der Block steht im visuellen Fokus.
+  Wer den Block nicht fixiert, wird vom Beobachter oder Coach korrigiert.
+  Der Angreifer muss dann auf Basis seiner Blockbeobachtung entscheiden: über den Block, am Block vorbei oder um den Block herum.
+nutzen: |
+  Dieser Constraint schult das bewusste Lesen des Blocks — eine Kernfähigkeit für fortgeschrittene Angreifer.
+  Viele Spieler schauen beim Angriff instinktiv auf das freie Feld und ignorieren den Block. Dieser Constraint bricht dieses Muster.
+  Spieler entwickeln die Fähigkeit, die Blockhände zu lesen und gezielt Wipe-offs, Winkel oder Lücken zu nutzen.
+  Langfristig werden Angriffe variabler und intelligenter, da der Block als Information genutzt wird.
+kategorie: Angriff
+schwierigkeit: schwer
+typ: technisch

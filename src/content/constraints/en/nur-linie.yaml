@@ -1,0 +1,16 @@
+id: nur-linie
+name: Line Only
+beschreibung: All attacks must be played down the line — no cross-court attack allowed.
+erklaerung: |
+  Every attack must be played parallel to the sideline — straight down the line.
+  A cross-court attack or an attack into the middle of the opponent's court is not allowed and gives the opposing team a point.
+  The ball must clearly fly parallel to the sideline — a ball that only flies slightly straight does not count as a line shot.
+  The defending team knows where the attack is coming — yet the attacker must still place it successfully.
+nutzen: |
+  The line attack is technically more demanding for many players than the cross-court, as it requires more precise body rotation and a different contact point.
+  This constraint forces attackers to practice the line attack under game conditions instead of avoiding it.
+  At the same time, it trains the defending team on line coverage — a frequent weakness in defense.
+  The known attack direction increases pressure on the attacker and simulates situations where the cross-court is blocked.
+kategorie: Angriff
+schwierigkeit: mittel
+typ: taktisch

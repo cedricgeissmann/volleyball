@@ -1,0 +1,16 @@
+id: aufsteiger-angriff
+name: Rising Ball Attack
+beschreibung: The ball may only be attacked while it is still rising — no strike at the peak or on the way down.
+erklaerung: |
+  The attacker must contact the ball before it reaches its highest point — while it is still ascending.
+  A strike at the peak or while the ball is falling counts as an error and gives the opposing team a point.
+  This requires very early timing: the takeoff must happen earlier than usual.
+  The coach or an observer judges whether the ball was still rising when it was contacted.
+nutzen: |
+  This constraint specifically trains early contact timing — a key competency in high-level volleyball.
+  Balls played early give the opposing block significantly less time to react.
+  Players must learn to read the arc of the set very quickly and consistently choose an early takeoff moment.
+  Long-term, this constraint makes attacks faster and less predictable for the opponent.
+kategorie: Angriff
+schwierigkeit: schwer
+typ: technisch

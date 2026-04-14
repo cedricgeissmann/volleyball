@@ -1,0 +1,16 @@
+id: flaches-zuspiel
+name: Flaches Zuspiel
+beschreibung: Das Zuspiel darf nicht höher als die Netzhöhe gespielt werden — kein hohes Zuspiel erlaubt.
+erklaerung: |
+  Alle Zuspieler müssen den Ball flach zugespielt, sodass er die Höhe des Netzes nicht überschreitet.
+  Ein Zuspiel, das deutlich über Netzhöhe steigt, gilt als Fehler und gibt dem Gegner einen Punkt.
+  Der Angreifer muss den Ball also sehr nah am Netz und tief treffen — eine echte technische Herausforderung.
+  Übergangszuspiele und schnelle Spielzüge, die von Natur aus flach sind, sind von diesem Constraint besonders betroffen.
+nutzen: |
+  Dieser Constraint zwingt den Angreifer, mit einem flachen, schnellen Zuspiel umzugehen und das Timing des Angriffs drastisch anzupassen.
+  Er schult das Zuspiel-Timing des Zuspielers: zu hohe Zuspieler werden sofort bestraft.
+  Angreifer lernen, den Absprungmoment und die Schlaghöhe flexibel zu variieren statt auf eine ideale Ballhöhe zu warten.
+  Dieser Constraint simuliert reale Spielsituationen, in denen das Zuspiel nicht perfekt ist.
+kategorie: Aufbau
+schwierigkeit: schwer
+typ: technisch

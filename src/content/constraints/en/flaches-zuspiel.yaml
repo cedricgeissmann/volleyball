@@ -1,0 +1,16 @@
+id: flaches-zuspiel
+name: Flat Set
+beschreibung: The set may not rise higher than net height — no high sets allowed.
+erklaerung: |
+  All setters must play the ball flat so that it does not exceed the height of the net.
+  A set that rises clearly above net height counts as an error and gives the opposing team a point.
+  The attacker must therefore hit the ball very close to the net and at a low point — a real technical challenge.
+  Quick sets and transition plays that are naturally flat are especially affected by this constraint.
+nutzen: |
+  This constraint forces the attacker to deal with a flat, fast set and drastically adjust their attack timing.
+  It trains the setter's timing: overly high sets are immediately penalized.
+  Attackers learn to flexibly vary their takeoff moment and contact height rather than waiting for an ideal ball height.
+  This constraint simulates real game situations where the set is not perfect.
+kategorie: Aufbau
+schwierigkeit: schwer
+typ: technisch

@@ -1,0 +1,16 @@
+id: nur-diagonal
+name: Diagonal Only
+beschreibung: All attacks must be played cross-court — no line attack allowed.
+erklaerung: |
+  Every attack must be played cross-court: from left to right or right to left, depending on the attack position.
+  A line attack or an attack into the middle of the opponent's court is not allowed and gives the opposing team a point.
+  The diagonal direction must be clearly recognizable — a ball that only flies slightly angled does not count as diagonal.
+  The defending team knows where the attack is coming — yet the attacker must still score points.
+nutzen: |
+  This constraint trains precision in attack direction and deliberate targeting of defined zones.
+  Attackers must control their body rotation, hand contact, and approach angle to consistently hit the diagonal.
+  At the same time, it trains the defending team to effectively cover a known attack direction.
+  Restricting to one attack direction makes the attacker predictable — and forces them to score points anyway.
+kategorie: Angriff
+schwierigkeit: mittel
+typ: taktisch

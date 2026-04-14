@@ -1,0 +1,16 @@
+id: beobachte-zuspieler
+name: Augen auf den Zuspieler
+beschreibung: Alle Angreifer müssen den Zuspieler durchgehend beobachten — nicht den Ball, bis er abgespielt ist.
+erklaerung: |
+  Angreifer müssen ihren Blick auf den Zuspieler richten und ihn beobachten, bis der Ball seine Hände verlassen hat.
+  Erst nach dem Ablösen des Balls darf der Angreifer den Blick auf den Ball selbst lenken.
+  Wer zu früh den Ball statt den Zuspieler anschaut, wird vom Coach oder Beobachter darauf hingewiesen.
+  Schulterposition, Standort und Körperhaltung des Zuspielers verraten schon vor dem Ablösen, wohin das Zuspiel geht.
+nutzen: |
+  Dieser Constraint schult das Antizipieren des Zuspiels aus der Körpersprache des Zuspielers heraus.
+  Angreifer lernen, den Anlauf und die Angriffsposition bereits zu wählen, bevor der Ball in der Luft ist — das spart wertvolle Hundertstelsekunden.
+  Er trainiert das simultane Wahrnehmen von Zuspieler, Ball und Block gleichzeitig.
+  Langfristig werden Angreifer schneller und sicherer in ihrer Positionierung, weil sie die Information früher aufnehmen.
+kategorie: Angriff
+schwierigkeit: mittel
+typ: technisch

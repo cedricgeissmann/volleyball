@@ -1,0 +1,16 @@
+id: beobachte-freies-feld
+name: Augen auf das freie Feld
+beschreibung: Angreifer müssen beim Anlauf das freie, unbesetzte Feld des Gegners aktiv suchen und fixieren.
+erklaerung: |
+  Angreifer müssen ihren Blick gezielt auf die freien, unbesetzten Zonen im gegnerischen Feld richten — bevor sie angreifen.
+  Der Blick auf den Block oder nur auf das Netz ist nicht ausreichend: das freie Feld muss aktiv identifiziert werden.
+  Der Coach oder Beobachter fragt nach jedem Angriff, welche Zone frei war — Spieler müssen antworten können.
+  Wer keine Antwort hat oder die falsche Zone nennt, hat den Constraint nicht erfüllt.
+nutzen: |
+  Dieser Constraint schult das Feldlesen — die Fähigkeit, in einem Bruchteil einer Sekunde die offene Zone zu erkennen.
+  Viele Spieler greifen blind an, ohne zu wissen, wo der Gegner schwach aufgestellt ist. Dieser Constraint macht das bewusst.
+  Er trainiert das simultane Wahrnehmen von Ball, Block und Feldaufteilung gleichzeitig.
+  Langfristig werden Angriffe präziser und gezielter, da Spieler angreifen, wo der Gegner wirklich schwach ist.
+kategorie: Angriff
+schwierigkeit: schwer
+typ: technisch

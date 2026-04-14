@@ -1,0 +1,9 @@
+id: spiegel
+name: Mirror
+beschreibung: Like the shadow, but in the opponent's court — a strategic obstacle with controlled evasion behavior
+aufgaben:
+  - I mirror the movements of my target player in the opponent's court
+  - I deliberately position myself as an obstacle for the opposing team
+  - I clearly communicate my position so my teammates can factor me in
+  - I only evade when a collision is absolutely unavoidable and no teammate can play around me anymore
+fokus: Strategic presence as a living obstacle — evasion only as a last resort

@@ -1,0 +1,16 @@
+id: beobachte-freies-feld
+name: Eyes on the Open Court
+beschreibung: Attackers must actively seek and fix their gaze on the unoccupied zones in the opponent's court during their approach.
+erklaerung: |
+  Attackers must deliberately direct their gaze at the free, unoccupied zones in the opponent's court — before attacking.
+  Looking only at the block or the net is not sufficient: the open court must be actively identified.
+  The coach or observer asks after each attack which zone was open — players must be able to answer.
+  Anyone with no answer or who names the wrong zone has not fulfilled the constraint.
+nutzen: |
+  This constraint trains court reading — the ability to recognize the open zone in a fraction of a second.
+  Many players attack blindly without knowing where the opponent is poorly positioned. This constraint makes that conscious.
+  It trains the simultaneous perception of ball, block, and court coverage at the same time.
+  Long-term, attacks become more precise and deliberate as players attack where the opponent is genuinely weak.
+kategorie: Angriff
+schwierigkeit: schwer
+typ: technisch

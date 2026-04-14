@@ -1,0 +1,16 @@
+id: pancake-zweiter-ball
+name: Pancake — Nur beim zweiten Ball
+beschreibung: Der zweite Ballkontakt (das Zuspiel) muss immer als Pancake gespielt werden.
+erklaerung: |
+  Nur der zweite Kontakt des Teams mit dem Ball — das Zuspiel — muss als Pancake ausgeführt werden.
+  Der erste Kontakt (Annahme) und der dritte Kontakt (Angriff) dürfen normal gespielt werden.
+  Wer das Zuspiel mit einer anderen Technik spielt, gibt dem Gegner einen Punkt.
+  Der Zuspieler muss die flache Hand rechtzeitig auf den Boden bringen und den Ball vom Handrücken weiterspielen.
+nutzen: |
+  Dieser Constraint ist besonders ungewöhnlich, da das Zuspiel normalerweise nie als Pancake gespielt wird.
+  Er zwingt Spieler, die Pancake-Technik kreativ und kontrolliert einzusetzen, um den Ball trotzdem gut für den Angreifer zu platzieren.
+  Der Zuspieler muss die Flugbahn des Balls sehr präzise lesen, um den Pancake rechtzeitig vorbereiten zu können.
+  Dieser Constraint überraschende Situationen für beide Teams und fördert Improvisation und Anpassungsfähigkeit.
+kategorie: Verteidigung
+schwierigkeit: schwer
+typ: technisch

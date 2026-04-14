@@ -1,0 +1,16 @@
+id: hohes-zuspiel
+name: Hohes Zuspiel
+beschreibung: Jedes Zuspiel muss mindestens zwei Meter über die Netzhöhe gespielt werden.
+erklaerung: |
+  Alle Zuspieler müssen den Ball sehr hoch spielen — mindestens zwei Meter über der Netzkante.
+  Ein Zuspiel, das diese Mindesthöhe nicht erreicht, gilt als Fehler und gibt dem Gegner einen Punkt.
+  Das hohe Zuspiel gibt dem Angreifer mehr Zeit, gibt aber dem Gegner ebenfalls mehr Reaktionszeit für den Block.
+  Der Angreifer muss lernen, trotz der langen Wartezeit die Spannung und das Timing aufrechtzuerhalten.
+nutzen: |
+  Dieser Constraint schult die Geduld des Angreifers: hohes Zuspiel bedeutet lange Luft und viel Zeit zum Denken — und zum Zögern.
+  Er trainiert das Timing-Gefühl beim Absprung, da ein zu früher Sprung bei einem hohen Zuspiel katastrophal ist.
+  Ausserdem schult er den Zuspieler auf das kontrollierte, hohe Spiel — eine wichtige Grundfertigkeit bei schlechter Annahme.
+  Teams lernen, auch mit langsameren Zuspielen strukturiert und effektiv anzugreifen.
+kategorie: Aufbau
+schwierigkeit: mittel
+typ: technisch

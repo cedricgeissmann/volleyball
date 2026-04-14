@@ -1,0 +1,16 @@
+id: kurzball-pflicht
+name: Kurzball-Pflicht
+beschreibung: Jeder Angriff muss hinter der gegnerischen 3-Meter-Linie landen — kein Hinterfeldangriff erlaubt.
+erklaerung: |
+  Alle Angriffe müssen so gespielt werden, dass sie im vorderen Drittel des gegnerischen Feldes landen — hinter der 3-Meter-Linie.
+  Bälle die in der Mitte oder im Hinterfeld landen, gelten als Fehler und geben dem Gegner einen Punkt.
+  Erlaubt sind Tipper, kurze Bälle über den Block, Rollbälle und kontrollierte Placements direkt hinter das Netz.
+  Ein harter, langer Schlag in das Hinterfeld ist nicht erlaubt.
+nutzen: |
+  Dieser Constraint zwingt Angreifer, mit kurzen, kontrollierten Placements zu punkten statt auf Powerangriffe zu setzen.
+  Er entwickelt die Fähigkeit, den Block zu überspielen oder daran vorbeizuspielen, anstatt den Block zu umgehen.
+  Gleichzeitig trainiert er das Verteidigungsteam auf das Kurzballspiel — eine Zone, die in vielen Abwehrformationen vernachlässigt wird.
+  Langfristig macht dieser Constraint das Angriffsrepertoire vielseitiger, da Spieler lernen, auch kurze Bälle taktisch einzusetzen.
+kategorie: Angriff
+schwierigkeit: schwer
+typ: taktisch

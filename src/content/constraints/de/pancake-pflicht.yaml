@@ -1,0 +1,16 @@
+id: pancake-pflicht
+name: Pancake-Pflicht
+beschreibung: Jede Abwehraktion muss als Pancake ausgeführt werden — kein normaler Bagger oder Dive erlaubt.
+erklaerung: |
+  Alle Verteidigungsaktionen müssen mit einem Pancake gespielt werden: die flache Hand wird auf den Boden gelegt und der Ball prallt vom Handrücken ab.
+  Ein normaler Bagger, Dive oder Rolle als Abwehraktion ist nicht erlaubt.
+  Wer einen Ball mit einer anderen Technik rettet, gibt dem Gegner einen Punkt.
+  Der Pancake muss klar erkennbar sein — die Hand muss den Boden berühren, bevor der Ball sie trifft.
+nutzen: |
+  Dieser Constraint zwingt Spieler, die Pancake-Technik unter echten Spielbedingungen anzuwenden statt nur im Training zu üben.
+  Er schult das frühzeitige Lesen des Balls und die Fähigkeit, die flache Hand rechtzeitig unter den Ball zu bringen.
+  Spieler entwickeln ein besseres Körpergefühl für tiefe Bälle und lernen, die Pancake-Technik als zuverlässiges Werkzeug einzusetzen.
+  Langfristig erhöht sich die Variabilität in der Abwehr, da Spieler auch ungewöhnliche Rettungstechniken souverän beherrschen.
+kategorie: Verteidigung
+schwierigkeit: schwer
+typ: technisch

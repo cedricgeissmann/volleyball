@@ -1,0 +1,16 @@
+id: landung-kontrolliert
+name: Controlled Landing
+beschreibung: After every jump, the landing must be two-footed and controlled — no single-foot landing or stumbling allowed.
+erklaerung: |
+  After every jump — whether attack, block, jump serve, or defensive jump — the player must land on both feet in a controlled manner.
+  Landing on one foot, stumbling, or falling uncontrollably after the jump gives the opposing team a point.
+  The landing must finish in balance: both feet touch the floor simultaneously and the player stands stable.
+  The coach or observer judges whether the landing was controlled.
+nutzen: |
+  This constraint trains landing quality — an often neglected but injury-prevention-critical aspect.
+  It forces players to control the entire jump through to the landing, rather than losing focus after the strike.
+  Controlled landings improve transition readiness: players who land stably are ready to play again faster.
+  Long-term, this constraint significantly reduces the risk of knee and ankle injuries.
+kategorie: Allgemein
+schwierigkeit: mittel
+typ: technisch

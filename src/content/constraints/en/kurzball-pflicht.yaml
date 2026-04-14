@@ -1,0 +1,16 @@
+id: kurzball-pflicht
+name: Short Ball Required
+beschreibung: Every attack must land behind the opponent's 3-metre line — no deep court attack allowed.
+erklaerung: |
+  All attacks must be played so that they land in the front third of the opponent's court — behind the 3-metre line.
+  Balls that land in the middle or back court count as errors and give the opposing team a point.
+  Allowed are tips, short balls over the block, roll shots, and controlled placements directly behind the net.
+  A hard, deep shot into the back court is not allowed.
+nutzen: |
+  This constraint forces attackers to score with short, controlled placements rather than relying on power attacks.
+  It develops the ability to play over the block or past it, instead of trying to go around it.
+  At the same time, it trains the defending team on short ball play — a zone often neglected in defensive formations.
+  Long-term, this constraint makes the attack repertoire more versatile as players learn to tactically use short balls too.
+kategorie: Angriff
+schwierigkeit: schwer
+typ: taktisch

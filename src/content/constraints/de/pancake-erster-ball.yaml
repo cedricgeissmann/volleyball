@@ -1,0 +1,16 @@
+id: pancake-erster-ball
+name: Pancake — Nur beim ersten Ball
+beschreibung: Der erste Ballkontakt (Annahme oder Abwehr) muss immer als Pancake gespielt werden.
+erklaerung: |
+  Nur der erste Kontakt des Teams mit dem Ball — also Annahme oder Abwehr — muss als Pancake ausgeführt werden.
+  Der zweite und dritte Kontakt (Zuspiel und Angriff) dürfen normal gespielt werden.
+  Wer den ersten Ball mit einer anderen Technik spielt, gibt dem Gegner einen Punkt.
+  Der Pancake muss klar erkennbar sein: die flache Hand auf dem Boden, Ball prallt vom Handrücken ab.
+nutzen: |
+  Dieser Constraint isoliert den Pancake auf den ersten Ballkontakt und trainiert gezielt die Annahme- und Abwehrsituation.
+  Spieler müssen jeden ankommenden Ball sofort als möglichen Pancake-Ball lesen — das schärft die Antizipation.
+  Der Rest des Spielzugs bleibt unverändert, sodass die Konsequenzen eines guten oder schlechten Pancakes direkt erlebbar sind.
+  Besonders wertvoll für Teams, die den Pancake selten einsetzen und ihn als erste Abwehroption unterschätzen.
+kategorie: Verteidigung
+schwierigkeit: schwer
+typ: technisch

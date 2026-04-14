@@ -1,0 +1,16 @@
+id: beobachte-libero
+name: Augen auf den Libero
+beschreibung: Angreifer und Zuspieler müssen beim Spielzug immer den Libero oder Abwehrspezialisten beobachten.
+erklaerung: |
+  Alle Angreifer und der Zuspieler müssen ihren Blick bewusst auf den Libero oder Abwehrspezialisten des Gegners richten.
+  Position, Startbewegung und Ausrichtung des Liberos geben entscheidende Hinweise auf die geplante Abwehrstrategie.
+  Wer den Libero nicht beobachtet, verpasst diese Information und spielt ohne taktischen Vorteil.
+  Der Coach oder Beobachter kontrolliert, ob Spieler aktiv auf den Libero schauen.
+nutzen: |
+  Der Libero organisiert die Abwehr und gibt oft früh Hinweise auf die Verteidigungsformation.
+  Dieser Constraint schult die Fähigkeit, relevante Informationen im gegnerischen Feld zu lesen.
+  Spieler lernen, den Libero als taktischen Anker zu nutzen: Wo steht er? Wohin bewegt er sich? Was deckt er ab?
+  Langfristig verbessert sich die Angriffsplanung, da Spieler die Abwehr aktiv in ihre Entscheidungen einbeziehen.
+kategorie: Angriff
+schwierigkeit: mittel
+typ: technisch

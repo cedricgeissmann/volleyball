@@ -1,0 +1,16 @@
+id: nur-diagonal
+name: Nur Diagonal
+beschreibung: Alle Angriffe müssen diagonal gespielt werden — kein Linienangriff erlaubt.
+erklaerung: |
+  Jeder Angriff muss über die Diagonale gespielt werden: von links nach rechts oder von rechts nach links, je nach Angriffsposition.
+  Ein Linienangriff oder ein Angriff in die Mitte des gegnerischen Feldes ist nicht erlaubt und gibt dem Gegner einen Punkt.
+  Die diagonale Richtung muss klar erkennbar sein — ein Ball der nur leicht schräg fliegt, gilt nicht als Diagonal.
+  Das verteidigende Team weiss, wohin der Angriff kommt — trotzdem muss er erfolgreich sein.
+nutzen: |
+  Dieser Constraint schult die Präzision der Angriffsrichtung und das gezielte Spielen in definierte Zonen.
+  Angreifer müssen ihre Körperrotation, den Handkontakt und den Absprungwinkel so steuern, dass die Diagonale konsequent getroffen wird.
+  Gleichzeitig trainiert er das Verteidigungsteam, eine bekannte Angriffsrichtung effektiv abzudecken.
+  Die Einschränkung auf eine Angriffsrichtung macht den Angreifer berechenbarer — und zwingt ihn, trotzdem Punkte zu erzielen.
+kategorie: Angriff
+schwierigkeit: mittel
+typ: taktisch
