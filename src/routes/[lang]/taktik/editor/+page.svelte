@@ -760,13 +760,15 @@
 
 <style>
 	.editor-page {
-		min-height: calc(100vh - var(--header-height));
+		height: calc(100vh - var(--header-height) - var(--footer-height));
+		min-height: 400px;
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-md);
 		padding: var(--space-md) var(--space-lg);
 		max-width: var(--content-width-wide);
 		margin-inline: auto;
+		overflow: hidden;
 	}
 
 	/* ---- Header ---- */
@@ -1009,6 +1011,8 @@
 		grid-template-columns: 270px 1fr;
 		gap: var(--space-lg);
 		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
 	}
 
 	.editor-sidebar {
@@ -1016,7 +1020,7 @@
 		flex-direction: column;
 		gap: var(--space-sm);
 		overflow-y: auto;
-		max-height: calc(100vh - 160px);
+		min-height: 0;
 	}
 
 	.sidebar-section {
@@ -1261,15 +1265,23 @@
 	.preview-mode {
 		max-width: 600px;
 		margin-inline: auto;
+		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
 	}
 
 	/* Responsive */
 	@media (max-width: 900px) {
+		.editor-page {
+			height: auto;
+			min-height: unset;
+			overflow: visible;
+		}
 		.editor-layout {
 			grid-template-columns: 1fr;
+			overflow-y: visible;
 		}
 		.editor-sidebar {
-			max-height: none;
 			overflow-y: visible;
 		}
 	}
