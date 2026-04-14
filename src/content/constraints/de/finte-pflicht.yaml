@@ -1,0 +1,15 @@
+id: finte-pflicht
+name: Finte-Pflicht
+beschreibung: Jeder Angriff muss als Finte gespielt werden — kein harter Schlag erlaubt.
+erklaerung: |
+  Alle Angriffsaktionen müssen als kontrollierte Finte gespielt werden: Tipper, Lobs, Rollbälle oder gezielte Placements.
+  Ein harter Schlag oder Powerschlag ist nicht erlaubt. Der Ball muss mit Kontrolle und Absicht platziert werden.
+  Wenn ein Spieler einen harten Angriff spielt, gilt es als Fehler.
+  Spieler müssen lernen, den Ball intelligent zu platzieren statt ihn wegzuhauen.
+nutzen: |
+  Dieser Constraint entwickelt die taktische Intelligenz und das Körpergefühl für kontrollierte Angriffsaktionen.
+  Spieler müssen sich intensiv mit der Feldaufteilung des Gegners auseinandersetzen und Lücken suchen.
+  Ausserdem verbessert er die Genauigkeit des Angriffs und die Fähigkeit, unter Druck präzise zu spielen.
+  Langfristig macht dieser Constraint die Angriffe unberechenbarer, da Spieler gelernt haben, zwischen Finte und Schlag zu wechseln.
+kategorie: Angriff
+schwierigkeit: mittel

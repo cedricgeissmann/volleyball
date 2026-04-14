@@ -1,0 +1,15 @@
+id: linke-hand
+name: Linke Hand
+beschreibung: Jeder dritte Ballkontakt muss mit der nicht-dominanten Hand gespielt werden.
+erklaerung: |
+  Jeder dritte Ball in einer Sequenz (also Kontakt 3, 6, 9 usw.) muss mit der schwachen Hand gespielt werden.
+  Für Rechtshänder ist das die linke Hand, für Linkshänder die rechte.
+  Der Ball darf dabei mit einer Hand gespielt werden (einarmige Aktion) oder als Päckchen falls beidseitig nötig.
+  Das Team zählt die Kontakte gemeinsam mit und muss sich darauf einstellen.
+nutzen: |
+  Dieser spielerische Constraint sorgt für unerwartete Situationen und zwingt das Team zur Kommunikation.
+  Er schult das beidhändige Spielgefühl und die Koordination der schwachen Seite.
+  Ausserdem macht er deutlich, wie stark Automatismen das Spiel prägen — und öffnet die Augen für neue Möglichkeiten.
+  Gleichzeitig schafft er eine lockere, humorvolle Trainingsatmosphäre, die Kreativität fördert.
+kategorie: Allgemein
+schwierigkeit: einfach

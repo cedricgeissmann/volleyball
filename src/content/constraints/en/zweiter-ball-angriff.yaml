@@ -1,0 +1,14 @@
+id: zweiter-ball-angriff
+name: Second-Ball Attack
+beschreibung: The second contact must always be played as an attack.
+erklaerung: |
+  Regardless of the situation, the second contact (normally the set) must be played as a direct attack to the opponent's side.
+  The team therefore only has two contacts per rally: reception and then immediately attack.
+  A classic set followed by an attack is not allowed.
+  Exception: If the first contact is already an attack (direct return), the next ball counts as the first contact again.
+nutzen: |
+  This constraint forces players to decide faster and develop spontaneous attacking actions.
+  It improves the ability to react creatively in unusual situations and trains body awareness for attacking techniques from different positions.
+  It also increases the pace of play and the willingness to take risks.
+kategorie: Angriff
+schwierigkeit: schwer

@@ -333,6 +333,101 @@ export async function loadRolleByIdWithFallback(id, locale = 'de') {
 	return { item, isFallback: false };
 }
 
+// ---------------------------------------------------------------------------
+// Constraints
+// ---------------------------------------------------------------------------
+
+/**
+ * @typedef {Object} Constraint
+ * @property {string} id - Eindeutige ID
+ * @property {string} name - Constraint-Name
+ * @property {string} beschreibung - Kurzbeschreibung (für Karte)
+ * @property {string} erklaerung - Ausführliche Erklärung (für Webseite)
+ * @property {string} nutzen - Nutzen dieses Constraints
+ * @property {string} kategorie - Kategorie (Angriff, Verteidigung, Aufbau, Allgemein)
+ * @property {string} schwierigkeit - Schwierigkeit (einfach, mittel, schwer)
+ */
+
+/**
+ * Lädt alle Constraints für eine Locale
+ * @param {string} [locale='de'] - Sprache (de oder en)
+ * @returns {Promise<Constraint[]>}
+ */
+export async function loadConstraints(locale = 'de') {
+	const modules = import.meta.glob('/src/content/constraints/**/*.yaml', { eager: true, query: '?raw' });
+	const constraints = [];
+
+	for (const path in modules) {
+		if (!path.includes(`/constraints/${locale}/`)) {
+			continue;
+		}
+		const module = /** @type {any} */ (modules[path]);
+		const content = module.default;
+		const constraint = /** @type {Constraint} */ (yaml.load(content));
+		constraints.push(constraint);
+	}
+
+	if (constraints.length === 0 && locale !== 'de') {
+		return loadConstraints('de');
+	}
+
+	return constraints.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
+ * Lädt alle Constraints für eine Locale, mit isFallback-Flag
+ * @param {string} [locale='de']
+ * @returns {Promise<{items: Constraint[], isFallback: boolean}>}
+ */
+export async function loadConstraintsWithFallback(locale = 'de') {
+	const items = await loadConstraints(locale);
+	if (locale !== 'de') {
+		const modules = import.meta.glob('/src/content/constraints/**/*.yaml', { eager: true, query: '?raw' });
+		const hasLocale = Object.keys(modules).some((p) => p.includes(`/constraints/${locale}/`));
+		return { items, isFallback: !hasLocale };
+	}
+	return { items, isFallback: false };
+}
+
+/**
+ * Lädt einen Constraint nach ID für eine Locale
+ * @param {string} id - Constraint-ID
+ * @param {string} [locale='de'] - Sprache (de oder en)
+ * @returns {Promise<Constraint|null>}
+ */
+export async function loadConstraintById(id, locale = 'de') {
+	try {
+		const module = await import(`../../content/constraints/${locale}/${id}.yaml?raw`);
+		return yaml.load(module.default);
+	} catch {
+		if (locale !== 'de') {
+			return loadConstraintById(id, 'de');
+		}
+		return null;
+	}
+}
+
+/**
+ * Lädt einen Constraint nach ID, mit isFallback-Flag
+ * @param {string} id
+ * @param {string} [locale='de']
+ * @returns {Promise<{item: Constraint|null, isFallback: boolean}>}
+ */
+export async function loadConstraintByIdWithFallback(id, locale = 'de') {
+	if (locale !== 'de') {
+		try {
+			const module = await import(`../../content/constraints/${locale}/${id}.yaml?raw`);
+			const item = /** @type {Constraint} */ (yaml.load(module.default));
+			return { item, isFallback: false };
+		} catch {
+			const item = await loadConstraintById(id, 'de');
+			return { item, isFallback: true };
+		}
+	}
+	const item = await loadConstraintById(id, 'de');
+	return { item, isFallback: false };
+}
+
 /**
  * Lädt alle Events
  * @returns {Promise<Event[]>}

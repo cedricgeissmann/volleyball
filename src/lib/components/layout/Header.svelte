@@ -58,15 +58,22 @@
 			>
 				{$_('nav_taktik')}
 			</a>
-			<a
-				href="{base}/{currentLang}/rollen"
-				class:active={$page.url.pathname.includes('/rollen')}
-				on:click={closeMobileMenu}
-			>
-				{$_('nav_roles')}
-			</a>
-			<a
-				href="{base}/{currentLang}/planner"
+		<a
+			href="{base}/{currentLang}/rollen"
+			class:active={$page.url.pathname.includes('/rollen')}
+			on:click={closeMobileMenu}
+		>
+			{$_('nav_roles')}
+		</a>
+		<a
+			href="{base}/{currentLang}/constraints"
+			class:active={$page.url.pathname.includes('/constraints')}
+			on:click={closeMobileMenu}
+		>
+			{$_('nav_constraints')}
+		</a>
+		<a
+			href="{base}/{currentLang}/planner"
 				class:active={$page.url.pathname.includes('/planner')}
 				on:click={closeMobileMenu}
 			>

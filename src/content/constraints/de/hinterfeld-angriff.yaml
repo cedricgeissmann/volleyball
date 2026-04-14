@@ -1,0 +1,14 @@
+id: hinterfeld-angriff
+name: Hinterfeld-Angriff
+beschreibung: Alle Angriffe müssen aus dem Hinterfeld gespielt werden.
+erklaerung: |
+  Kein Spieler darf den Ball von der Vorderzone (vor der 3-Meter-Linie) angreifen.
+  Alle Angriffsaktionen — ob Schlag, Finte oder Lob — müssen hinter der 3-Meter-Linie starten.
+  Vorderspieler dürfen zupassen und blocken, aber keinen direkten Angriff auf die gegnerische Seite spielen.
+  Wenn ein Angriff aus der Vorderzone kommt, gilt er als Fehler und der Punkt geht ans andere Team.
+nutzen: |
+  Dieser Constraint schult das Lesen des Spiels aus dem Hinterfeld.
+  Spieler lernen, sich frühzeitig zu positionieren und Angriffsmöglichkeiten aus der Tiefe des Feldes zu suchen.
+  Ausserdem fördert er eine sauberere Dreikontakt-Struktur, da der Aufbau bewusster gestaltet werden muss.
+kategorie: Angriff
+schwierigkeit: mittel

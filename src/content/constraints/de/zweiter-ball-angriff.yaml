@@ -1,0 +1,14 @@
+id: zweiter-ball-angriff
+name: Zweiter-Ball-Angriff
+beschreibung: Der zweite Ballkontakt muss immer als Angriff gespielt werden.
+erklaerung: |
+  Unabhängig von der Situation muss der zweite Kontakt (normalerweise das Zuspiel) als direkter Angriff auf die gegnerische Seite gespielt werden.
+  Das Team hat also nur zwei Kontakte pro Ballwechsel: Annahme und dann sofort Angriff.
+  Ein klassisches Zuspiel gefolgt von einem Angriff ist nicht erlaubt.
+  Ausnahme: Wenn der erste Kontakt bereits ein Angriff ist (direkte Rückkehr), gilt der nächste Ball wieder als erster Kontakt.
+nutzen: |
+  Dieser Constraint zwingt Spieler, schneller zu entscheiden und spontane Angriffsaktionen zu entwickeln.
+  Er verbessert die Fähigkeit, in ungewohnten Situationen kreativ zu reagieren, und schult das Körpergefühl für Angriffstechniken aus verschiedenen Positionen.
+  Ausserdem erhöht er das Spieltempo und die Bereitschaft, Risiko zu nehmen.
+kategorie: Angriff
+schwierigkeit: schwer

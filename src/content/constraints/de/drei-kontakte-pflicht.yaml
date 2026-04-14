@@ -1,0 +1,14 @@
+id: drei-kontakte-pflicht
+name: Drei-Kontakte-Pflicht
+beschreibung: Immer genau drei Ballkontakte — kein direkter Return erlaubt.
+erklaerung: |
+  Das Team muss den Ball immer in genau drei Kontakten spielen: Annahme, Zuspiel, Angriff.
+  Ein direkter Return (ein oder zwei Kontakte) ist nicht erlaubt, auch wenn es einfacher wäre.
+  Wenn das Team weniger als drei Kontakte macht, gibt es einen Punkt für das andere Team.
+  Ausnahme: Wenn der Ball nicht spielbar ist (z.B. Netzball), gilt das als normaler Fehler.
+nutzen: |
+  Dieser Constraint erzwingt eine strukturierte Spielweise und verhindert wilde Direktreturns.
+  Er fördert die Aufbaukompetenz aller Spieler, da immer alle drei Rollen (Annahme, Zuspieler, Angreifer) aktiv gefordert sind.
+  Ausserdem schult er die Geduld und das Vertrauen in den Aufbauprozess — essenzielle Qualitäten für ein gut organisiertes Team.
+kategorie: Aufbau
+schwierigkeit: einfach

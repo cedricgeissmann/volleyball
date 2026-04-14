@@ -1,0 +1,15 @@
+id: zielfeld-angriff
+name: Target Zone Attack
+beschreibung: Attacks may only land in a pre-defined target zone on the opponent's side.
+erklaerung: |
+  Before the game, a target zone is defined on the opponent's side (e.g. one half, a quadrant, or a corner).
+  All attacks must land in this target zone — attacks outside count as errors.
+  The target zone can be varied: diagonal, line, or back-corner only.
+  The target zone can be the same or different for both teams.
+nutzen: |
+  This constraint trains precision and targeted placement of the attack.
+  Players learn to play deliberately under pressure rather than simply hitting the ball "somewhere".
+  It also forces the receiving team to defend the known attack direction — an important skill in real games.
+  The constraint can be easily varied to set different tactical priorities.
+kategorie: Angriff
+schwierigkeit: mittel

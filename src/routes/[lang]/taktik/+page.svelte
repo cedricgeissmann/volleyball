@@ -288,7 +288,7 @@
 							{/if}
 						</div>
 						<div class="card-qr">
-							<QRCode url={getAbsoluteURL(`/taktik/${uebung.id}`, lang)} size={60} />
+							<QRCode url={getAbsoluteURL(`/taktik/${uebung.id}`, lang)} size={72} />
 						</div>
 					</div>
 				</div>

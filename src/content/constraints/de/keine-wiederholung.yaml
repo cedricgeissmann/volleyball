@@ -1,0 +1,14 @@
+id: keine-wiederholung
+name: Keine Wiederholung
+beschreibung: Kein Spieler darf zweimal hintereinander den Ball spielen.
+erklaerung: |
+  Nachdem ein Spieler den Ball gespielt hat, muss mindestens ein anderer Mitspieler den Ball berühren, bevor derselbe Spieler wieder spielen darf.
+  Diese Regel gilt für alle drei Kontakte im Aufbau.
+  Spieler müssen sich also ständig neu positionieren und Verantwortung aktiv übernehmen oder abgeben.
+  Bei Verletzung der Regel geht der Punkt ans gegnerische Team.
+nutzen: |
+  Dieser Constraint erzwingt eine bessere Bewegung aller Spieler und verhindert, dass ein Spieler das gesamte Spiel dominiert.
+  Er fördert die aktive Positionierung und das Lesen des Spiels, da jeder Spieler immer bereit sein muss.
+  Ausserdem verbessert er die Kommunikation im Team, weil klare Absprachen über Zuständigkeiten notwendig werden.
+kategorie: Aufbau
+schwierigkeit: mittel

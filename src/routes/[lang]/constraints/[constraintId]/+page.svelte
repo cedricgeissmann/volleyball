@@ -6,46 +6,85 @@
 	import { _ } from 'svelte-i18n';
 
 	let { data } = $props();
-	const { rolle, isFallback } = data;
+	const { constraint, isFallback } = data;
 	const lang = data.lang ?? 'de';
 
-	const qrUrl = getAbsoluteURL(`/rollen/${rolle.id}`, lang);
+	const qrUrl = getAbsoluteURL(`/constraints/${constraint.id}`, lang);
+
+	/** @param {string} schwierigkeit */
+	function getDifficultyKey(schwierigkeit) {
+		const map = /** @type {Record<string,string>} */ ({
+			'einfach': 'constraint_difficulty_easy',
+			'mittel': 'constraint_difficulty_medium',
+			'schwer': 'constraint_difficulty_hard',
+		});
+		return map[schwierigkeit] ?? schwierigkeit;
+	}
+
+	/** @param {string} kategorie */
+	function getCategoryKey(kategorie) {
+		const map = /** @type {Record<string,string>} */ ({
+			'Angriff': 'constraint_category_attack',
+			'Verteidigung': 'constraint_category_defense',
+			'Aufbau': 'constraint_category_setup',
+			'Allgemein': 'constraint_category_general',
+		});
+		return map[kategorie] ?? kategorie;
+	}
 </script>
 
 <svelte:head>
-	<title>{rolle.name} - Rollen - TV Muttenz Volleyball</title>
-	<meta name="description" content={rolle.beschreibung || rolle.name} />
+	<title>{constraint.name} - Constraints - TV Muttenz Volleyball</title>
+	<meta name="description" content={constraint.beschreibung || constraint.name} />
 </svelte:head>
 
-<div class="rolle-detail">
+<div class="constraint-detail">
 	<TranslationFallbackBanner {lang} {isFallback} />
 
 	<header class="page-header">
-		<a href="{base}/{lang}/rollen" class="back-button">← {$_('btn_back_to_roles')}</a>
+		<a href="{base}/{lang}/constraints" class="back-button">← {$_('btn_back_to_constraints')}</a>
 		<div class="header-content">
-			<h1>{rolle.name}</h1>
-			{#if rolle.beschreibung}
-				<p class="description">{rolle.beschreibung}</p>
+			<h1>{constraint.name}</h1>
+			<div class="header-badges">
+				{#if constraint.kategorie}
+					<span class="badge badge-category">{$_(getCategoryKey(constraint.kategorie))}</span>
+				{/if}
+				{#if constraint.schwierigkeit}
+					<span class="badge badge-difficulty badge-difficulty--{constraint.schwierigkeit}">
+						{$_(getDifficultyKey(constraint.schwierigkeit))}
+					</span>
+				{/if}
+			</div>
+			{#if constraint.beschreibung}
+				<p class="description">{constraint.beschreibung}</p>
 			{/if}
 		</div>
 	</header>
 
 	<div class="content-grid">
-		{#if rolle.fokus}
-			<section class="card">
-				<h2>{$_('heading_focus')}</h2>
-				<p class="focus-text">{rolle.fokus}</p>
+		{#if constraint.erklaerung}
+			<section class="card full-width">
+				<h2>{$_('heading_explanation')}</h2>
+				<div class="text-content">
+					{#each constraint.erklaerung.trim().split('\n') as line}
+						{#if line.trim()}
+							<p>{line.trim()}</p>
+						{/if}
+					{/each}
+				</div>
 			</section>
 		{/if}
 
-		{#if rolle.aufgaben && rolle.aufgaben.length > 0}
-			<section class="card full-width">
-				<h2>{$_('heading_tasks')}</h2>
-				<ul class="points-list">
-					{#each rolle.aufgaben as aufgabe}
-						<li>{aufgabe}</li>
+		{#if constraint.nutzen}
+			<section class="card full-width benefit-card">
+				<h2>{$_('heading_benefit')}</h2>
+				<div class="text-content">
+					{#each constraint.nutzen.trim().split('\n') as line}
+						{#if line.trim()}
+							<p>{line.trim()}</p>
+						{/if}
 					{/each}
-				</ul>
+				</div>
 			</section>
 		{/if}
 	</div>
@@ -59,7 +98,7 @@
 </div>
 
 <style>
-	.rolle-detail {
+	.constraint-detail {
 		max-width: var(--content-width-wide);
 		margin: 0 auto;
 		padding: var(--spacing-xl);
@@ -105,16 +144,56 @@
 		margin: 0;
 	}
 
+	.header-badges {
+		display: flex;
+		gap: var(--spacing-sm);
+		flex-wrap: wrap;
+	}
+
+	.badge {
+		display: inline-block;
+		padding: 4px 12px;
+		border-radius: 99px;
+		font-size: var(--font-size-sm);
+		font-weight: 600;
+		line-height: 1.5;
+	}
+
+	.badge-category {
+		background-color: rgba(255, 53, 0, 0.1);
+		color: var(--color-primary);
+		border: 1px solid rgba(255, 53, 0, 0.3);
+	}
+
+	.badge-difficulty--einfach {
+		background-color: #dcfce7;
+		color: #166534;
+		border: 1px solid #bbf7d0;
+	}
+
+	.badge-difficulty--mittel {
+		background-color: #fef9c3;
+		color: #854d0e;
+		border: 1px solid #fef08a;
+	}
+
+	.badge-difficulty--schwer {
+		background-color: #fee2e2;
+		color: #991b1b;
+		border: 1px solid #fecaca;
+	}
+
 	.description {
 		color: var(--color-text-secondary);
 		font-size: var(--font-size-lg);
 		line-height: 1.6;
 		margin: 0;
+		font-style: italic;
 	}
 
 	.content-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		grid-template-columns: 1fr;
 		gap: var(--spacing-2xl);
 		margin-bottom: var(--spacing-2xl);
 	}
@@ -124,6 +203,11 @@
 		border: 2px solid var(--color-border);
 		border-radius: var(--border-radius);
 		padding: var(--spacing-xl);
+	}
+
+	.benefit-card {
+		border-color: var(--color-primary);
+		background-color: rgba(255, 53, 0, 0.03);
 	}
 
 	.card.full-width {
@@ -137,32 +221,19 @@
 		font-size: var(--font-size-xl);
 	}
 
-	.focus-text {
-		color: var(--color-text);
-		font-size: var(--font-size-lg);
-		line-height: 1.8;
-		margin: 0;
-	}
-
-	.points-list {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-
-	.points-list li {
-		padding-left: var(--spacing-md);
-		margin-bottom: var(--spacing-md);
-		position: relative;
-		line-height: 1.8;
-	}
-
-	.points-list li::before {
-		content: '→';
-		position: absolute;
-		left: 0;
+	.benefit-card h2 {
 		color: var(--color-primary);
-		font-weight: bold;
+	}
+
+	.text-content p {
+		color: var(--color-text);
+		font-size: var(--font-size-base);
+		line-height: 1.8;
+		margin: 0 0 var(--spacing-md) 0;
+	}
+
+	.text-content p:last-child {
+		margin-bottom: 0;
 	}
 
 	.qr-section {
@@ -193,12 +264,8 @@
 	}
 
 	@media (max-width: 768px) {
-		.rolle-detail {
+		.constraint-detail {
 			padding: var(--spacing-md);
-		}
-
-		.content-grid {
-			grid-template-columns: 1fr;
 		}
 	}
 

@@ -1,0 +1,14 @@
+id: keine-wiederholung
+name: No Repeat
+beschreibung: No player may touch the ball twice in a row.
+erklaerung: |
+  After a player has played the ball, at least one teammate must touch it before the same player may play again.
+  This rule applies to all three contacts in a rally.
+  Players must therefore constantly reposition and actively take or give up responsibility.
+  If the rule is violated, the point goes to the opposing team.
+nutzen: |
+  This constraint forces better movement from all players and prevents one player from dominating the entire play.
+  It encourages active positioning and reading the game, as every player must always be ready.
+  It also improves team communication, as clear agreements about responsibilities become necessary.
+kategorie: Aufbau
+schwierigkeit: mittel

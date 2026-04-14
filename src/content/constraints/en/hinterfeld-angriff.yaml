@@ -1,0 +1,14 @@
+id: hinterfeld-angriff
+name: Back-Row Attack
+beschreibung: All attacks must be played from the back row.
+erklaerung: |
+  No player may attack the ball from the front zone (in front of the 3-meter line).
+  All attacking actions — spike, tip, or lob — must start behind the 3-meter line.
+  Front-row players may set and block, but may not play a direct attack to the opponent's side.
+  If an attack comes from the front zone, it counts as an error and the point goes to the other team.
+nutzen: |
+  This constraint trains the ability to read the game from the back row.
+  Players learn to position themselves early and seek attacking opportunities from deep in the court.
+  It also promotes a cleaner three-contact structure, as the build-up must be more deliberate.
+kategorie: Angriff
+schwierigkeit: mittel

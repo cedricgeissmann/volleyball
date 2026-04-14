@@ -1,0 +1,15 @@
+id: zielfeld-angriff
+name: Zielfeld-Angriff
+beschreibung: Angriffe dürfen nur in ein vorher definiertes Zielfeld gespielt werden.
+erklaerung: |
+  Vor dem Spiel wird ein Zielfeld auf der gegnerischen Seite definiert (z.B. eine Hälfte, ein Quadrant oder eine Ecke).
+  Alle Angriffe müssen in diesem Zielfeld landen — Angriffe ausserhalb gelten als Fehler.
+  Das Zielfeld kann variiert werden: mal die diagonale, mal die Linie, mal nur die Hinterfeldecke.
+  Das Zielfeld kann für beide Teams gleich oder unterschiedlich sein.
+nutzen: |
+  Dieser Constraint schult die Präzision und die gezielte Platzierung des Angriffs.
+  Spieler lernen, unter Druck gezielt zu spielen und nicht einfach den Ball "irgendwo" hinzuschlagen.
+  Ausserdem zwingt er das annehmende Team, die bekannte Angriffsrichtung trotzdem zu verteidigen — eine wichtige Fähigkeit im echten Spiel.
+  Der Constraint lässt sich einfach variieren, um verschiedene taktische Schwerpunkte zu setzen.
+kategorie: Angriff
+schwierigkeit: mittel

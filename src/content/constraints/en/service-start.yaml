@@ -1,0 +1,15 @@
+id: service-start
+name: Serve to Start
+beschreibung: Every rally must begin with a real serve over the net.
+erklaerung: |
+  Instead of simply tossing the ball in, every new rally starts with a regular serve from the baseline.
+  The serve must go over the net and into the opponent's court — otherwise repeat.
+  The receiving team plays normally.
+  This rule also applies after winning points: always restart with a serve.
+nutzen: |
+  This constraint integrates the serve as a permanent part of small-sided game training.
+  The receiving team practices under realistic pressure, as the serve varies and is not predictable.
+  At the same time, the serving side practices using the serve purposefully, even if it has less effect in the small-sided format than in full-court play.
+  Overall, this constraint creates more realistic game situations.
+kategorie: Allgemein
+schwierigkeit: einfach

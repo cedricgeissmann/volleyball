@@ -1,0 +1,15 @@
+id: service-start
+name: Service-Start
+beschreibung: Jede Spielsituation beginnt mit einem echten Service über das Netz.
+erklaerung: |
+  Anstatt den Ball einfach einzuspielen, beginnt jede neue Spielsituation mit einem regulären Service von der Grundlinie.
+  Der Service muss über das Netz und in das gegnerische Feld gehen — sonst wiederholen.
+  Das annehmende Team spielt normal weiter.
+  Diese Regel gilt auch nach gewonnenen Punkten: immer wieder mit Service starten.
+nutzen: |
+  Dieser Constraint integriert den Service als festen Bestandteil des Kleinfeldtrainings.
+  Die Annahme-Mannschaft übt unter realistischem Druck, da der Service variiert und nicht vorhersehbar ist.
+  Gleichzeitig übt die aufschlagende Seite, den Service gezielt einzusetzen, auch wenn es im Kleinfeldformat weniger Wirkung hat als im Vollfeld.
+  Insgesamt schafft dieser Constraint realistischere Spielsituationen.
+kategorie: Allgemein
+schwierigkeit: einfach

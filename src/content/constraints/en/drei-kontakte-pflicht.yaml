@@ -1,0 +1,14 @@
+id: drei-kontakte-pflicht
+name: Three Contacts Required
+beschreibung: Always exactly three ball contacts — no direct return allowed.
+erklaerung: |
+  The team must always play the ball in exactly three contacts: reception, set, attack.
+  A direct return (one or two contacts) is not allowed, even if it would be easier.
+  If the team uses fewer than three contacts, the other team gets a point.
+  Exception: If the ball is unplayable (e.g. net ball), it counts as a normal error.
+nutzen: |
+  This constraint enforces a structured style of play and prevents wild direct returns.
+  It promotes the build-up competency of all players, as all three roles (receiver, setter, attacker) are always actively required.
+  It also trains patience and trust in the build-up process — essential qualities for a well-organised team.
+kategorie: Aufbau
+schwierigkeit: einfach

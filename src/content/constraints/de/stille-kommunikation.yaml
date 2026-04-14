@@ -1,0 +1,15 @@
+id: stille-kommunikation
+name: Stille Kommunikation
+beschreibung: Kein verbales Ansagen erlaubt — nur Gesten und Blickkontakt.
+erklaerung: |
+  Während des gesamten Kleinfeldspiel ist verbale Kommunikation verboten.
+  Kein "Mine!", kein "Dein!", kein Ansagen von Positionen oder Aktionen.
+  Spieler müssen sich ausschliesslich über Körpersprache, Blickkontakt und Gesten verständigen.
+  Wer trotzdem spricht, gibt dem Gegner einen Punkt.
+nutzen: |
+  Dieser Constraint entwickelt die nonverbale Kommunikation und das gegenseitige Lesen der Mitspieler.
+  Spieler müssen lernen, auf Körpersprache und Bewegungsmuster zu achten — eine Kernkompetenz im Hochleistungs-Volleyball.
+  Ausserdem deckt dieser Constraint auf, wie stark ein Team auf verbale Kommunikation angewiesen ist, und zeigt Entwicklungspotenzial.
+  Er ist auch mental fordernd und schult die Konzentration.
+kategorie: Allgemein
+schwierigkeit: schwer
