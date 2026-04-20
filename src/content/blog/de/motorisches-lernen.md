@@ -33,7 +33,7 @@ Das Nervensystem löst das Problem pragmatisch: Es sperrt Gelenke ein. Entweder 
 
 ## 2. Dein innerer Kontrolleur sabotiert dich
 
-Wann immer du während einer Bewegung an deine eigene Mechanik denkst — „Wie liegt mein Arm? Spüre ich die richtige Spannung?" — aktivierst du eine Art inneren Boss, der versucht, jeden Muskel einzeln zu steuern. Forschungen mit EMG-Messungen zeigen: Das erhöht die Muskelaktivität unnötig und stört die Selbstorganisation deines Bewegungssystems.
+Wann immer du während einer Bewegung an deine eigene Mechanik denkst — „Wie liegt mein Arm? Spüre ich die richtige Spannung?" — aktivierst du eine Art inneren Boss, der versucht, jeden Muskel einzeln zu steuern. Das unterbricht die Selbstorganisation deines Bewegungssystems — genau das, was du eigentlich brauchst.
 
 Gabriele Wulf und andere haben das ausgiebig untersucht und nennen es den Unterschied zwischen internem und externem Fokus. Interner Fokus: du konzentrierst dich auf deinen Körper. Externer Fokus: du konzentrierst dich auf etwas außerhalb — auf den Ball, auf ein Ziel, auf die Wirkung deiner Bewegung.
 
@@ -42,7 +42,7 @@ Gabriele Wulf und andere haben das ausgiebig untersucht und nennen es den Unters
 Konkret für Volleyball:
 
 - **Angriffsschlag:** Wo genau an der Balloberfläche willst du den Ball treffen? Vorne oben? Seitlich oben? Dieser Treffpunkt ist dein Fokus — nicht dein Arm.
-- **Service:** Welchen Punkt auf der Balloberfläche triffst du? Dieser einzige Gedanke ersetzt alle Anweisungen über Wurfarm, Hüftrotation, Handgelenk. Und er ist der wirksamste Schutz gegen Choking under pressure — weil du keinen Raum mehr für Selbstkontrolle lässt.
+- **Service:** Welchen Punkt auf der Balloberfläche triffst du? Dieser einzige Gedanke ersetzt alle Anweisungen über Wurfarm, Hüftrotation, Handgelenk. Wenn deine Aufmerksamkeit vollständig auf diesem Punkt liegt, schaltet sich der innere Kontrolleur gar nicht erst ein — und dein System kann sich selbst organisieren.
 - **Ausgangswinkel und Flugbahn:** Unter welchem Winkel soll der Ball wegfliegen? Wo soll er landen? Wie fliegt er durch die Angriffszone?
 
 Je weiter und abstrakter der externe Fokus, desto weniger wirksam. „Schlag wie ein Regenbogen" ist eine Analogie, kein Fokus — das hilft kaum. Aber „triff den Ball an diesem Punkt" ist konkret, nah, überprüfbar, und dein Körper weiß sofort, was zu tun ist.
@@ -53,11 +53,13 @@ Je weiter und abstrakter der externe Fokus, desto weniger wirksam. „Schlag wie
 
 ## 3. Du bist keine Kanonenkugel
 
-Lange hieß es in der Trainingslehre: Schnelle Bewegungen sind ballistisch — einmal gestartet, laufen sie ihr Programm ab und können nicht mehr beeinflusst werden. Rob Gray hat das untersucht und gezeigt: Das stimmt nicht.
+Lange hieß es in der Trainingslehre: Schnelle Bewegungen sind ballistisch — einmal gestartet, laufen sie ihr Programm ab und können nicht mehr beeinflusst werden. Die Forschung zur Wahrnehmungs-Handlungs-Kopplung zeigt aber: Das stimmt nicht.
 
-Elite-Athleten nutzen kontinuierliche Online-Kontrolle. Sie nehmen auch während der Bewegung noch Informationen auf — die Position des gegnerischen Blocks, die Schlaghand des Angreifers — und passen sich bis zum Moment des Ballkontakts an. Sie agieren wie gelenkte Raketen, nicht wie Kanonenkugeln.
+Elite-Athleten nehmen auch während der Bewegung noch Informationen auf — die Position des gegnerischen Blocks, die Schlaghand des Angreifers — und passen sich bis zum Moment des Ballkontakts an. Sie agieren wie gelenkte Raketen, nicht wie Kanonenkugeln.
 
-**Was du damit anfangen kannst:** Trainiere deinen Blick. Wohin schaust du während des Anlaufs? Nimmst du den Block wahr, oder bist du schon im Kopf beim Schlag? Wenn du lernst, auch in der Bewegung noch Informationen aufzunehmen und zu verarbeiten, spielst du intelligenter — nicht nur kräftiger oder präziser.
+Dazu kommt ein weiteres Prinzip aus der Attraktoren-Dynamik: Sobald du eine Bewegung mit mehr als etwa 80% deiner maximalen Intensität ausführst, greift dein Körper automatisch auf bereits eingeschliffene Bewegungsmuster zurück — auf sogenannte Attraktoren. Das System fällt in das zurück, was es am besten kennt, nicht in das, was du gerade lernst. Willst du eine neue Koordination aufbauen, musst du die Intensität darunter halten. Nicht weil du dich schonen sollst, sondern weil dein Nervensystem erst dann offen für neue Lösungen ist.
+
+**Was du damit anfangen kannst:** Trainiere deinen Blick. Wohin schaust du während des Anlaufs? Nimmst du den Block wahr, oder bist du schon im Kopf beim Schlag? Wenn du lernst, auch in der Bewegung noch Informationen aufzunehmen und zu verarbeiten, spielst du intelligenter — nicht nur kräftiger oder präziser. Und wenn du eine Bewegung wirklich verändern willst: Geh runter mit der Intensität. Erst wenn die neue Koordination sitzt, drehst du wieder auf.
 
 
 ---
@@ -83,12 +85,14 @@ Das Prinzip nennt sich Error Amplification. Wenn du einen Fehler in deiner Beweg
 
 **Was du damit anfangen kannst:** Wenn du an einem hartnäckigen Problem arbeitest, versuche nicht, es kleiner zu machen. Versuche, es größer zu machen — bewusst, kontrolliert. Spiel mit einer Einschränkung, die das Problem auf die Spitze treibt. Dein Körper sucht dann aktiv nach einer besseren Lösung, weil die alte offensichtlich nicht mehr funktioniert.
 
+Das setzt aber voraus, dass du den Fehler überhaupt als Information behandelst. Im Teamsport gilt das noch stärker: Ein Fehler, der sich immer wieder wiederholt ohne dass sich etwas verändert, ist kein Lernprozess mehr — er ist eine Gewohnheit. Und Gewohnheiten verändern sich nicht von selbst.
+
 
 ---
 
 
 ## Fazit
 
-Dein Nervensystem ist kein Computer, der fertige Befehle ausführt. Es ist ein adaptives System, das lernt, indem es erkundet, scheitert und sich selbst reorganisiert. Die fünf Erkenntnisse hier — Einfrieren als Entwicklungsschritt, externer Fokus auf den Treffpunkt, Online-Anpassung während der Bewegung, funktionale Variabilität, und Fehler als Lernmotor — zeigen alle in dieselbe Richtung: Weniger Kontrolle, mehr Aufmerksamkeit nach außen, mehr echte Spielsituationen.
+Dein Nervensystem ist kein Computer, der fertige Befehle ausführt. Es ist ein adaptives System, das lernt, indem es erkundet, scheitert und sich selbst reorganisiert. Die fünf Erkenntnisse hier — Einfrieren als Entwicklungsschritt, externer Fokus auf den Treffpunkt, Online-Anpassung während der Bewegung, funktionale Variabilität, und Fehler als Lernmotor — zeigen alle in dieselbe Richtung: Aufmerksamkeit nach außen richten, den inneren Kontrolleur ruhig halten, und in Situationen trainieren, die die relevanten Informationen des Spiels enthalten — damit dein System lernt, genau diese aufzunehmen und darauf zu reagieren. Und wenn du etwas Neues lernst: unter 80% bleiben, bis es sitzt. Dein Körper braucht den Spielraum.
 
 Beim nächsten Service: Wo genau willst du den Ball treffen?
