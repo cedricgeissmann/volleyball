@@ -127,6 +127,7 @@
 
 	.content :global(p) {
 		margin-block: var(--space-md);
+		text-align: justify;
 	}
 
 	.content :global(ul),
