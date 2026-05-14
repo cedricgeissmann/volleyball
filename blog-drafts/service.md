@@ -125,4 +125,51 @@ Spiel. Dieser sagt das der Impuls ($Masse \times Geschwindigkeit$) von zwei
 Körpern vor der Kollision gleich ist, wie nach der Kollision. Die beiden Körper
 die kollidieren sind die Hand und der Ball. Das was wir unter einem starken
 Schlag verstehen, ist ein Ball der den Service mit einer hohen Geschwindigkeit
-verlässt.
+verlässt. Das ist also die **Invariante** die wir suchen, wie bekommen wir den
+Ball schnell weg von unserer Hand. Dafür gibt es einige **Varianten**, diese
+schauen wir uns hier mal an, und das sind nicht alle möglichen, das sind nur
+einige ausgewählte.
+
+#### Float-Varianten
+
+- Schulterkraft: Das ist eine Variante die ich persönlich nicht mag, da sie
+  unkontrolliert ist, und oftmals zu Überlastungen und Verletzungen führen
+  kann. Aber es ist eine **Variante** und wir schauen uns an weshalb und was
+  diese bringt. Viel Schulterkraft bedeutet das wir eine hohe
+  Rotationsgeschwindigkeit beim Schlagarm erzeugen können. Dadurch ist die Hand
+  schnell, und hat somit einen hohen Impuls. Das Problem hier, haben wir in
+  einem früheren Blog bereits angesprochen, denn das ist wie eine
+  Kanonenkugel, wenn wir früh die Schulterkraft nutzen um den Arm zu
+  beschleunigen, können wir die Hand nicht mehr gut kontrollieren und wir
+  werden den Treffpunkt am Ball nicht so genau finden, was aber unsere
+  **Invariante** ist. Diese Technik ist also **nicht** stabil für die
+  **Invariante**, deshalb bezeichnen wir diese Technik als schlecht.
+  
+- Laufgeschwindigkeit: Wenn wir bereits eine hohe Laufgeschwindigkeit haben,
+  hat unsere Hand automatisch eine höhere Geschwindigkeit, denn diese beiden
+  sind direkt additiv. Und der Ball hat auch eine höhere Geschwindigkeit zum
+  Start, wir müssen also nicht mehr so viel Geschwindigkeit übertragen. Das
+  Problem mit dieser **Variante** wir können nicht wirklich hohe
+  Laufgeschwindigkeiten erreichen, zumindest nicht wenn wir das mit der
+  Handgeschwindigkeit vergleichen. Auch gibt es Hallen in denen uns einfach der
+  Anlaufweg fehlt, und wir deshalb diese **Variante** nicht machen können. Wir
+  können mit dieser **Variante** aber den Treffpunkt am Ball viel genauer
+  treffen, somit ist diese Technik stabil für die **Invariante**, aber auch
+  nicht perfekt, denn wir kommen nicht auf die gleichen Geschwindigkeiten.
+  
+- Hüftbeugung: Hier verwenden wir einen kleinen Trick mit Winkeln. Die Hüfte
+  ist relativ weit entfernt von der Hand, wenn wir diese über dem Kopf
+  ausstrecken. Die Winkeländerungen bei der Hüfte und der Hand, sind aber die
+  gleichen. Weil nun die Hand aber so viel weiter weg ist, wird bei gleicher
+  Winkelgeschwindigkeit sehr viel mehr Strecke zurückgelegt, also hat die Hand
+  eine sehr viel höhere Geschwindigkeit, wenn wir den Oberkörper an der Hüfte
+  nur leicht nach vorne biegen. Wir können also mit nur kleinen kontrollierten
+  Bewegungen einen grossen Unterschied in der Handgeschwindigkeit erreichen.
+  Diese Technik ist also stabil für unsere **Invariante**.
+  
+Natürlich können wir keine von diesen Techniken isoliert verwenden, sie kommen
+immer in Kombination miteinander vor. Unser Ziel ist es diese Techniken so
+miteinander zu kombinieren, das wir das gleiche Resultat erreichen. Dafür
+schauen wir uns das in der nächsten Animation an. Wir versuchen hier eine
+stabile Konstellation zu finden, um den Impuls zu erreichen, den wir für
+unseren Service brauchen. Das wird vermutlich um die $4 kg m/s$ sein.
