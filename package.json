@@ -33,6 +33,7 @@
 	"dependencies": {
 		"js-yaml": "^4.1.1",
 		"qrcode": "^1.5.4",
-		"svelte-i18n": "^4.0.1"
+		"svelte-i18n": "^4.0.1",
+		"three": "^0.184.0"
 	}
 }
