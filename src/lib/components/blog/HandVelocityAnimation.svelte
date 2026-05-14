@@ -1,810 +1,641 @@
 <script>
-	// @ts-nocheck
-	/**
-	 * HandVelocityAnimation.svelte
-	 *
-	 * Erklärt wie die Handgeschwindigkeit beim Volleyball-Aufschlag zustande kommt.
-	 * Zeigt die kinematische Kette:
-	 *   v_hand = v_lauf + v_hüfte + v_schulter
-	 *   × η (Körperstabilität) = effektive Handgeschwindigkeit
-	 *
-	 * Animationsphasen:
-	 *   0.00–0.30  Anlauf        — Strichmännchen läuft von links, v_lauf-Pfeil
-	 *   0.30–0.55  Hüftdrehung   — Hüfte rotiert, v_hüfte addiert sich
-	 *   0.55–0.80  Schulterrotation — Arm dreht durch, v_schulter addiert sich
-	 *   0.80–1.00  Kontakt       — Hand trifft (gedachten) Ball, v_hand-Summe
-	 *
-	 * Steuerung:
-	 *   - ▶ Starten / ■ Stop / ↺ Reset
-	 *   - Slider: Frame-für-Frame durchgehen (0–100%)
-	 *   - Parameter: Laufgeschwindigkeit, Hüftbeugungsgeschwindigkeit,
-	 *                Schulterkraft, Körperstabilität
-	 */
+// @ts-nocheck
+/**
+ * HandVelocityAnimation.svelte
+ *
+ * Vollständig kinematisches Arm-Modell mit Hüftgelenk.
+ *
+ * Gelenk-Kette (Seitenriss, Figur läuft nach rechts):
+ *
+ *   Hüfte → Torso(torsoAngle) → Schulter → Oberarm(uaAngle) → Ellbogen → Unterarm(laAngle) → Hand
+ *
+ * Koordinaten: Canvas-Standard — 0° = nach rechts, positive Winkel = Uhrzeigersinn (nach unten)
+ *
+ * ── Startposition ──────────────────────────────────────────────────────────────
+ *   Torso:    senkrecht  → torsoAngle =  -π/2  (zeigt nach oben)
+ *   Oberarm:  nach links → uaAngle    =   π    (Ellbogen hinter dem Kopf)
+ *   Unterarm: nach unten → laAngle    =  +π/2  → elOffset = laAngle - uaAngle = -π/2
+ *
+ * ── Bewegung (alle im Uhrzeigersinn = Winkel wächst) ───────────────────────────
+ *   Hüfte:    torsoAngle dreht von -π/2 → 0  (Torso kippt nach vorne)
+ *   Schulter: uaAngle    dreht von  π   → ca. -0.3  (Arm von hinten nach vorne-oben)
+ *   Ellbogen: elOffset   dreht von -π/2 → 0         (Unterarm streckt sich, verzögert)
+ *
+ * ── Slider (Winkelgeschwindigkeiten, rad/s) ────────────────────────────────────
+ *   ωHip:  Hüft-Rotation      (rad/s) → bestimmt Torso-Kipp-Amplitude
+ *   ωSh:   Schulter-Schwung   (rad/s) → bestimmt Oberarm-Schwung-Amplitude
+ *   ωEl:   Ellbogen-Peitsche  (rad/s) → bestimmt Unterarm-Peitsch-Amplitude
+ *
+ *   Δangle = ω × Phasendauer  →  End-Winkel = Start-Winkel + Δangle
+ *   (Uhrzeigersinn → positiv → Winkel wächst)
+ *
+ * ── Handgeschwindigkeit ────────────────────────────────────────────────────────
+ *   vHand_x = Δhand.x / Δt  (numerische Ableitung, m/s)
+ */
 
-	// ─── Parameter-Bereiche ────────────────────────────────────────────────────
-	const RUN_MIN       = 0.0;   const RUN_MAX       = 4.0;   const RUN_DEF       = 1.5;
-	const HIP_MIN       = 0.0;   const HIP_MAX       = 5.0;   const HIP_DEF       = 2.0;
-	const SHOULDER_MIN  = 2.0;   const SHOULDER_MAX  = 12.0;  const SHOULDER_DEF  = 6.0;
-	const STABILITY_MIN = 0.20;  const STABILITY_MAX = 1.0;   const STABILITY_DEF = 0.75;
+import { onMount } from 'svelte';
 
-	// ─── SVG-Layout ────────────────────────────────────────────────────────────
-	const SVG_W    = 640;
-	const SVG_H    = 380;
-	const GROUND_Y = SVG_H - 48;
-	const CENTER_X = SVG_W / 2;   // Strichmännchen steht zentriert am Ende des Anlaufs
+// ─── Skalierung ───────────────────────────────────────────────────────────────
+const PX_PER_M = 80;
+const FPS      = 60;
+const DT       = 1 / FPS;
 
-	// ─── LocalStorage ─────────────────────────────────────────────────────────
-	const LS_KEY = 'vb_hand_velocity_v1';
-	function loadState() {
-		try { const r = localStorage.getItem(LS_KEY); return r ? JSON.parse(r) : null; } catch { return null; }
+// ─── Canvas ───────────────────────────────────────────────────────────────────
+const W        = 680;
+const H        = 340;
+const GROUND_Y = H - 40;
+
+// ─── Körper-Geometrie (Pixel) ────────────────────────────────────────────────
+const TORSO_LEN = Math.round(0.55 * PX_PER_M);  // 55 cm Torso
+const UA_LEN    = Math.round(0.30 * PX_PER_M);  // 30 cm Oberarm
+const LA_LEN    = Math.round(0.28 * PX_PER_M);  // 28 cm Unterarm
+
+// ─── Hüfte-Y (fest am Boden verankert, Figur "steht") ────────────────────────
+// Hüfte sitzt 0.95 m über Boden
+const HIP_Y0 = GROUND_Y - Math.round(0.95 * PX_PER_M);
+
+// ─── Startwinkel ─────────────────────────────────────────────────────────────
+// torsoAngle:  Torso-Richtung (von Hüfte zur Schulter)
+//   -π/2 = senkrecht nach oben (aufrechte Haltung)
+const TORSO_ANGLE_START = -Math.PI / 2;
+
+// uaAngle: Oberarm-Richtung (von Schulter zum Ellbogen)
+//   π = nach links → Ellbogen liegt hinter dem Kopf
+const UA_ANGLE_START = Math.PI;
+
+// elOffset: Unterarm-Winkel relativ zum Oberarm
+//   Unterarm zeigt nach unten (+π/2 absolut) bei Oberarm auf π:
+//   elOffset = π/2 - π = -π/2
+const EL_OFFSET_START = -Math.PI / 2;
+
+// ─── Timing (Sekunden) ────────────────────────────────────────────────────────
+const HIP_START = 0.00;  const HIP_END = 0.45;   // Hüft-Rotation
+const SH_START  = 0.08;  const SH_END  = 0.52;   // Schulter-Schwung
+const EL_START  = 0.22;  const EL_END  = 0.60;   // Ellbogen-Peitsche (verzögert)
+const SIM_TOTAL = 0.90;
+
+// ─── Easing ───────────────────────────────────────────────────────────────────
+// smoothstep: beschleunigt UND bremst ab (S-Kurve, 0→1)
+function smoothstep(x) {
+	const t = Math.max(0, Math.min(1, x));
+	return t * t * (3 - 2 * t);
+}
+function phase(t, start, end) {
+	return smoothstep((t - start) / (end - start));
+}
+
+// ─── Kinematik: Winkel als Funktion von t und Winkelgeschwindigkeiten ─────────
+//
+// ω ist die SPITZEN-Winkelgeschwindigkeit (Grad/s → intern rad/s).
+// Die smoothstep-Kurve hat einen Peak in der Mitte der Phase.
+// Die Ableitung von smoothstep hat ihr Maximum bei x=0.5 mit Wert 1.5/Dauer.
+// Daher: Δangle (Gesamtdrehung) = ω_peak × Dauer × (2/3)
+//   → wer ω_peak vorgibt, bekommt genau diese Spitzengeschwindigkeit in der Mitte.
+//
+// Umrechnung: ωDeg [°/s] → ωRad [rad/s] = ωDeg × π/180
+//
+function peakToTotal(omegaRad, duration) {
+	// Integral von smoothstep' über [0,1] = 1 (per Definition).
+	// Spitzenwert der Ableitung (bei x=0.5) = 1.5.
+	// Also: Δangle = omegaRad / 1.5 × duration
+	return omegaRad / 1.5 * duration;
+}
+
+const DEG = Math.PI / 180;  // Hilfskonstante: 1° in Radiant
+
+function torsoAngle(t, wHipDeg) {
+	const delta = peakToTotal(wHipDeg * DEG, HIP_END - HIP_START);
+	return TORSO_ANGLE_START + delta * phase(t, HIP_START, HIP_END);
+}
+
+function uaAngle(t, wShDeg) {
+	const delta = peakToTotal(wShDeg * DEG, SH_END - SH_START);
+	return UA_ANGLE_START + delta * phase(t, SH_START, SH_END);
+}
+
+function elOffset(t, wElDeg) {
+	const delta = peakToTotal(wElDeg * DEG, EL_END - EL_START);
+	return EL_OFFSET_START + delta * phase(t, EL_START, EL_END);
+}
+
+// ─── Arm-Weltpositionen berechnen ─────────────────────────────────────────────
+// Gibt { hipPos, shPos, elPos, handPos, tA, uaA, laA } zurück
+function computeArm(t, hipX, wHip, wSh, wEl) {
+	const tA = torsoAngle(t, wHip);
+	const uaA = uaAngle(t, wSh);
+	const laA = uaA + elOffset(t, wEl);
+
+	const hipPos = { x: hipX, y: HIP_Y0 };
+
+	// Schulter = Hüfte + Torso-Vektor
+	const shPos = {
+		x: hipX   + Math.cos(tA) * TORSO_LEN,
+		y: HIP_Y0 + Math.sin(tA) * TORSO_LEN
+	};
+
+	// Ellbogen = Schulter + Oberarm-Vektor
+	const elPos = {
+		x: shPos.x + Math.cos(uaA) * UA_LEN,
+		y: shPos.y + Math.sin(uaA) * UA_LEN
+	};
+
+	// Hand = Ellbogen + Unterarm-Vektor
+	const handPos = {
+		x: elPos.x + Math.cos(laA) * LA_LEN,
+		y: elPos.y + Math.sin(laA) * LA_LEN
+	};
+
+	return { hipPos, shPos, elPos, handPos, tA, uaA, laA };
+}
+
+// ─── Slider-Defaults (Winkelgeschwindigkeiten, Grad/s) ───────────────────────
+// Hüfte:    ~230 °/s  ≈ 4 rad/s
+// Schulter: ~570 °/s  ≈ 10 rad/s
+// Ellbogen: ~800 °/s  ≈ 14 rad/s (schneller → Peitscheneffekt)
+const W_HIP_DEF = 230;
+const W_SH_DEF  = 570;
+const W_EL_DEF  = 800;
+const V_RUN_DEF = 3.0;
+
+let wHip = $state(W_HIP_DEF);  // °/s
+let wSh  = $state(W_SH_DEF);   // °/s
+let wEl  = $state(W_EL_DEF);   // °/s
+let vRun = $state(V_RUN_DEF);  // m/s
+
+// ─── Simulations-Zustand ──────────────────────────────────────────────────────
+let vHandX    = $state(0);
+let vHandXMax = $state(0);
+let simTime   = $state(0);
+let history   = $state([]);
+
+// ─── Frame-Scrubber ───────────────────────────────────────────────────────────
+let frames      = $state([]);
+let scrubFrame  = $state(0);
+let scrubActive = $state(false);
+
+// ─── DOM ──────────────────────────────────────────────────────────────────────
+let overlayCanvas;
+
+// ─── Simulation berechnen ─────────────────────────────────────────────────────
+function startSim() {
+	frames      = [];
+	history     = [];
+	vHandX      = 0;
+	vHandXMax   = 0;
+	simTime     = 0;
+	scrubActive = false;
+	scrubFrame  = 0;
+
+	// Hüfte bewegt sich mit Laufgeschwindigkeit
+	const vxPerFrame = vRun * PX_PER_M / FPS;
+	let hipX = W * 0.25;
+
+	let prevHandPos = null;
+	const newFrames  = [];
+	const newHistory = [];
+
+	let t = 0;
+	while (t <= SIM_TOTAL + DT * 0.5) {
+		const arm = computeArm(t, hipX, wHip, wSh, wEl);
+
+		let vxHandMS = 0;
+		if (prevHandPos) {
+			const dxPx = arm.handPos.x - prevHandPos.x;
+			vxHandMS = (dxPx / PX_PER_M) / DT;
+		}
+		prevHandPos = { ...arm.handPos };
+
+		if (vxHandMS > vHandXMax) vHandXMax = vxHandMS;
+
+		newFrames.push({
+			t,
+			hipX,
+			tA:      arm.tA,
+			uaA:     arm.uaA,
+			laA:     arm.laA,
+			hipPos:  { ...arm.hipPos },
+			shPos:   { ...arm.shPos },
+			elPos:   { ...arm.elPos },
+			handPos: { ...arm.handPos },
+			vHand:   vxHandMS
+		});
+
+		if (newHistory.length === 0 || t - newHistory[newHistory.length - 1].t >= 0.025) {
+			newHistory.push({ t, v: vxHandMS });
+		}
+
+		t    += DT;
+		hipX += vxPerFrame;
 	}
-	function saveState(s) {
-		try { localStorage.setItem(LS_KEY, JSON.stringify(s)); } catch { /* quota */ }
-	}
 
-	const saved = loadState();
+	frames  = newFrames;
+	history = newHistory;
 
-	// ─── Reaktiver Zustand ─────────────────────────────────────────────────────
-	let _runSpeed      = $state(saved?.runSpeed      ?? RUN_DEF);
-	let _hipSpeed      = $state(saved?.hipSpeed      ?? HIP_DEF);
-	let _shoulderSpeed = $state(saved?.shoulderSpeed ?? SHOULDER_DEF);
-	let _stability     = $state(saved?.stability     ?? STABILITY_DEF);
+	// Zurück auf Frame 0
+	scrubFrame  = 0;
+	scrubActive = true;
+	simTime     = frames[0].t;
+	vHandX      = frames[0].vHand;
+	drawFrame(frames[0]);
+}
 
-	// LocalStorage-Sync
-	$effect(() => {
-		saveState({ runSpeed: _runSpeed, hipSpeed: _hipSpeed, shoulderSpeed: _shoulderSpeed, stability: _stability });
+// ─── Reset ────────────────────────────────────────────────────────────────────
+function resetSim() {
+	frames      = [];
+	history     = [];
+	vHandX      = 0;
+	vHandXMax   = 0;
+	simTime     = 0;
+	scrubFrame  = 0;
+	scrubActive = false;
+	drawIdleFrame();
+}
+
+// ─── Scrubber ─────────────────────────────────────────────────────────────────
+function onScrubInput(e) {
+	scrubFrame = Number(e.target.value);
+	if (!frames.length) return;
+	const snap = frames[scrubFrame];
+	vHandX  = snap.vHand;
+	simTime = snap.t;
+	drawFrame(snap);
+}
+
+// ─── Idle-Bild ────────────────────────────────────────────────────────────────
+function drawIdleFrame() {
+	const hipX = W * 0.25;
+	const arm  = computeArm(0, hipX, wHip, wSh, wEl);
+	drawFrame({
+		t: 0, hipX,
+		tA: arm.tA, uaA: arm.uaA, laA: arm.laA,
+		hipPos: arm.hipPos, shPos: arm.shPos,
+		elPos: arm.elPos, handPos: arm.handPos,
+		vHand: 0
 	});
+}
 
-	// ─── Physik ────────────────────────────────────────────────────────────────
-	/**
-	 * v_hand_eff = (_runSpeed + _hipSpeed + _shoulderSpeed) × _stability
-	 * Die drei Komponenten summieren sich zur Rohhandgeschwindigkeit,
-	 * multipliziert mit der Körperstabilität η ergibt die effektive Geschwindigkeit.
-	 */
-	let vRaw       = $derived(_runSpeed + _hipSpeed + _shoulderSpeed);
-	let vHand      = $derived(vRaw * _stability);
+// ─── Canvas zeichnen ──────────────────────────────────────────────────────────
+const HIST_PAD = 8;
+const V_DISP   = 25;
 
-	// Normalisierte Beiträge (für Pfeil-Längen)
-	const V_MAX    = RUN_MAX + HIP_MAX + SHOULDER_MAX; // 21 m/s
-	let normRun    = $derived(_runSpeed      / V_MAX);
-	let normHip    = $derived(_hipSpeed      / V_MAX);
-	let normShoul  = $derived(_shoulderSpeed / V_MAX);
-	let normHand   = $derived(vHand          / V_MAX);
+function drawFrame(snap) {
+	if (!overlayCanvas) return;
+	const ctx = overlayCanvas.getContext('2d');
+	ctx.clearRect(0, 0, W, H);
 
-	// Farben pro Komponente
-	const COL_RUN     = '#3b82f6';  // blau
-	const COL_HIP     = '#f59e0b';  // amber
-	const COL_SHOULDER= '#8b5cf6';  // violett
-	const COL_HAND    = '#dc2626';  // rot
+	// ── Boden ──────────────────────────────────────────────────────────
+	ctx.fillStyle = '#334155';
+	ctx.fillRect(0, GROUND_Y, W, H - GROUND_Y);
+	ctx.strokeStyle = '#475569';
+	ctx.lineWidth = 1;
+	ctx.beginPath();
+	ctx.moveTo(0, GROUND_Y); ctx.lineTo(W, GROUND_Y);
+	ctx.stroke();
 
-	// ─── Animations-State ─────────────────────────────────────────────────────
-	let animState    = $state(/** @type {'idle'|'running'|'done'} */ ('idle'));
-	let animProgress = $state(0); // 0..1
-	/** @type {number|null} */
-	let rafId = null;
-	let animStartMs = 0;
-	const ANIM_DURATION_MS = 3000; // 3s für komplette Animation
+	const { hipPos, shPos, elPos, handPos } = snap;
 
-	function startAnimation() {
-		if (rafId !== null) cancelAnimationFrame(rafId);
-		animProgress = 0;
-		animState    = 'running';
-		animStartMs  = performance.now();
+	// ── Beine (von Hüfte nach Boden, vereinfacht) ──────────────────────
+	ctx.lineWidth   = 5;
+	ctx.strokeStyle = '#3b82f6';
+	ctx.lineCap     = 'round';
+	// Hinteres Bein
+	ctx.beginPath();
+	ctx.moveTo(hipPos.x - 8, hipPos.y);
+	ctx.lineTo(hipPos.x - 12, GROUND_Y);
+	ctx.stroke();
+	// Vorderes Bein
+	ctx.beginPath();
+	ctx.moveTo(hipPos.x + 8, hipPos.y);
+	ctx.lineTo(hipPos.x + 14, GROUND_Y);
+	ctx.stroke();
 
-		/** @param {number} now */
-		function frame(now) {
-			const elapsed  = now - animStartMs;
-			const progress = Math.min(elapsed / ANIM_DURATION_MS, 1);
-			animProgress = progress;
-			if (progress < 1) {
-				rafId = requestAnimationFrame(frame);
-			} else {
-				animProgress = 1;
-				animState    = 'done';
-				rafId        = null;
-			}
-		}
-		rafId = requestAnimationFrame(frame);
+	// ── Hüft-Punkt ─────────────────────────────────────────────────────
+	ctx.beginPath();
+	ctx.arc(hipPos.x, hipPos.y, 5, 0, Math.PI * 2);
+	ctx.fillStyle = '#60a5fa';
+	ctx.fill();
+
+	// ── Torso (Hüfte → Schulter) ───────────────────────────────────────
+	ctx.beginPath();
+	ctx.moveTo(hipPos.x, hipPos.y);
+	ctx.lineTo(shPos.x, shPos.y);
+	ctx.strokeStyle = '#60a5fa';
+	ctx.lineWidth   = 6;
+	ctx.lineCap     = 'round';
+	ctx.stroke();
+
+	// ── Kopf (über Schulter) ───────────────────────────────────────────
+	// Kopf sitzt auf dem Torso-Vektor verlängert (Hals ≈ 12 px)
+	const kopfX = shPos.x + Math.cos(snap.tA) * 14;
+	const kopfY = shPos.y + Math.sin(snap.tA) * 14;
+	ctx.beginPath();
+	ctx.arc(kopfX, kopfY, 11, 0, Math.PI * 2);
+	ctx.fillStyle = '#93c5fd';
+	ctx.fill();
+
+	// ── Schulter-Punkt ─────────────────────────────────────────────────
+	ctx.beginPath();
+	ctx.arc(shPos.x, shPos.y, 5, 0, Math.PI * 2);
+	ctx.fillStyle = '#94a3b8';
+	ctx.fill();
+
+	// ── Oberarm (Schulter → Ellbogen) ──────────────────────────────────
+	ctx.beginPath();
+	ctx.moveTo(shPos.x, shPos.y);
+	ctx.lineTo(elPos.x, elPos.y);
+	ctx.strokeStyle = '#34d399';
+	ctx.lineWidth   = 7;
+	ctx.lineCap     = 'round';
+	ctx.stroke();
+
+	// ── Ellbogen-Punkt ─────────────────────────────────────────────────
+	ctx.beginPath();
+	ctx.arc(elPos.x, elPos.y, 5, 0, Math.PI * 2);
+	ctx.fillStyle = '#94a3b8';
+	ctx.fill();
+
+	// ── Unterarm (Ellbogen → Hand) ─────────────────────────────────────
+	ctx.beginPath();
+	ctx.moveTo(elPos.x, elPos.y);
+	ctx.lineTo(handPos.x, handPos.y);
+	ctx.strokeStyle = '#f59e0b';
+	ctx.lineWidth   = 5;
+	ctx.lineCap     = 'round';
+	ctx.stroke();
+
+	// ── Hand-Punkt ─────────────────────────────────────────────────────
+	ctx.beginPath();
+	ctx.arc(handPos.x, handPos.y, 6, 0, Math.PI * 2);
+	ctx.fillStyle = '#fbbf24';
+	ctx.fill();
+
+	if (history.length < 2) return;
+
+	// ── Verlaufskurve ──────────────────────────────────────────────────
+	const HIST_H    = 52;
+	const HIST_Y0   = H - HIST_H - 4;
+	const HIST_W_PX = W - HIST_PAD * 2;
+	const ZERO_Y    = HIST_Y0 + HIST_H / 2;
+	const T_MAX     = SIM_TOTAL + 0.05;
+
+	ctx.fillStyle = 'rgba(15,23,42,0.88)';
+	if (ctx.roundRect) ctx.roundRect(HIST_PAD, HIST_Y0, HIST_W_PX, HIST_H, 4);
+	else ctx.rect(HIST_PAD, HIST_Y0, HIST_W_PX, HIST_H);
+	ctx.fill();
+
+	ctx.strokeStyle = '#475569';
+	ctx.setLineDash([4, 4]);
+	ctx.lineWidth = 1;
+	ctx.beginPath();
+	ctx.moveTo(HIST_PAD, ZERO_Y); ctx.lineTo(HIST_PAD + HIST_W_PX, ZERO_Y);
+	ctx.stroke();
+	ctx.setLineDash([]);
+
+	ctx.fillStyle = '#64748b';
+	ctx.font      = '9px system-ui';
+	ctx.textAlign = 'right';
+	ctx.fillText(`+${V_DISP} m/s`, HIST_PAD + HIST_W_PX - 2, HIST_Y0 + 10);
+	ctx.fillText(`0`,               HIST_PAD + HIST_W_PX - 2, ZERO_Y + 4);
+	ctx.fillText(`−${V_DISP} m/s`, HIST_PAD + HIST_W_PX - 2, HIST_Y0 + HIST_H - 2);
+
+	ctx.lineWidth = 2;
+	ctx.lineJoin  = 'round';
+	ctx.beginPath();
+	let first = true;
+	for (const { t, v } of history) {
+		const x  = HIST_PAD + (t / T_MAX) * HIST_W_PX;
+		const vc = Math.max(-V_DISP, Math.min(V_DISP, v));
+		const y  = ZERO_Y - (vc / V_DISP) * (HIST_H / 2 - 3);
+		if (first) { ctx.moveTo(x, y); first = false; }
+		else        ctx.lineTo(x, y);
 	}
+	const cv = snap.vHand;
+	ctx.strokeStyle = cv < 0 ? '#f87171' : cv < 10 ? '#facc15' : '#34d399';
+	ctx.stroke();
 
-	function resetAnimation() {
-		if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
-		animProgress = 0;
-		animState    = 'idle';
+	// Scrubber-Cursor
+	if (scrubActive) {
+		const cursorX = HIST_PAD + (snap.t / T_MAX) * HIST_W_PX;
+		ctx.strokeStyle = 'rgba(255,255,255,0.65)';
+		ctx.lineWidth   = 1;
+		ctx.setLineDash([3, 3]);
+		ctx.beginPath();
+		ctx.moveTo(cursorX, HIST_Y0); ctx.lineTo(cursorX, HIST_Y0 + HIST_H);
+		ctx.stroke();
+		ctx.setLineDash([]);
+
+		const vc = Math.max(-V_DISP, Math.min(V_DISP, snap.vHand));
+		const cy = ZERO_Y - (vc / V_DISP) * (HIST_H / 2 - 3);
+		ctx.beginPath();
+		ctx.arc(cursorX, cy, 3, 0, Math.PI * 2);
+		ctx.fillStyle = '#fff';
+		ctx.fill();
 	}
+}
 
-	// Slider-Input während Animation pausiert diese
-	function onSliderInput() {
-		if (animState === 'running') {
-			if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
-			animState = 'done';
-		}
-		if (animState === 'idle') animState = 'done';
-	}
-
-	$effect(() => {
-		_runSpeed; _hipSpeed; _shoulderSpeed; _stability;
-		resetAnimation();
-	});
-	$effect(() => () => { if (rafId !== null) cancelAnimationFrame(rafId); });
-
-	// ─── Phasen-Grenzen ───────────────────────────────────────────────────────
-	const P_RUN_END   = 0.32;
-	const P_HIP_END   = 0.58;
-	const P_SHOUL_END = 0.82;
-	// 0.82–1.00: Kontakt
-
-	/** Smooth-Clamp: 0→1 für t im Bereich [a, b] */
-	function smoothstep(a, b, t) {
-		const x = Math.max(0, Math.min(1, (t - a) / (b - a)));
-		return x * x * (3 - 2 * x);
-	}
-
-	// ─── Figur-Geometrie (animiert) ────────────────────────────────────────────
-	/**
-	 * Berechnet alle Gelenk-Positionen des Strichmännchens als Funktion von `p`.
-	 *
-	 * Phase 0–P_RUN_END   : Anlauf — Figur läuft von links nach CENTER_X
-	 * Phase P_RUN_END–P_HIP_END : Hüfte dreht sich (Oberkörper kippt zurück, dann vor)
-	 * Phase P_HIP_END–P_SHOUL_END: Schulterrotation — Arm dreht nach oben-vorne
-	 * Phase P_SHOUL_END–1 : Kontakt — Arm gestreckt nach oben, Ball getroffen
-	 */
-	let fig = $derived((() => {
-		const p = animProgress;
-
-		// ── x-Position: Anlauf ──────────────────────────────────────────────
-		// Strichmännchen startet links (START_X) und bewegt sich zu CENTER_X
-		const START_X = 80;
-		const runT    = smoothstep(0, P_RUN_END, p);
-		const figX    = START_X + (CENTER_X - START_X) * runT;
-
-		// ── Körpergrösse & Grundproportionen ────────────────────────────────
-		const H         = 165;  // Körperhöhe in SVG-Pixeln
-		const feetY     = GROUND_Y;
-		const hipY0     = feetY - H * 0.44;
-		const shouldY0  = feetY - H * 0.77;
-		const headY0    = feetY - H * 0.91;
-		const headR     = H * 0.07;
-
-		// ── Anlauf: Bein-Swing ───────────────────────────────────────────────
-		// Beine schwingen im Laufrhythmus (2 Schritte während Anlauf)
-		const legSwing  = p < P_RUN_END
-			? Math.sin(p * Math.PI * 4 / P_RUN_END) * 16 * runT
-			: 0;
-
-		// Nach dem Anlauf: Aufschlag-Stance (leicht breitbeinig)
-		const legSpreadEnd = p >= P_RUN_END ? smoothstep(P_RUN_END, P_HIP_END, p) : 0;
-		const legL_x  = figX - 7  - legSpreadEnd * 4;
-		const legR_x  = figX + 7  + legSpreadEnd * 4;
-		const legL_dy = legSwing;
-		const legR_dy = -legSwing;
-
-		// ── Hüfte: rotiert zurück dann vorne ─────────────────────────────────
-		// Phase P_RUN_END..P_HIP_END: Hüfte dreht nach hinten (Ausholbewegung)
-		// Hüft-offset: Hüfte bleibt über Füssen, aber Oberkörper kippt
-		const hipRotT     = smoothstep(P_RUN_END, P_HIP_END, p);
-		// Körperneigung: -15° (zurück) während Hüftdrehung, dann 0° bei Schulterphase
-		const tiltBack    = smoothstep(P_RUN_END, (P_RUN_END + P_HIP_END) / 2, p);
-		const tiltForward = smoothstep((P_RUN_END + P_HIP_END) / 2, P_HIP_END, p);
-		const tiltDeg     = -18 * tiltBack + 8 * tiltForward;  // Grad, negativ = zurück
-		const tiltRad     = tiltDeg * Math.PI / 180;
-
-		// Hüfte — bleibt unten, Oberkörper-Neigung um Hüfte
-		const hipX  = figX;
-		const hipY  = hipY0;
-
-		// Schulter folgt dem Oberkörper-Tilt um die Hüfte
-		const bodyLen     = hipY0 - shouldY0;  // Länge Hüfte→Schulter
-		const shouldX     = hipX  + Math.sin(tiltRad) * bodyLen;
-		const shouldY     = hipY  - Math.cos(tiltRad) * bodyLen;
-
-		// Kopf folgt Schulter
-		const neckLen     = shouldY0 - headY0;
-		const headX       = shouldX + Math.sin(tiltRad) * neckLen;
-		const headY       = shouldY - Math.cos(tiltRad) * neckLen;
-
-		// ── Schulter: Arm-Rotation ─────────────────────────────────────────
-		// Phase P_HIP_END..P_SHOUL_END: Arm dreht von unten-hinten nach oben-vorne
-		const armRotT     = smoothstep(P_HIP_END, P_SHOUL_END, p);
-		const contactT    = smoothstep(P_SHOUL_END, 1.0, p);
-
-		// Arm-Winkel (relativ zur Vertikalen durch Schulter):
-		//   Ruhephase (Anlauf): Arm hängt locker (120° von oben = 30° nach hinten-unten)
-		//   Schulterphase: dreht von -140° (hinter unten) nach +20° (leicht vorne)
-		//   Kontakt: Arm gestreckt nach oben (+80° = leicht schräg nach oben vorne)
-		let armAngleDeg;
-		if (p < P_RUN_END) {
-			// Arm schwingt locker beim Laufen (Gegenpendel zu Beinen)
-			armAngleDeg = 30 + Math.sin(p * Math.PI * 4 / P_RUN_END) * 12;
-		} else if (p < P_HIP_END) {
-			// Ausholbewegung: Arm geht nach hinten-unten
-			const t = smoothstep(P_RUN_END, P_HIP_END, p);
-			armAngleDeg = 30 + t * (130 - 30);  // 30° → 130° (hinter unten)
-		} else if (p < P_SHOUL_END) {
-			// Schulterrotation: Arm dreht nach vorne-oben
-			armAngleDeg = 130 - armRotT * (130 + 40);  // 130° → -40° (vorne oben)
-		} else {
-			// Kontakt: Arm voll gestreckt nach oben
-			armAngleDeg = -40 - contactT * 30;  // -40° → -70° (steil oben)
-		}
-
-		// Schlagarm-Endpunkt (Länge = 0.45 × Körpergrösse)
-		const armLen      = H * 0.45;
-		const armAngleRad = armAngleDeg * Math.PI / 180;
-		// Arm dreht um Schulter: Winkel relativ zu links (0=rechts, 90=oben)
-		// Positive Winkel = nach hinten (links), negative = nach vorne (rechts)
-		const armX2  = shouldX - Math.sin(armAngleRad) * armLen;
-		const armY2  = shouldY - Math.cos(armAngleRad) * armLen;
-
-		// Gegenarm (Gleichgewicht): leicht nach vorne-unten
-		const cArmDeg     = -40 - tiltDeg * 0.3;
-		const cArmRad     = cArmDeg * Math.PI / 180;
-		const cArmLen     = H * 0.30;
-		const cArmX2 = shouldX + Math.sin(cArmRad) * cArmLen * 0.6;
-		const cArmY2 = shouldY + Math.cos(cArmRad) * cArmLen * 0.5;
-
-		// Ellbogen (Mitte des Schlagarms)
-		const elbowX = shouldX + (armX2 - shouldX) * 0.5;
-		const elbowY = shouldY + (armY2 - shouldY) * 0.5;
-
-		// ── Sichtbarkeit der Pfeile ──────────────────────────────────────────
-		const showRun    = p > 0.02;
-		const runAlpha   = smoothstep(0.02, 0.10, p) * (1 - smoothstep(P_HIP_END, P_SHOUL_END, p) * 0.4);
-		const showHip    = p > P_RUN_END + 0.02;
-		const hipAlpha   = smoothstep(P_RUN_END, P_HIP_END, p) * (1 - smoothstep(P_HIP_END + 0.05, P_SHOUL_END, p) * 0.4);
-		const showShoul  = p > P_HIP_END + 0.02;
-		const shoulAlpha = smoothstep(P_HIP_END, P_SHOUL_END, p);
-		const showHand   = p > P_SHOUL_END;
-		const handAlpha  = smoothstep(P_SHOUL_END, 1.0, p);
-
-		return {
-			figX, feetY, hipX, hipY, shouldX, shouldY, headX, headY, headR,
-			armX2, armY2, elbowX, elbowY, cArmX2, cArmY2,
-			legL_x, legR_x, legL_dy, legR_dy, legSpreadEnd,
-			showRun, runAlpha, showHip, hipAlpha, showShoul, shoulAlpha, showHand, handAlpha,
-		};
-	})());
-
-	// ─── Vektor-Pfeile ────────────────────────────────────────────────────────
-	// Alle Pfeile starten an der Hand (armX2/armY2) und zeigen horizontal nach rechts
-	// Längen proportional zu den Geschwindigkeiten (max 100px für V_MAX)
-	const ARROW_SCALE = 130; // px pro normalisierte Einheit (Skalierung für Visualisierung)
-	const ARROW_Y_BASE = 70; // y-Offset über der Hand für den gestapelten Vektor-Anzeige
-
-	// Gestapelte Vektoren: nebeneinander gezeichnet als Addition
-	let arrowRunLen   = $derived((_runSpeed      / V_MAX) * ARROW_SCALE * 2.5);
-	let arrowHipLen   = $derived((_hipSpeed      / V_MAX) * ARROW_SCALE * 2.5);
-	let arrowShoulLen = $derived((_shoulderSpeed / V_MAX) * ARROW_SCALE * 2.5);
-	let arrowHandLen  = $derived((vHand          / V_MAX) * ARROW_SCALE * 2.5);
-
-	// Phasen-Label
-	let phaseLabel = $derived(
-		animProgress <= 0.02   ? 'Bereit'                :
-		animProgress < P_RUN_END   ? 'Anlauf'                :
-		animProgress < P_HIP_END   ? 'Hüftdrehung'          :
-		animProgress < P_SHOUL_END ? 'Schulterrotation'      :
-		                             'Kontakt'
-	);
-
-	let phaseColor = $derived(
-		animProgress <= 0.02   ? '#94a3b8'  :
-		animProgress < P_RUN_END   ? COL_RUN    :
-		animProgress < P_HIP_END   ? COL_HIP    :
-		animProgress < P_SHOUL_END ? COL_SHOULDER :
-		                             COL_HAND
-	);
-
-	// Geschwindigkeit der Hand (aktiv angezeigte Komponenten je nach Phase)
-	let vDisplayed = $derived(
-		animProgress < P_RUN_END   ? _runSpeed                               :
-		animProgress < P_HIP_END   ? _runSpeed + _hipSpeed                   :
-		animProgress < P_SHOUL_END ? _runSpeed + _hipSpeed + _shoulderSpeed  :
-		                             vHand
-	);
-
-	// ─── Fortschrittsbalken-Konstanten (als $derived statt {@const}) ────────
-	const BAR_Y_CONST = SVG_H - 42;
-	const BAR_X_CONST = 20;
-	const BAR_W_CONST = SVG_W - 40;
+// ─── Lifecycle ────────────────────────────────────────────────────────────────
+onMount(() => {
+	drawIdleFrame();
+});
 </script>
 
-<div class="hv-wrapper">
+<!-- ─── Template ──────────────────────────────────────────────────────────────── -->
+<div class="widget">
+	<h3>Handgeschwindigkeit — Kinematisches Arm-Modell</h3>
+	<p class="subtitle">
+		Hüfte → Torso → Schulter → Oberarm → Unterarm → Hand.
+		Alle Gelenke drehen im Uhrzeigersinn mit Beschleunigung und Abbremsung.
+		Die Slider geben die Spitzen-Winkelgeschwindigkeit in °/s an.
+	</p>
 
-	<!-- ── Header ──────────────────────────────────────────────────────────── -->
-	<div class="hv-header">
-		<h3 class="hv-title">Kinematische Kette: Handgeschwindigkeit</h3>
-		<p class="hv-subtitle">Wie Anlauf, Hüftdrehung und Schulterrotation die Handgeschwindigkeit aufbauen</p>
+	<!-- ── Simulations-Bereich ─────────────────────────────────────────────── -->
+	<div class="sim-area">
+		<canvas
+			bind:this={overlayCanvas}
+			class="overlay-canvas"
+			width={W}
+			height={H}
+		></canvas>
 	</div>
 
-	<!-- ── Steuerung ───────────────────────────────────────────────────────── -->
-	<div class="hv-controls">
-
-		<!-- Laufgeschwindigkeit -->
-		<div class="hv-control-group">
-			<span class="hv-label" style="color: {COL_RUN}">Laufgeschwindigkeit</span>
-			<div class="hv-slider-group">
-				<input type="range" class="hv-slider" style="accent-color: {COL_RUN}"
-					min={RUN_MIN} max={RUN_MAX} step="0.1" bind:value={_runSpeed} />
-				<span class="hv-slider-val">{_runSpeed.toFixed(1)} m/s</span>
-			</div>
+	<!-- ── Messwerte ──────────────────────────────────────────────────────────── -->
+	<div class="metrics">
+		<div class="metric">
+			<span class="mlabel">v Hand x (aktuell)</span>
+			<span class="mval" class:neg={vHandX < 0}>{vHandX.toFixed(1)} m/s</span>
 		</div>
-
-		<!-- Hüftbeugungsgeschwindigkeit -->
-		<div class="hv-control-group">
-			<span class="hv-label" style="color: {COL_HIP}">Hüftdrehung</span>
-			<div class="hv-slider-group">
-				<input type="range" class="hv-slider" style="accent-color: {COL_HIP}"
-					min={HIP_MIN} max={HIP_MAX} step="0.1" bind:value={_hipSpeed} />
-				<span class="hv-slider-val">{_hipSpeed.toFixed(1)} m/s</span>
-			</div>
+		<div class="metric">
+			<span class="mlabel">v Hand x (Maximum)</span>
+			<span class="mval peak">{vHandXMax.toFixed(1)} m/s</span>
 		</div>
-
-		<!-- Schulterkraft -->
-		<div class="hv-control-group">
-			<span class="hv-label" style="color: {COL_SHOULDER}">Schulterkraft / Armrotation</span>
-			<div class="hv-slider-group">
-				<input type="range" class="hv-slider" style="accent-color: {COL_SHOULDER}"
-					min={SHOULDER_MIN} max={SHOULDER_MAX} step="0.1" bind:value={_shoulderSpeed} />
-				<span class="hv-slider-val">{_shoulderSpeed.toFixed(1)} m/s</span>
-			</div>
+		<div class="metric">
+			<span class="mlabel">Simulationszeit</span>
+			<span class="mval dim">{simTime.toFixed(3)} s</span>
 		</div>
-
-		<!-- Körperstabilität -->
-		<div class="hv-control-group">
-			<span class="hv-label">Körperstabilität η</span>
-			<div class="hv-slider-group">
-				<input type="range" class="hv-slider"
-					min={STABILITY_MIN} max={STABILITY_MAX} step="0.01" bind:value={_stability} />
-				<span class="hv-slider-val">{(_stability * 100).toFixed(0)}%</span>
-			</div>
-		</div>
-
 	</div>
 
-	<!-- ── SVG ──────────────────────────────────────────────────────────────── -->
-	<div class="hv-svg-wrapper">
-		<svg
-			viewBox="0 0 {SVG_W} {SVG_H}"
-			class="hv-svg"
-			role="img"
-			aria-label="Handgeschwindigkeit kinematische Kette"
-		>
-			<defs>
-				<marker id="hv-arr-run"    markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-					<polygon points="0 0, 8 4, 0 8" fill={COL_RUN} />
-				</marker>
-				<marker id="hv-arr-hip"    markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-					<polygon points="0 0, 8 4, 0 8" fill={COL_HIP} />
-				</marker>
-				<marker id="hv-arr-shoul"  markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-					<polygon points="0 0, 8 4, 0 8" fill={COL_SHOULDER} />
-				</marker>
-				<marker id="hv-arr-hand"   markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
-					<polygon points="0 0, 8 4, 0 8" fill={COL_HAND} />
-				</marker>
-			</defs>
-
-			<!-- Hintergrund -->
-			<rect width={SVG_W} height={SVG_H} fill="#f8fafc" rx="10" />
-			<!-- Boden -->
-			<rect x="0" y={GROUND_Y + 1} width={SVG_W} height={SVG_H - GROUND_Y} fill="#e8ecf0" />
-			<!-- Boden-Linie -->
-			<line x1="20" y1={GROUND_Y} x2={SVG_W - 20} y2={GROUND_Y} stroke="#cbd5e1" stroke-width="1.5" />
-
-			<!-- ── Laufrichtungs-Marker (Boden) ──────────────────────────────── -->
-			{#if animProgress < P_RUN_END && animProgress > 0.01}
-				<!-- Laufspuren (Pfeile am Boden) -->
-				{#each [0.08, 0.16, 0.24] as xFrac}
-					{#if animProgress > xFrac}
-						{@const traceX = 80 + xFrac * (CENTER_X - 80) / P_RUN_END}
-						<text x={traceX} y={GROUND_Y + 18} text-anchor="middle"
-							fill={COL_RUN} font-size="11" opacity={0.3 + xFrac}>›</text>
-					{/if}
-				{/each}
-			{/if}
-
-			<!-- ── Strichmännchen ─────────────────────────────────────────────── -->
-			<!-- Schatten -->
-			<ellipse
-				cx={fig.figX} cy={GROUND_Y - 1}
-				rx={14 + fig.legSpreadEnd * 4} ry="3"
-				fill="#94a3b8" opacity="0.2"
-			/>
-
-			<!-- Linkes Bein -->
-			<line
-				x1={fig.hipX} y1={fig.hipY}
-				x2={fig.legL_x} y2={fig.feetY + fig.legL_dy}
-				stroke="#334155" stroke-width="2.5" stroke-linecap="round"
-			/>
-			<!-- Rechtes Bein -->
-			<line
-				x1={fig.hipX} y1={fig.hipY}
-				x2={fig.legR_x} y2={fig.feetY + fig.legR_dy}
-				stroke="#334155" stroke-width="2.5" stroke-linecap="round"
-			/>
-
-			<!-- Körper (Hüfte → Schulter) -->
-			<line
-				x1={fig.hipX} y1={fig.hipY}
-				x2={fig.shouldX} y2={fig.shouldY}
-				stroke="#1e3a5f" stroke-width="3" stroke-linecap="round"
-			/>
-
-			<!-- Gegenarm -->
-			<line
-				x1={fig.shouldX} y1={fig.shouldY}
-				x2={fig.cArmX2} y2={fig.cArmY2}
-				stroke="#1e3a5f" stroke-width="2" stroke-linecap="round" opacity="0.6"
-			/>
-
-			<!-- Schlagarm: Schulter → Ellbogen → Hand -->
-			<line
-				x1={fig.shouldX} y1={fig.shouldY}
-				x2={fig.elbowX} y2={fig.elbowY}
-				stroke="#1e3a5f" stroke-width="2.5" stroke-linecap="round"
-			/>
-			<line
-				x1={fig.elbowX} y1={fig.elbowY}
-				x2={fig.armX2} y2={fig.armY2}
-				stroke="#1e3a5f" stroke-width="2.5" stroke-linecap="round"
-			/>
-
-			<!-- Kopf -->
-			<circle cx={fig.headX} cy={fig.headY} r={fig.headR} fill="#fbbf24" opacity="0.9" />
-
-			<!-- ── Hüft-Rotations-Marker ──────────────────────────────────────── -->
-			{#if fig.showHip}
-				<!-- Bogenpfeil um die Hüfte -->
-				{@const arcR = 22}
-				{@const arcStart = Math.PI * 0.2}
-				{@const arcEnd   = Math.PI * 0.8}
-				{@const ax1 = fig.hipX + arcR * Math.cos(arcStart + Math.PI)}
-				{@const ay1 = fig.hipY - arcR * Math.sin(arcStart)}
-				{@const ax2 = fig.hipX + arcR * Math.cos(arcEnd + Math.PI)}
-				{@const ay2 = fig.hipY - arcR * Math.sin(arcEnd)}
-				<path
-					d="M {ax1} {ay1} A {arcR} {arcR} 0 0 1 {ax2} {ay2}"
-					fill="none"
-					stroke={COL_HIP}
-					stroke-width="2"
-					stroke-linecap="round"
-					opacity={fig.hipAlpha * 0.7}
-					marker-end="url(#hv-arr-hip)"
-				/>
-				<circle cx={fig.hipX} cy={fig.hipY} r="4"
-					fill={COL_HIP} opacity={fig.hipAlpha * 0.5} />
-			{/if}
-
-			<!-- ── Schulter-Rotations-Marker ──────────────────────────────────── -->
-			{#if fig.showShoul}
-				{@const arcR2 = 18}
-				{@const as1 = Math.PI * 0.1}
-				{@const as2 = Math.PI * 0.75}
-				{@const sx1 = fig.shouldX + arcR2 * Math.cos(as1 + Math.PI)}
-				{@const sy1 = fig.shouldY - arcR2 * Math.sin(as1)}
-				{@const sx2 = fig.shouldX + arcR2 * Math.cos(as2 + Math.PI)}
-				{@const sy2 = fig.shouldY - arcR2 * Math.sin(as2)}
-				<path
-					d="M {sx1} {sy1} A {arcR2} {arcR2} 0 0 1 {sx2} {sy2}"
-					fill="none"
-					stroke={COL_SHOULDER}
-					stroke-width="2"
-					stroke-linecap="round"
-					opacity={fig.shoulAlpha * 0.7}
-					marker-end="url(#hv-arr-shoul)"
-				/>
-				<circle cx={fig.shouldX} cy={fig.shouldY} r="4"
-					fill={COL_SHOULDER} opacity={fig.shoulAlpha * 0.5} />
-			{/if}
-
-			<!-- ── Kontakt-Markierung (Ball-Position) ─────────────────────────── -->
-			{#if animProgress >= P_SHOUL_END}
-				{@const bx = fig.armX2 + 12}
-				{@const by = fig.armY2}
-				{@const contactAlpha = Math.min((animProgress - P_SHOUL_END) / 0.1, 1)}
-				<!-- Ball -->
-				<circle cx={bx} cy={by} r="12" fill="white"
-					stroke={COL_HAND} stroke-width="1.8" opacity={contactAlpha * 0.9} />
-				<path d="M {bx - 8} {by} Q {bx} {by - 5} {bx + 8} {by}"
-					fill="none" stroke="#94a3b8" stroke-width="0.9" opacity={contactAlpha * 0.6} />
-				<path d="M {bx - 8} {by} Q {bx} {by + 5} {bx + 8} {by}"
-					fill="none" stroke="#94a3b8" stroke-width="0.9" opacity={contactAlpha * 0.6} />
-				<line x1={bx} y1={by - 11} x2={bx} y2={by + 11}
-					stroke="#e2e8f0" stroke-width="0.7" opacity={contactAlpha * 0.6} />
-			{/if}
-
-			<!-- ── Vektor-Anzeige (gestapelte Pfeile an der Hand) ────────────── -->
-			<!-- Alle Pfeile starten an der Hand, zeigen nach rechts (Bewegungsrichtung) -->
-			<!-- Anzeige oben rechts im SVG als Panel -->
-			{#if animProgress > 0.02}
-				{@const px = 380}
-				{@const py = 50}
-				{@const barH = 18}
-				{@const spacing = 26}
-
-				<!-- Hintergrund-Box -->
-				<rect x={px - 12} y={py - 16} width={220} height={155} rx="8"
-					fill="white" stroke="#e2e8f0" stroke-width="1" opacity="0.95" />
-				<text x={px} y={py - 2} fill="#475569" font-size="9" font-family="sans-serif"
-					font-weight="600">Kinematische Kette</text>
-
-				<!-- v_lauf -->
-				{#if fig.showRun}
-					<text x={px} y={py + spacing * 1 + 3} fill={COL_RUN}
-						font-size="9" font-family="sans-serif" opacity={fig.runAlpha}>
-						v<tspan baseline-shift="sub" font-size="7">Lauf</tspan>
-					</text>
-					<rect x={px + 28} y={py + spacing * 1 - 8} height={barH - 4}
-						width={Math.max(2, arrowRunLen)} rx="3" fill={COL_RUN} opacity={fig.runAlpha * 0.85} />
-					<text x={px + 32 + arrowRunLen} y={py + spacing * 1 + 3}
-						fill={COL_RUN} font-size="8" font-family="monospace" opacity={fig.runAlpha}>
-						{_runSpeed.toFixed(1)} m/s
-					</text>
-				{/if}
-
-				<!-- v_hüfte -->
-				{#if fig.showHip}
-					<text x={px} y={py + spacing * 2 + 3} fill={COL_HIP}
-						font-size="9" font-family="sans-serif" opacity={fig.hipAlpha}>
-						v<tspan baseline-shift="sub" font-size="7">Hüfte</tspan>
-					</text>
-					<rect x={px + 28} y={py + spacing * 2 - 8} height={barH - 4}
-						width={Math.max(2, arrowHipLen)} rx="3" fill={COL_HIP} opacity={fig.hipAlpha * 0.85} />
-					<text x={px + 32 + arrowHipLen} y={py + spacing * 2 + 3}
-						fill={COL_HIP} font-size="8" font-family="monospace" opacity={fig.hipAlpha}>
-						{_hipSpeed.toFixed(1)} m/s
-					</text>
-				{/if}
-
-				<!-- v_schulter -->
-				{#if fig.showShoul}
-					<text x={px} y={py + spacing * 3 + 3} fill={COL_SHOULDER}
-						font-size="9" font-family="sans-serif" opacity={fig.shoulAlpha}>
-						v<tspan baseline-shift="sub" font-size="7">Arm</tspan>
-					</text>
-					<rect x={px + 28} y={py + spacing * 3 - 8} height={barH - 4}
-						width={Math.max(2, arrowShoulLen)} rx="3" fill={COL_SHOULDER} opacity={fig.shoulAlpha * 0.85} />
-					<text x={px + 32 + arrowShoulLen} y={py + spacing * 3 + 3}
-						fill={COL_SHOULDER} font-size="8" font-family="monospace" opacity={fig.shoulAlpha}>
-						{_shoulderSpeed.toFixed(1)} m/s
-					</text>
-				{/if}
-
-				<!-- Trennlinie vor v_hand -->
-				{#if fig.showHand}
-					<line x1={px} y1={py + spacing * 3.7} x2={px + 195} y2={py + spacing * 3.7}
-						stroke="#cbd5e1" stroke-width="1" opacity={fig.handAlpha} />
-					<text x={px} y={py + spacing * 3.8 + 10} fill="#94a3b8"
-						font-size="8" font-family="sans-serif" opacity={fig.handAlpha}>
-						× η ({(_stability * 100).toFixed(0)}%) =
-					</text>
-					<!-- v_hand (effektiv) -->
-					<text x={px} y={py + spacing * 4.7 + 3} fill={COL_HAND}
-						font-size="10" font-family="sans-serif" font-weight="700" opacity={fig.handAlpha}>
-						v<tspan baseline-shift="sub" font-size="8">Hand</tspan>
-					</text>
-					<rect x={px + 32} y={py + spacing * 4.7 - 9} height={barH}
-						width={Math.max(2, arrowHandLen)} rx="3" fill={COL_HAND} opacity={fig.handAlpha * 0.9} />
-					<text x={px + 36 + arrowHandLen} y={py + spacing * 4.7 + 3}
-						fill={COL_HAND} font-size="9" font-family="monospace" font-weight="700" opacity={fig.handAlpha}>
-						{vHand.toFixed(1)} m/s
-					</text>
-				{/if}
-			{/if}
-
-			<!-- ── Phasen-Label ───────────────────────────────────────────────── -->
-			<rect x={SVG_W / 2 - 70} y={SVG_H - 30} width="140" height="22" rx="5"
-				fill={phaseColor} opacity="0.12" />
-			<text x={SVG_W / 2} y={SVG_H - 14} text-anchor="middle"
-				fill={phaseColor} font-size="11" font-family="sans-serif" font-weight="700">
-				{phaseLabel}
-			</text>
-
-			<!-- ── Phasen-Fortschrittsbalken (unten) ─────────────────────────── -->
-			<!-- Hintergrund -->
-			<rect x={BAR_X_CONST} y={BAR_Y_CONST} width={BAR_W_CONST} height="5" rx="2.5" fill="#e2e8f0" />
-			<!-- Anlauf-Segment -->
-			<rect x={BAR_X_CONST} y={BAR_Y_CONST} width={P_RUN_END * BAR_W_CONST} height="5" rx="2.5" fill={COL_RUN} opacity="0.4" />
-			<!-- Hüft-Segment -->
-			<rect x={BAR_X_CONST + P_RUN_END * BAR_W_CONST} y={BAR_Y_CONST}
-				width={(P_HIP_END - P_RUN_END) * BAR_W_CONST} height="5" fill={COL_HIP} opacity="0.4" />
-			<!-- Schulter-Segment -->
-			<rect x={BAR_X_CONST + P_HIP_END * BAR_W_CONST} y={BAR_Y_CONST}
-				width={(P_SHOUL_END - P_HIP_END) * BAR_W_CONST} height="5" fill={COL_SHOULDER} opacity="0.4" />
-			<!-- Kontakt-Segment -->
-			<rect x={BAR_X_CONST + P_SHOUL_END * BAR_W_CONST} y={BAR_Y_CONST}
-				width={(1 - P_SHOUL_END) * BAR_W_CONST} height="5" rx="2.5" fill={COL_HAND} opacity="0.4" />
-			<!-- Fortschritt-Fill -->
-			<rect x={BAR_X_CONST} y={BAR_Y_CONST} width={animProgress * BAR_W_CONST} height="5" rx="2.5"
-				fill={phaseColor} opacity="0.7" />
-			<!-- Cursor -->
-			<circle cx={BAR_X_CONST + animProgress * BAR_W_CONST} cy={BAR_Y_CONST + 2.5} r="5"
-				fill={phaseColor} stroke="white" stroke-width="1.5" />
-
-		</svg>
-	</div>
-
-	<!-- ── Frame-Slider ──────────────────────────────────────────────────────── -->
-	<div class="hv-frame-row">
-		<span class="hv-frame-label">Frame</span>
+	<!-- ── Frame-Scrubber ─────────────────────────────────────────────────────── -->
+	{#if scrubActive && frames.length > 0}
+	<div class="scrubber-row">
+		<label for="s-scrub" class="scrub-label">
+			Frame
+			<span class="scrub-info">
+				{scrubFrame + 1} / {frames.length}
+				<span class="scrub-time">({frames[scrubFrame].t.toFixed(3)} s)</span>
+			</span>
+		</label>
 		<input
+			id="s-scrub"
 			type="range"
-			class="hv-frame-slider"
-			min="0" max="1" step="0.002"
-			bind:value={animProgress}
-			oninput={onSliderInput}
+			min="0"
+			max={frames.length - 1}
+			step="1"
+			value={scrubFrame}
+			oninput={onScrubInput}
+			class="scrub-slider"
 		/>
-		<span class="hv-frame-val">{(animProgress * 100).toFixed(0)}%</span>
-		<span class="hv-phase-badge" style="background: {phaseColor}20; color: {phaseColor}; border-color: {phaseColor}40">
-			{phaseLabel}
-		</span>
 	</div>
+	{/if}
 
-	<!-- ── Aktions-Zeile ─────────────────────────────────────────────────────── -->
-	<div class="hv-action-row">
-		{#if animState === 'idle' || animState === 'done'}
-			<button class="hv-start-btn" onclick={startAnimation}>
-				{animState === 'done' ? '↺ Nochmals' : '▶ Animation starten'}
-			</button>
-		{:else}
-			<button class="hv-reset-btn" onclick={resetAnimation}>■ Stop</button>
-		{/if}
-	</div>
+	<!-- ── Steuerung ──────────────────────────────────────────────────────────── -->
+	<div class="controls">
+		<div class="srow">
+			<label for="s-run">
+				Laufgeschwindigkeit
+				<span class="sval">{vRun.toFixed(1)} m/s</span>
+			</label>
+			<input id="s-run" type="range" min="0" max="8" step="0.1" bind:value={vRun} />
+		</div>
 
-	<!-- ── Ergebnis-Panel ─────────────────────────────────────────────────────── -->
-	<div class="hv-result-panel">
-		<div class="hv-result-item">
-			<span class="hv-result-label" style="color: {COL_RUN}">v<sub>Lauf</sub></span>
-			<span class="hv-result-value" style="color: {COL_RUN}">{_runSpeed.toFixed(1)}</span>
-			<span class="hv-result-unit">m/s</span>
+		<div class="srow">
+			<label for="s-hip">
+				Hüft-Rotation
+				<span class="sval">{Math.round(wHip)} °/s</span>
+			</label>
+			<input id="s-hip" type="range" min="0" max="700" step="10" bind:value={wHip} />
 		</div>
-		<span class="hv-plus">+</span>
-		<div class="hv-result-item">
-			<span class="hv-result-label" style="color: {COL_HIP}">v<sub>Hüfte</sub></span>
-			<span class="hv-result-value" style="color: {COL_HIP}">{_hipSpeed.toFixed(1)}</span>
-			<span class="hv-result-unit">m/s</span>
+
+		<div class="srow">
+			<label for="s-sh">
+				Schulter-Schwung
+				<span class="sval">{Math.round(wSh)} °/s</span>
+			</label>
+			<input id="s-sh" type="range" min="0" max="1500" step="10" bind:value={wSh} />
 		</div>
-		<span class="hv-plus">+</span>
-		<div class="hv-result-item">
-			<span class="hv-result-label" style="color: {COL_SHOULDER}">v<sub>Arm</sub></span>
-			<span class="hv-result-value" style="color: {COL_SHOULDER}">{_shoulderSpeed.toFixed(1)}</span>
-			<span class="hv-result-unit">m/s</span>
+
+		<div class="srow">
+			<label for="s-el">
+				Ellbogen-Peitsche
+				<span class="sval">{Math.round(wEl)} °/s</span>
+			</label>
+			<input id="s-el" type="range" min="0" max="2000" step="10" bind:value={wEl} />
 		</div>
-		<div class="hv-eta-row">
-			<span class="hv-eta-sym">× η = {(_stability * 100).toFixed(0)}%</span>
-		</div>
-		<div class="hv-result-divider"></div>
-		<div class="hv-result-item hv-result-total">
-			<span class="hv-result-label" style="color: {COL_HAND}">v<sub>Hand</sub></span>
-			<span class="hv-result-value hv-total-val" style="color: {COL_HAND}">{vHand.toFixed(1)}</span>
-			<span class="hv-result-unit" style="color: {COL_HAND}">m/s</span>
+
+		<div class="btns">
+			<button class="btn-go"    onclick={startSim}>▶ Berechnen</button>
+			<button class="btn-reset" onclick={resetSim}>↺ Zurücksetzen</button>
 		</div>
 	</div>
 
+	<!-- Legende -->
+	<div class="legend">
+		<span class="dot" style="background:#60a5fa"></span> Torso
+		<span class="dot" style="background:#34d399"></span> Oberarm
+		<span class="dot" style="background:#f59e0b"></span> Unterarm / Hand
+	</div>
 </div>
 
+<!-- ─── Styles ────────────────────────────────────────────────────────────── -->
 <style>
-	.hv-wrapper {
-		background: #ffffff;
-		border: 1px solid #e2e8f0;
-		border-radius: 0.75rem;
-		padding: 1.5rem;
-		margin: 2rem 0;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.04);
+	.widget {
+		background:    #0f172a;
+		border:        1px solid #1e293b;
+		border-radius: 12px;
+		padding:       1.25rem 1.5rem;
+		color:         #e2e8f0;
+		font-family:   system-ui, sans-serif;
+		max-width:     700px;
+		margin:        1.5rem auto;
 	}
 
-	/* ── Header ──────────────────────────────────────────── */
-	.hv-header { display: flex; flex-direction: column; gap: 0.2rem; }
-	.hv-title {
-		font-size: 1.1rem; font-weight: 700; color: #1e293b;
-		margin: 0; font-family: inherit;
-	}
-	.hv-subtitle {
-		font-size: 0.82rem; color: #94a3b8;
-		margin: 0; font-style: italic; font-family: inherit;
+	h3 { margin: 0 0 0.25rem; font-size: 1.05rem; color: #f1f5f9; }
+
+	.subtitle { font-size: 0.8rem; color: #64748b; margin: 0 0 0.9rem; }
+
+	.sim-area {
+		position: relative; width: 100%; max-width: 680px;
+		border-radius: 8px; border: 1px solid #1e293b;
+		overflow: hidden; line-height: 0;
 	}
 
-	/* ── Steuerung ───────────────────────────────────────── */
-	.hv-controls { display: flex; flex-direction: column; gap: 0.45rem; }
-	.hv-control-group {
-		display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
-	}
-	.hv-label {
-		font-size: 0.875rem; font-weight: 500; color: #64748b;
-		min-width: 195px; white-space: nowrap; font-family: inherit;
-	}
-	.hv-slider-group { display: flex; align-items: center; gap: 0.5rem; }
-	.hv-slider { width: 155px; cursor: pointer; }
-	.hv-slider-val {
-		font-size: 0.875rem; font-weight: 600; color: #1e293b;
-		font-family: 'Courier New', monospace; min-width: 4rem;
+	.overlay-canvas { display: block; width: 100% !important; height: auto !important; }
+
+	.metrics { display: flex; gap: 1.5rem; margin: 0.8rem 0 0.4rem; flex-wrap: wrap; }
+
+	.metric { display: flex; flex-direction: column; gap: 2px; }
+
+	.mlabel {
+		font-size: 0.72rem; color: #64748b;
+		text-transform: uppercase; letter-spacing: 0.05em;
 	}
 
-	/* ── SVG ─────────────────────────────────────────────── */
-	.hv-svg-wrapper { width: 100%; }
-	.hv-svg {
-		width: 100%; height: auto; display: block;
-		border-radius: 0.5rem; border: 1px solid #e2e8f0;
+	.mval {
+		font-size: 1.35rem; font-weight: 700;
+		font-variant-numeric: tabular-nums; color: #34d399;
+	}
+	.mval.neg  { color: #f87171; }
+	.mval.peak { color: #60a5fa; }
+	.mval.dim  { color: #94a3b8; font-size: 1rem; font-weight: 400; padding-top: 5px; }
+
+	.scrubber-row {
+		margin: 0.6rem 0 0.2rem; display: flex; flex-direction: column; gap: 3px;
+		padding: 0.55rem 0.75rem; background: #1e293b;
+		border-radius: 8px; border: 1px solid #334155;
 	}
 
-	/* ── Frame-Slider ────────────────────────────────────── */
-	.hv-frame-row {
-		display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
-	}
-	.hv-frame-label {
-		font-size: 0.8rem; font-weight: 600; color: #64748b;
-		font-family: inherit; white-space: nowrap;
-	}
-	.hv-frame-slider {
-		flex: 1; min-width: 120px; max-width: 360px;
-		accent-color: #475569; cursor: pointer;
-	}
-	.hv-frame-val {
-		font-size: 0.8rem; font-weight: 700; color: #1e293b;
-		font-family: 'Courier New', monospace; min-width: 3rem;
-	}
-	.hv-phase-badge {
-		font-size: 0.78rem; font-weight: 600;
-		padding: 0.2rem 0.65rem; border-radius: 999px;
-		border: 1px solid transparent; font-family: inherit;
+	.scrub-label {
+		font-size: 0.8rem; color: #94a3b8;
+		display: flex; justify-content: space-between; align-items: center;
 	}
 
-	/* ── Aktions-Zeile ────────────────────────────────────── */
-	.hv-action-row { display: flex; justify-content: center; }
-	.hv-start-btn, .hv-reset-btn {
-		padding: 0.55rem 2.5rem; border-radius: 0.5rem; border: none;
-		font-size: 1rem; font-weight: 700; cursor: pointer;
-		transition: background 120ms, transform 120ms, box-shadow 120ms;
-		font-family: inherit;
-	}
-	.hv-start-btn {
-		background: #ff3500; color: white;
-		box-shadow: 0 2px 8px rgba(255,53,0,0.22);
-	}
-	.hv-start-btn:hover { background: #e62f00; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,53,0,0.28); }
-	.hv-start-btn:active { transform: translateY(0); }
-	.hv-reset-btn { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
-	.hv-reset-btn:hover { background: #e2e8f0; }
+	.scrub-info { color: #e2e8f0; font-variant-numeric: tabular-nums; }
 
-	/* ── Ergebnis-Panel ───────────────────────────────────── */
-	.hv-result-panel {
-		display: flex; align-items: center; justify-content: center;
-		gap: 0.75rem; flex-wrap: wrap;
-		background: #f8fafc; border: 1px solid #e2e8f0;
-		border-radius: 0.5rem; padding: 0.85rem 1rem;
-	}
-	.hv-result-item {
-		display: flex; flex-direction: column; align-items: center; gap: 1px;
-	}
-	.hv-result-label {
-		font-size: 0.7rem; color: #94a3b8; text-transform: uppercase;
-		letter-spacing: 0.06em; font-family: inherit;
-	}
-	.hv-result-value {
-		font-size: 1.2rem; font-weight: 700; color: #1e293b;
-		font-family: 'Courier New', monospace;
-	}
-	.hv-total-val { font-size: 1.5rem; }
-	.hv-result-unit { font-size: 0.7rem; color: #94a3b8; font-family: inherit; }
-	.hv-plus { font-size: 1.3rem; font-weight: 700; color: #94a3b8; padding: 0 0.1rem; }
-	.hv-eta-row {
-		display: flex; align-items: center;
-		font-size: 0.9rem; color: #64748b; font-family: 'Courier New', monospace;
-	}
-	.hv-eta-sym { padding: 0 0.25rem; }
-	.hv-result-divider { width: 1.5px; height: 48px; background: #e2e8f0; margin: 0 0.25rem; }
-	.hv-result-total { padding-left: 0.25rem; }
+	.scrub-time { color: #64748b; font-size: 0.75rem; margin-left: 0.4rem; }
 
-	/* ── Responsive ───────────────────────────────────────── */
-	@media (max-width: 600px) {
-		.hv-wrapper { padding: 1rem; }
-		.hv-control-group { flex-direction: column; align-items: flex-start; }
-		.hv-label { min-width: unset; }
-		.hv-slider { width: 130px; }
-		.hv-result-panel { gap: 0.5rem; }
+	.scrub-slider { width: 100%; accent-color: #f59e0b; }
+
+	.controls {
+		margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.55rem;
 	}
+
+	.srow { display: flex; flex-direction: column; gap: 2px; }
+
+	.srow label {
+		font-size: 0.8rem; color: #94a3b8;
+		display: flex; justify-content: space-between;
+	}
+
+	.sval { color: #e2e8f0; font-variant-numeric: tabular-nums; }
+
+	input[type="range"] { width: 100%; accent-color: #3b82f6; }
+
+	.btns { display: flex; gap: 0.5rem; margin-top: 0.4rem; flex-wrap: wrap; }
+
+	button {
+		padding: 0.38rem 1rem; border: none; border-radius: 6px;
+		font-size: 0.88rem; cursor: pointer; transition: opacity 0.12s;
+	}
+	button:disabled { opacity: 0.3; cursor: default; }
+
+	.btn-go    { background: #2563eb; color: #fff; }
+	.btn-go:not(:disabled):hover    { background: #1d4ed8; }
+	.btn-reset { background: #334155; color: #e2e8f0; }
+	.btn-reset:not(:disabled):hover { background: #475569; }
+
+	.legend {
+		margin-top: 0.6rem; font-size: 0.78rem; color: #94a3b8;
+		display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+	}
+
+	.dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
 </style>
