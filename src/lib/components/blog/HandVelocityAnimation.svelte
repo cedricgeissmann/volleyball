@@ -24,6 +24,7 @@
  */
 
 import { onMount } from 'svelte';
+import { browser } from '$app/environment';
 
 // ─── Skalierung ───────────────────────────────────────────────────────────────
 const PX_PER_M = 80;
@@ -75,8 +76,7 @@ const LA_UA_ANGLE_START  = -30 * Math.PI / 180;
 // Hüfte
 const HIP_BACK_START = 0.00;  const HIP_BACK_END = 0.12;  // Ausholen
 const HIP_FWD_START  = 0.10;  const HIP_FWD_END  = 0.50;  // Vorwärtsschwung
-// HIP_RETURN: nach Peak (wird dynamisch gesetzt)
-const HIP_RETURN_DUR = 0.30;  // Dauer der Rückkehr in s
+const HIP_RETURN_DUR = 0.30;  // Dauer der Rückkehr in s nach Peak
 
 // Schulter & Ellbogen (relativ zu tSim = t - JUMP_T)
 const SH_START  = 0.08;
@@ -118,25 +118,18 @@ function peakToTotal(omegaRad, duration) {
 const DEG = Math.PI / 180;
 
 // ─── Kinematik: Hüfte ────────────────────────────────────────────────────────
-// Gibt den Schwing-Winkel zurück (Ausholen + Vorwärts).
-// Rückkehr nach Peak wird in computeArm gehandhabt wo peakAngle bekannt ist.
 function torsoSwingAngle(t) {
-	// Phase 1: Ausholen — 10° gegen Uhrzeigersinn
 	const back = -(HIP_BACK_DEG * DEG) * phase(t, HIP_BACK_START, HIP_BACK_END);
-	// Phase 2: Vorwärtsschwung — 30° im Uhrzeigersinn
 	const fwd  = (HIP_SWING_DEG * DEG) * phase(t, HIP_FWD_START, HIP_FWD_END);
 	return TORSO_ANGLE_START + back + fwd;
 }
 
 function uaAngle(t, wShDeg) {
-	// Schulter dreht die ganze Zeit im Uhrzeigersinn — eine einzige Phase.
-	// Der Schwung läuft von SH_START bis SIM_TOTAL durch.
 	const swingDelta = peakToTotal(wShDeg * DEG, SIM_TOTAL - SH_START);
 	return UA_ANGLE_START + swingDelta * phase(t, SH_START, SIM_TOTAL);
 }
 
 // elOffset mit eingefrorenem Wert nach Peak
-// frozenOffset: Wert zum Peak-Zeitpunkt (null = noch nicht einfrieren)
 function elOffset(t, wElDeg, frozenOffset) {
 	if (frozenOffset !== null) return frozenOffset;
 	return EL_OFFSET_START + peakToTotal(wElDeg * DEG, EL_END - EL_START) * phase(t, EL_START, EL_END);
@@ -164,7 +157,6 @@ function computeArm(t, hipX, wHip, wSh, wEl, frozenElOffset = null, peakHipAngle
 	// Torso-Winkel (basierend auf tSim)
 	let tA = torsoSwingAngle(ts);
 	if (peakHipAngle !== null && peakT !== null && t > peakT) {
-		const tsPeak    = Math.max(0, toTSim(peakT));
 		const returnEnd = peakT + HIP_RETURN_DUR;
 		tA = peakHipAngle + (TORSO_ANGLE_UPRIGHT - peakHipAngle) * phase(t, peakT, returnEnd);
 	}
@@ -208,16 +200,33 @@ function computeLeftArm(t, shPos) {
 	return { lShPos, lElPos, lHandPos, luaA };
 }
 
+// ─── LocalStorage ─────────────────────────────────────────────────────────────
+const LS_KEY = 'vb_hand_velocity_v1';
+
+function lsLoad() {
+	if (!browser) return {};
+	try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch { return {}; }
+}
+
+function lsSave(patch) {
+	if (!browser) return;
+	try {
+		const prev = lsLoad();
+		localStorage.setItem(LS_KEY, JSON.stringify({ ...prev, ...patch }));
+	} catch {}
+}
+
 // ─── Slider-Defaults ─────────────────────────────────────────────────────────
 const W_HIP_DEF = 230;
 const W_SH_DEF  = 570;
 const W_EL_DEF  = 800;
 const V_RUN_DEF = 3.0;
 
-let wHip = $state(W_HIP_DEF);
-let wSh  = $state(W_SH_DEF);
-let wEl  = $state(W_EL_DEF);
-let vRun = $state(V_RUN_DEF);
+const _ls = lsLoad();
+let wHip = $state(_ls.wHip ?? W_HIP_DEF);
+let wSh  = $state(_ls.wSh  ?? W_SH_DEF);
+let wEl  = $state(_ls.wEl  ?? W_EL_DEF);
+let vRun = $state(_ls.vRun ?? V_RUN_DEF);
 
 // ─── Simulations-Zustand ──────────────────────────────────────────────────────
 let vHandX    = $state(0);
@@ -248,8 +257,7 @@ function startSim() {
 
 	const pass1 = [];
 
-	// ── Pass 1a: ohne eingefrorenen Offset — nur für Peak-Suche ──────────
-	// (Ellbogen-Offset vor Peak normal, danach egal — wir suchen nur peakIdx)
+	// ── Pass 1: Arm durchschwingen lassen, Peak-Zeitpunkt finden ─────────
 	{
 		let prevHP = null;
 		let t0 = 0, hx0 = hipX;
@@ -284,7 +292,7 @@ function startSim() {
 	const ballVx0      = peakSnap.vxHandMS * PX_PER_M;
 	const ballVy0      = peakSnap.vyHandMS * PX_PER_M;
 
-	// ── Pass 2: finale Frames ─────────────────────────────────────────
+	// ── Pass 2: finale Frames mit eingefrorenem Ellbogen nach Peak ────────
 	const newFrames  = [];
 	const newHistory = [];
 
@@ -341,7 +349,7 @@ function startSim() {
 		if (newHistory.length === 0 || ft - newHistory[newHistory.length - 1].t >= 0.025) {
 			newHistory.push({ t: ft, v: i === peakIdx ? vHandXMax : vxHandMS });
 		}
-	}
+	}  // end pass1 loop
 
 	frames  = newFrames;
 	history = newHistory;
@@ -459,6 +467,8 @@ function drawFrame(snap) {
 	const ts = Math.max(0, snap.t - JUMP_T);
 	const inAir = snap.t > JUMP_T && snap.hipPos.y < HIP_Y0 - 2;
 
+	const hasLanded = snap.t > JUMP_T && !inAir;
+
 	if (inAir) {
 		// Beine im Sprung: leicht angewinkelt nach unten-hinten
 		const kneeOffY = Math.round(0.25 * PX_PER_M);
@@ -475,10 +485,24 @@ function drawFrame(snap) {
 		ctx.lineTo(hipPos.x + 14, hipPos.y + kneeOffY);
 		ctx.lineTo(hipPos.x + 8,  hipPos.y + footOffY);
 		ctx.stroke();
+	} else if (hasLanded) {
+		// Nach der Landung: Beine gerade (stehend)
+		const footOffY = Math.round(0.45 * PX_PER_M);
+		ctx.beginPath();
+		ctx.moveTo(hipPos.x - 6, hipPos.y);
+		ctx.lineTo(hipPos.x - 6, hipPos.y + footOffY);
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.moveTo(hipPos.x + 6, hipPos.y);
+		ctx.lineTo(hipPos.x + 6, hipPos.y + footOffY);
+		ctx.stroke();
 	} else {
-		// Laufzyklus: Schrittphase aus Simulationszeit
-		const stepPhase = (snap.t / STEP_DUR) % 1.0;
-		const swingAng  = Math.sin(stepPhase * Math.PI * 2) * 0.35; // ±20°
+		// Laufzyklus: 4 Schritte über JUMP_T.
+		// 1 Schritt = 1 Halbwelle des Pendels. 4 Schritte = 2 volle Zyklen.
+		// (tClamped / JUMP_T) läuft 0→1, * 2 * 2π = 2 volle Zyklen = 4 Halbwellen.
+		const tClamped  = Math.min(snap.t, JUMP_T);
+		const stepPhase = tClamped / JUMP_T;   // 0 → 1 über den gesamten Anlauf
+		const swingAng  = Math.sin(stepPhase * Math.PI * 4) * 0.35; // 4 Halbwellen = 4 Schritte
 		// Hinteres Bein
 		const b1ax = hipPos.x - 6, b1ay = hipPos.y;
 		const b1bx = b1ax + Math.sin(-swingAng) * Math.round(0.45 * PX_PER_M);
@@ -628,6 +652,12 @@ function drawFrame(snap) {
 		ctx.fill();
 	}
 }
+
+// ─── Slider → localStorage ────────────────────────────────────────────────────
+$effect(() => { lsSave({ wHip }); });
+$effect(() => { lsSave({ wSh }); });
+$effect(() => { lsSave({ wEl }); });
+$effect(() => { lsSave({ vRun }); });
 
 // ─── Lifecycle ────────────────────────────────────────────────────────────────
 onMount(() => { drawIdleFrame(); });
