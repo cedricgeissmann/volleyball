@@ -11,12 +11,9 @@ published: true
 
 <script>
   import ServiceSimulation from '$lib/components/blog/ServiceSimulation.svelte';
-  import ServiceImpulse from '$lib/components/blog/ServiceImpulse.svelte';
   import HandVelocityAnimation from '$lib/components/blog/HandVelocityAnimation.svelte';
 </script>
 
 <HandVelocityAnimation />
-
-<ServiceImpulse />
 
 <ServiceSimulation />

@@ -59,36 +59,83 @@ const JUMP_VY0  = Math.sqrt(2 * 9.81 * JUMP_H_M) * PX_PER_M;  // px/s nach oben
 // ─── Startwinkel ─────────────────────────────────────────────────────────────
 const TORSO_ANGLE_UPRIGHT = -Math.PI / 2;         // aufrecht (-90°)
 const TORSO_ANGLE_START   = -Math.PI / 2;         // Startposition = aufrecht
-const UA_ANGLE_START      =  120 * Math.PI / 180; // Oberarm bei 120° (hinten-oben)
-const EL_OFFSET_START     = -Math.PI / 2;         // Unterarm nach unten
+const UA_ANGLE_START      = -130 * Math.PI / 180; // Oberarm bei -130° (nach unten-hinten, klassische Ausholposition)
+const EL_OFFSET_START     =   90 * Math.PI / 180; // Unterarm nach oben relativ zum Oberarm (eingeklappt nach hinten)
 
 // ─── Hüft-Ausholen und Schwung ────────────────────────────────────────────────
 // Phase 1: Ausholen  →  10° gegen UZS  (Torso kippt leicht nach hinten)
 // Phase 2: Schwung   →  30° im UZS     (netto 20° vorwärts ab Startposition)
 // Phase 3: Rückkehr  →  zurück auf -90° (aufrecht) nach dem Schlag
-const HIP_BACK_DEG   = 10;   // Ausholwinkel (gegen UZS)
-const HIP_SWING_DEG  = 30;   // Gesamtschwung im UZS ab Ausholposition
+const HIP_BACK_DEG   = 10;    // Ausholwinkel (gegen UZS)
+const HIP_SWING_DEG  = 30;    // Gesamtschwung im UZS ab Ausholposition
+const HIP_BACK_DUR   = 0.12;  // Dauer Ausholen (fest)
+const HIP_RETURN_DUR = 0.30;  // Dauer der Rückkehr in s nach Peak
+
+// Schulter & Ellbogen — feste Amplituden
+const SH_TOTAL_DEG  = 180;   // Schulter schwingt insgesamt 180° nach vorne
+// Ellbogen zweiphasig:
+//   Phase 1 (Rückfall): Unterarm dreht ENTGEGEN der Schulter — bleibt hinter dem Kopf
+//   Phase 2 (Peitsche): Unterarm schnellt VORWÄRTS durch den Schlag
+const EL_BACK_DEG   = 180;   // Rückfall-Amplitude (°) — Unterarm fällt zurück
+const EL_FWD_DEG    = 120;   // Vorwärts-Amplitude (°) — Peitsche nach vorne
+
+// ─── Fixer Peak-Zeitpunkt (relativ zu tSim) ───────────────────────────────────
+// Echter physikalischer Höhepunkt des Sprungs: vy0 / g → vy=0 an diesem Punkt.
+// Alle Gelenke enden ihren Schwung EXAKT hier.
+const PEAK_T_SIM = JUMP_VY0 / G_PX;   // s nach Absprung (~0.335 s)
 
 // ─── Startwinkel linker Arm ───────────────────────────────────────────────────
 const LA_UA_ANGLE_START  = -30 * Math.PI / 180;
 
-// ─── Timing ───────────────────────────────────────────────────────────────────
-// Hüfte
-const HIP_BACK_START = 0.00;  const HIP_BACK_END = 0.12;  // Ausholen
-const HIP_FWD_START  = 0.10;  const HIP_FWD_END  = 0.50;  // Vorwärtsschwung
-const HIP_RETURN_DUR = 0.30;  // Dauer der Rückkehr in s nach Peak
-
-// Schulter & Ellbogen (relativ zu tSim = t - JUMP_T)
-const SH_START  = 0.08;
-const EL_START  = 0.35;
-const EL_END    = 0.72;
-// Gesamtdauer: Anlauf + Sprung (Flugzeit = 2*vy0/g)
+// ─── Gesamtdauer Simulation ───────────────────────────────────────────────────
 const FLIGHT_T  = 2 * JUMP_VY0 / G_PX;   // ~0.67 s
 const SIM_TOTAL = JUMP_T + FLIGHT_T + 0.20;  // etwas Puffer nach Landung
 
-// ─── Timing linker Arm (Wurfbewegung, relativ zu tSim) ───────────────────────
-const LA_SH_START = 0.00;
-const LA_SH_END   = 0.55;
+// ─── Timing linker Arm ────────────────────────────────────────────────────────
+// Wurf beginnt auf dem 2. Schritt, Arm hebt bis zum Absprung (JUMP_T).
+// t ist hier ABSOLUT (nicht tSim).
+const TOSS_T      = 2 * STEP_DUR;   // Zeitpunkt des Wurfs (~0.44 s)
+const LA_SH_START = TOSS_T;         // Arm-Heben beginnt mit dem Wurf
+const LA_SH_END   = JUMP_T;         // Arm ist beim Absprung oben gestreckt
+
+// ─── Dynamisches Timing berechnen ─────────────────────────────────────────────
+// Jedes Gelenk: Dauer = Amplitude / ω  → start = PEAK_T_SIM - Dauer
+// Die smoothstep-Phase läuft dann von start → PEAK_T_SIM.
+// Minimum-Startzeit: 0 (kann nicht vor Absprung starten)
+// smoothstep hat seine maximale Ableitung bei x=0.5 (Mitte des Intervalls).
+// Damit die maximale Winkelgeschwindigkeit (= maximale Handgeschwindigkeit) genau
+// bei PEAK_T_SIM liegt, muss PEAK_T_SIM die Mitte des Intervalls sein:
+//   start = PEAK_T_SIM - dur/2
+//   end   = PEAK_T_SIM + dur/2
+function hipTiming(wHipDeg) {
+	const dur   = Math.max(0.05, HIP_SWING_DEG / wHipDeg);
+	const start = Math.max(0, PEAK_T_SIM - dur / 2);
+	const end   = PEAK_T_SIM + dur / 2;
+	// Ausholen endet kurz bevor der Vorwärtsschwung startet
+	const backEnd   = Math.max(0, start - 0.02);
+	const backStart = Math.max(0, backEnd - HIP_BACK_DUR);
+	return { start, end, backStart, backEnd };
+}
+
+function shTiming(wShDeg) {
+	const dur   = Math.max(0.05, SH_TOTAL_DEG / wShDeg);
+	const start = Math.max(0, PEAK_T_SIM - dur / 2);
+	const end   = PEAK_T_SIM + dur / 2;
+	return { start, end };
+}
+
+function elTiming(wElDeg, shTimingObj) {
+	// Phase 1 (Rückfall): startet gleichzeitig mit der Schulter, doppelt so schnell → halbe Dauer
+	const backDur   = (shTimingObj.end - shTimingObj.start) / 2;
+	const backStart = shTimingObj.start;
+	const backEnd   = shTimingObj.start + backDur;
+	const back = { start: backStart, end: backEnd };
+	// Phase 2 (Peitsche): Mitte liegt beim Peak, Dauer = EL_FWD_DEG / wEl
+	const fwdDur   = Math.max(0.05, EL_FWD_DEG / wElDeg);
+	const fwdStart = Math.max(0, PEAK_T_SIM - fwdDur / 2);
+	const fwdEnd   = PEAK_T_SIM + fwdDur / 2;
+	return { back, fwd: { start: fwdStart, end: fwdEnd } };
+}
 
 // ─── Sprung-Hilfsfunktionen ───────────────────────────────────────────────────
 // tSim: Zeit seit Absprung (0 beim Absprung, negativ = noch am Boden)
@@ -111,58 +158,66 @@ function smoothstep(x) {
 function phase(t, start, end) {
 	return smoothstep((t - start) / (end - start));
 }
-function peakToTotal(omegaRad, duration) {
-	return omegaRad / 1.5 * duration;
-}
+
 
 const DEG = Math.PI / 180;
 
 // ─── Kinematik: Hüfte ────────────────────────────────────────────────────────
-function torsoSwingAngle(t) {
-	const back = -(HIP_BACK_DEG * DEG) * phase(t, HIP_BACK_START, HIP_BACK_END);
-	const fwd  = (HIP_SWING_DEG * DEG) * phase(t, HIP_FWD_START, HIP_FWD_END);
+// timing = { start, end, backStart, backEnd } — dynamisch aus hipTiming(wHipDeg)
+function torsoSwingAngle(t, timing) {
+	const back = -(HIP_BACK_DEG * DEG) * phase(t, timing.backStart, timing.backEnd);
+	const fwd  = (HIP_SWING_DEG * DEG) * phase(t, timing.start, timing.end);
 	return TORSO_ANGLE_START + back + fwd;
 }
 
-function uaAngle(t, wShDeg) {
-	const swingDelta = peakToTotal(wShDeg * DEG, SIM_TOTAL - SH_START);
-	return UA_ANGLE_START + swingDelta * phase(t, SH_START, SIM_TOTAL);
+// timing = { start, end } — dynamisch aus shTiming(wShDeg)
+function uaAngle(t, timing) {
+	return UA_ANGLE_START + (SH_TOTAL_DEG * DEG) * phase(t, timing.start, timing.end);
 }
 
-// elOffset mit eingefrorenem Wert nach Peak
-function elOffset(t, wElDeg, frozenOffset) {
-	if (frozenOffset !== null) return frozenOffset;
-	return EL_OFFSET_START + peakToTotal(wElDeg * DEG, EL_END - EL_START) * phase(t, EL_START, EL_END);
+// timing = { back: {start,end}, fwd: {start,end} } — aus elTiming()
+// Phase 1: Unterarm dreht ZURÜCK (entgegen Schulter) → bleibt hinter Kopf
+// Phase 2: Unterarm peitscht VORWÄRTS durch den Schlag
+function elOffset(t, timing) {
+	const back = -(EL_BACK_DEG * DEG) * phase(t, timing.back.start, timing.back.end);
+	const fwd  =  (EL_FWD_DEG  * DEG) * phase(t, timing.fwd.start,  timing.fwd.end);
+	return EL_OFFSET_START + back + fwd;
 }
 
 // ─── Kinematik linker Arm ─────────────────────────────────────────────────────
-// Linker Arm hebt von -30° nach -90° (senkrecht nach oben) = gegen Uhrzeigersinn.
-// Gesamtdrehung: -60° (Winkel sinkt um 60°).
-// Spitzengeschwindigkeit ~300 °/s.
-const LA_LIFT_DEG    = 300;   // °/s Spitze
-const LA_TOTAL_DEG   = -60;   // Gesamtdrehung in °  (negativ = gegen Uhrzeigersinn)
+// Phase 1: Oberarm hebt von -30° nach -90° (senkrecht nach oben) während des Anlaufs.
+// Phase 2: Sobald der rechte Armschwung startet, dreht der Oberarm im UZS nach unten (+90°).
+//          Unterarm bleibt dabei immer senkrecht nach oben zeigend (Weltwinkel = -90°).
+const LA_TOTAL_DEG  = -60;    // Heben: -30° → -90°
+const LA_PULL_DEG   = +180;   // Einziehen im UZS: -90° → +90° (Oberarm zeigt nach unten)
+const LA_PULL_DUR   =  0.20;  // Dauer des Einziehens in s
 
-function leftUaAngle(t) {
-	return LA_UA_ANGLE_START + (LA_TOTAL_DEG * DEG) * phase(t, LA_SH_START, LA_SH_END);
+function leftUaAngle(t, shStart) {
+	// Phase 1: Heben
+	const raise = LA_TOTAL_DEG * DEG * phase(t, LA_SH_START, LA_SH_END);
+	// Phase 2: Einziehen im UZS — startet wenn der rechte Armschwung beginnt
+	const pullStart = JUMP_T + shStart;
+	const pull = LA_PULL_DEG * DEG * phase(t, pullStart, pullStart + LA_PULL_DUR);
+	return LA_UA_ANGLE_START + raise + pull;
 }
 
 // ─── Arm-Weltpositionen berechnen ─────────────────────────────────────────────
-// frozenElOffset:  null = normal, Zahl = eingefroren nach Peak
-// peakHipAngle:    null = normaler Schwung, Zahl = Winkel beim Peak (für Rückkehr)
+// timings = { hip, sh, el } — Timing-Objekte aus hipTiming/shTiming/elTiming
+// peakHipAngle:    null = normaler Schwung, Zahl = Winkel beim Peak (für Torso-Rückkehr)
 // peakT:           null = kein Return, Zahl = Zeitpunkt des Peaks (absolut)
-function computeArm(t, hipX, wHip, wSh, wEl, frozenElOffset = null, peakHipAngle = null, peakT = null) {
+function computeArm(t, hipX, timings, peakHipAngle = null, peakT = null) {
 	// tSim: Zeit seit Absprung — Arm-Kinematik läuft erst ab Absprung
 	const ts = Math.max(0, toTSim(t));
 
 	// Torso-Winkel (basierend auf tSim)
-	let tA = torsoSwingAngle(ts);
+	let tA = torsoSwingAngle(ts, timings.hip);
 	if (peakHipAngle !== null && peakT !== null && t > peakT) {
 		const returnEnd = peakT + HIP_RETURN_DUR;
 		tA = peakHipAngle + (TORSO_ANGLE_UPRIGHT - peakHipAngle) * phase(t, peakT, returnEnd);
 	}
 
-	const uaA  = uaAngle(ts, wSh);
-	const laA  = uaA + elOffset(ts, wEl, frozenElOffset);
+	const uaA  = uaAngle(ts, timings.sh);
+	const laA  = uaA + elOffset(ts, timings.el);
 	const hipY = hipYAt(t);
 
 	const hipPos = { x: hipX, y: hipY };
@@ -184,18 +239,18 @@ function computeArm(t, hipX, wHip, wSh, wEl, frozenElOffset = null, peakHipAngle
 // ─── Linken Arm berechnen ─────────────────────────────────────────────────────
 // Linke Schulter = Schulter-X - 2*Schulterbreite, gleiche Y wie rechte Schulter
 // (Im Seitenriss vereinfacht: linke Schulter etwas nach links versetzt)
-function computeLeftArm(t, shPos) {
+function computeLeftArm(t, shPos, shStart = PEAK_T_SIM) {
 	// Linke Schulter sitzt im Seitenriss leicht vor dem Körper (= nach rechts/vorne)
 	const lShPos = { x: shPos.x + 8, y: shPos.y + 4 };
-	const luaA   = leftUaAngle(t);
+	const luaA   = leftUaAngle(t, shStart);
 	const lElPos = {
 		x: lShPos.x + Math.cos(luaA) * UA_LEN,
 		y: lShPos.y + Math.sin(luaA) * UA_LEN
 	};
-	// Unterarm gestreckt (selber Winkel wie Oberarm)
+	// Unterarm zeigt immer senkrecht nach oben (Weltwinkel = -90°)
 	const lHandPos = {
-		x: lElPos.x + Math.cos(luaA) * LA_LEN,
-		y: lElPos.y + Math.sin(luaA) * LA_LEN
+		x: lElPos.x + Math.cos(-Math.PI / 2) * LA_LEN,
+		y: lElPos.y + Math.sin(-Math.PI / 2) * LA_LEN
 	};
 	return { lShPos, lElPos, lHandPos, luaA };
 }
@@ -216,6 +271,12 @@ function lsSave(patch) {
 	} catch {}
 }
 
+// ─── Umrechnung °/s → m/s für Anzeige ────────────────────────────────────────
+const R_HIP = (TORSO_LEN + UA_LEN + LA_LEN) / PX_PER_M;
+const R_SH  = (UA_LEN + LA_LEN) / PX_PER_M;
+const R_EL  = LA_LEN / PX_PER_M;
+const degSToMS = (wDeg, r) => (wDeg * Math.PI / 180 * r).toFixed(1);
+
 // ─── Slider-Defaults ─────────────────────────────────────────────────────────
 const W_HIP_DEF = 230;
 const W_SH_DEF  = 570;
@@ -223,7 +284,7 @@ const W_EL_DEF  = 800;
 const V_RUN_DEF = 3.0;
 
 const _ls = lsLoad();
-let wHip = $state(_ls.wHip ?? W_HIP_DEF);
+let wHip = $state(Math.max(50, _ls.wHip ?? W_HIP_DEF));
 let wSh  = $state(_ls.wSh  ?? W_SH_DEF);
 let wEl  = $state(_ls.wEl  ?? W_EL_DEF);
 let vRun = $state(_ls.vRun ?? V_RUN_DEF);
@@ -252,104 +313,136 @@ function startSim() {
 	scrubActive = false;
 	scrubFrame  = 0;
 
+	// ── Timing-Objekte einmalig berechnen (abhängig von Slider-Werten) ────
+	const shT = shTiming(wSh);
+	const timings = {
+		hip: hipTiming(wHip),
+		sh:  shT,
+		el:  elTiming(wEl, shT)
+	};
+
 	const vxPerFrame = vRun * PX_PER_M / FPS;
 	let hipX = W * 0.25;
 
-	const pass1 = [];
-
-	// ── Pass 1: Arm durchschwingen lassen, Peak-Zeitpunkt finden ─────────
-	{
-		let prevHP = null;
-		let t0 = 0, hx0 = hipX;
-		while (t0 <= SIM_TOTAL + DT * 0.5) {
-			const arm = computeArm(t0, hx0, wHip, wSh, wEl, null);
-			let vx = 0, vy = 0;
-			if (prevHP) {
-				vx = ((arm.handPos.x - prevHP.x) / PX_PER_M) / DT;
-				vy = ((arm.handPos.y - prevHP.y) / PX_PER_M) / DT;
-			}
-			prevHP = { ...arm.handPos };
-			pass1.push({ t: t0, hipX: hx0, arm, vxHandMS: vx, vyHandMS: vy });
-			t0 += DT; hx0 += vxPerFrame;
-		}
-	}
-
-	// Peak-Frame: maximale vxHandMS
-	let peakIdx = 0;
-	for (let i = 1; i < pass1.length; i++) {
-		if (pass1[i].vxHandMS > pass1[peakIdx].vxHandMS) peakIdx = i;
-	}
-	vHandXMax = pass1[peakIdx].vxHandMS;
-
-	const peakT          = pass1[peakIdx].t;
-	const peakTSim       = Math.max(0, toTSim(peakT));
-	const frozenElOffset = elOffset(peakTSim, wEl, null);
-	const peakHipAngle   = torsoSwingAngle(peakTSim);
-
-	// Ball-Startbedingungen: Position + voller Handimpuls der rechten Hand
-	const peakSnap     = pass1[peakIdx];
-	const ballStartPos = { ...peakSnap.arm.handPos };
-	const ballVx0      = peakSnap.vxHandMS * PX_PER_M;
-	const ballVy0      = peakSnap.vyHandMS * PX_PER_M;
-
-	// ── Pass 2: finale Frames mit eingefrorenem Ellbogen nach Peak ────────
+	// ── Einziger Pass: alle Frames berechnen ─────────────────────────────
 	const newFrames  = [];
 	const newHistory = [];
+	let prevHandPos = null;
+	let t0 = 0, hx0 = hipX;
 
-	let prevHandPos2 = null;
+	while (t0 <= SIM_TOTAL + DT * 0.5) {
+		const arm  = computeArm(t0, hx0, timings);
+		const left = computeLeftArm(t0, arm.shPos, shT.start);
 
-	for (let i = 0; i < pass1.length; i++) {
-		const { t: ft, hipX: fhipX } = pass1[i];
-
-		const frozen  = i >= peakIdx ? frozenElOffset : null;
-		const hipPeak = i >= peakIdx ? peakHipAngle   : null;
-		const pkT     = i >= peakIdx ? peakT          : null;
-		const arm     = computeArm(ft, fhipX, wHip, wSh, wEl, frozen, hipPeak, pkT);
-
-		// Handgeschwindigkeit neu aus korrigiertem arm
 		let vxHandMS = 0, vyHandMS = 0;
-		if (prevHandPos2) {
-			vxHandMS = ((arm.handPos.x - prevHandPos2.x) / PX_PER_M) / DT;
-			vyHandMS = ((arm.handPos.y - prevHandPos2.y) / PX_PER_M) / DT;
+		if (prevHandPos) {
+			vxHandMS = ((arm.handPos.x - prevHandPos.x) / PX_PER_M) / DT;
+			vyHandMS = ((arm.handPos.y - prevHandPos.y) / PX_PER_M) / DT;
 		}
-		prevHandPos2 = { ...arm.handPos };
+		prevHandPos = { ...arm.handPos };
 
-		const left = computeLeftArm(ft, arm.shPos);
+		newFrames.push({
+			t:        t0,
+			hipX:     hx0,
+			tA:       arm.tA,
+			uaA:      arm.uaA,
+			laA:      arm.laA,
+			hipPos:   { ...arm.hipPos },
+			shPos:    { ...arm.shPos },
+			elPos:    { ...arm.elPos },
+			handPos:  { ...arm.handPos },
+			vHand:    vxHandMS,
+			vyHand:   vyHandMS,
+			lShPos:   { ...left.lShPos },
+			lElPos:   { ...left.lElPos },
+			lHandPos: { ...left.lHandPos },
+			ballPos:  { x: 0, y: 0 },   // wird unten gesetzt
+			ballLoosed: false,
+			isPeak:     false
+		});
 
-		let ballPos;
-		if (i < peakIdx) {
-			ballPos = { ...left.lHandPos };
+		if (newHistory.length === 0 || t0 - newHistory[newHistory.length - 1].t >= 0.025) {
+			newHistory.push({ t: t0, v: vxHandMS });
+		}
+
+		t0 += DT; hx0 += vxPerFrame;
+	}
+
+	// ── peakIdx = Frame mit maximalem vx_hand ────────────────────────────
+	let peakIdx = 0;
+	for (let i = 1; i < newFrames.length; i++) {
+		if (newFrames[i].vHand > newFrames[peakIdx].vHand) peakIdx = i;
+	}
+	newFrames[peakIdx].isPeak = true;
+	vHandXMax = newFrames[peakIdx].vHand;
+	const peakT        = newFrames[peakIdx].t;
+	const peakHipAngle = newFrames[peakIdx].tA;
+
+	// ── Torso-Rückkehr: Frames nach Peak mit aufrechtem Torso neu berechnen ─
+	for (let i = peakIdx + 1; i < newFrames.length; i++) {
+		const { t: ft, hipX: fhipX } = newFrames[i];
+		const arm = computeArm(ft, fhipX, timings, peakHipAngle, peakT);
+		newFrames[i].tA      = arm.tA;
+		newFrames[i].uaA     = arm.uaA;
+		newFrames[i].laA     = arm.laA;
+		newFrames[i].hipPos  = { ...arm.hipPos };
+		newFrames[i].shPos   = { ...arm.shPos };
+		newFrames[i].elPos   = { ...arm.elPos };
+		newFrames[i].handPos = { ...arm.handPos };
+		// Linken Arm ebenfalls aktualisieren (Schulterposition ändert sich)
+		const left = computeLeftArm(ft, arm.shPos, shT.start);
+		newFrames[i].lShPos   = { ...left.lShPos };
+		newFrames[i].lElPos   = { ...left.lElPos };
+		newFrames[i].lHandPos = { ...left.lHandPos };
+	}
+
+	// ── tossIdx = Frame am nächsten zu TOSS_T ────────────────────────────
+	let tossIdx = 0;
+	let bestDist = Infinity;
+	for (let i = 0; i < newFrames.length; i++) {
+		const d = Math.abs(newFrames[i].t - TOSS_T);
+		if (d < bestDist) { bestDist = d; tossIdx = i; }
+	}
+	for (let i = tossIdx; i < newFrames.length; i++) newFrames[i].ballLoosed = true;
+
+	// ── Ball-Wurfphysik ───────────────────────────────────────────────────
+	// Ball soll bei peakT exakt an der Position der rechten Hand sein.
+	// Parabelgleichung rückwärts: vy_toss = (y_target - y_toss - 0.5*G_PX*dt²) / dt
+	const tossFrame   = newFrames[tossIdx];
+	const peakFrame   = newFrames[peakIdx];
+	const tossLeft    = computeLeftArm(tossFrame.t, tossFrame.shPos, shT.start);
+	const ballTossPos = { ...tossLeft.lHandPos };
+	const dtToss      = peakT - tossFrame.t;
+	const ballTossVy  = (peakFrame.handPos.y - ballTossPos.y - 0.5 * G_PX * dtToss * dtToss) / dtToss;
+	const ballTossVx  = (peakFrame.handPos.x - ballTossPos.x) / dtToss;
+
+	// Ball-Impuls nach Schlag: horizontale Komponente aus Hand, vertikale so dass Winkel = 10° nach oben
+	const ballVx0 = peakFrame.vHand * PX_PER_M;
+	const ballVy0 = -Math.abs(ballVx0) * Math.tan(10 * Math.PI / 180);  // 10° über Horizont
+	const ballStartPos = { ...peakFrame.handPos };
+
+	// ── Ball-Positionen in alle Frames schreiben ──────────────────────────
+	for (let i = 0; i < newFrames.length; i++) {
+		const f = newFrames[i];
+		if (i < tossIdx) {
+			// Ball in linker Hand
+			f.ballPos = { ...f.lHandPos };
+		} else if (i < peakIdx) {
+			// Ball fliegt als Parabel zur rechten Hand
+			const elapsed = f.t - tossFrame.t;
+			f.ballPos = {
+				x: ballTossPos.x + ballTossVx * elapsed,
+				y: ballTossPos.y + ballTossVy * elapsed + 0.5 * G_PX * elapsed * elapsed
+			};
 		} else {
-			const elapsed = ft - peakT;
-			ballPos = {
+			// Nach Schlag: Ball mit Handimpuls
+			const elapsed = f.t - peakT;
+			f.ballPos = {
 				x: ballStartPos.x + ballVx0 * elapsed,
 				y: ballStartPos.y + ballVy0 * elapsed + 0.5 * G_PX * elapsed * elapsed
 			};
 		}
-
-		newFrames.push({
-			t:       ft,
-			hipX:    fhipX,
-			tA:      arm.tA,
-			uaA:     arm.uaA,
-			laA:     arm.laA,
-			hipPos:  { ...arm.hipPos },
-			shPos:   { ...arm.shPos },
-			elPos:   { ...arm.elPos },
-			handPos: { ...arm.handPos },
-			vHand:   i === peakIdx ? vHandXMax : vxHandMS,
-			lShPos:   { ...left.lShPos },
-			lElPos:   { ...left.lElPos },
-			lHandPos: { ...left.lHandPos },
-			ballPos:    { ...ballPos },
-			ballLoosed: i >= peakIdx,
-			isPeak:     i === peakIdx
-		});
-
-		if (newHistory.length === 0 || ft - newHistory[newHistory.length - 1].t >= 0.025) {
-			newHistory.push({ t: ft, v: i === peakIdx ? vHandXMax : vxHandMS });
-		}
-	}  // end pass1 loop
+	}
 
 	frames  = newFrames;
 	history = newHistory;
@@ -381,9 +474,11 @@ function onScrubInput(e) {
 
 // ─── Idle-Bild ────────────────────────────────────────────────────────────────
 function drawIdleFrame() {
-	const hipX = W * 0.25;
-	const arm  = computeArm(0, hipX, wHip, wSh, wEl);
-	const left = computeLeftArm(0, arm.shPos);
+	const hipX    = W * 0.25;
+	const shT     = shTiming(wSh);
+	const timings = { hip: hipTiming(wHip), sh: shT, el: elTiming(wEl, shT) };
+	const arm     = computeArm(0, hipX, timings);
+	const left    = computeLeftArm(0, arm.shPos);
 	drawFrame({
 		t: 0, hipX,
 		tA: arm.tA, uaA: arm.uaA, laA: arm.laA,
@@ -397,17 +492,19 @@ function drawIdleFrame() {
 
 // ─── Canvas zeichnen ──────────────────────────────────────────────────────────
 const HIST_PAD = 8;
-const V_DISP   = 25;
 
 function drawFrame(snap) {
 	if (!overlayCanvas) return;
 	const ctx = overlayCanvas.getContext('2d');
 	ctx.clearRect(0, 0, W, H);
+	// Hintergrund
+	ctx.fillStyle = '#f8fafc';
+	ctx.fillRect(0, 0, W, H);
 
 	// ── Boden ──────────────────────────────────────────────────────────
-	ctx.fillStyle = '#334155';
+	ctx.fillStyle = '#e2e8f0';
 	ctx.fillRect(0, GROUND_Y, W, H - GROUND_Y);
-	ctx.strokeStyle = '#475569';
+	ctx.strokeStyle = '#94a3b8';
 	ctx.lineWidth = 1;
 	ctx.beginPath();
 	ctx.moveTo(0, GROUND_Y); ctx.lineTo(W, GROUND_Y);
@@ -421,7 +518,7 @@ function drawFrame(snap) {
 	ctx.beginPath();
 	ctx.moveTo(lShPos.x, lShPos.y);
 	ctx.lineTo(lElPos.x, lElPos.y);
-	ctx.strokeStyle = '#818cf8';   // indigo
+	ctx.strokeStyle = '#818cf8';
 	ctx.lineWidth   = 6;
 	ctx.lineCap     = 'round';
 	ctx.stroke();
@@ -436,7 +533,7 @@ function drawFrame(snap) {
 	// Linker Ellbogen
 	ctx.beginPath();
 	ctx.arc(lElPos.x, lElPos.y, 4, 0, Math.PI * 2);
-	ctx.fillStyle = '#94a3b8';
+	ctx.fillStyle = '#64748b';
 	ctx.fill();
 
 	// ── Ball ───────────────────────────────────────────────────────────
@@ -463,7 +560,7 @@ function drawFrame(snap) {
 	// ── Beine ──────────────────────────────────────────────────────────
 	ctx.lineWidth   = 5;
 	ctx.lineCap     = 'round';
-	ctx.strokeStyle = '#3b82f6';
+	ctx.strokeStyle = '#2563eb';
 	const ts = Math.max(0, snap.t - JUMP_T);
 	const inAir = snap.t > JUMP_T && snap.hipPos.y < HIP_Y0 - 2;
 
@@ -518,14 +615,14 @@ function drawFrame(snap) {
 	// ── Hüft-Punkt ─────────────────────────────────────────────────────
 	ctx.beginPath();
 	ctx.arc(hipPos.x, hipPos.y, 5, 0, Math.PI * 2);
-	ctx.fillStyle = '#60a5fa';
+	ctx.fillStyle = '#2563eb';
 	ctx.fill();
 
 	// ── Torso ──────────────────────────────────────────────────────────
 	ctx.beginPath();
 	ctx.moveTo(hipPos.x, hipPos.y);
 	ctx.lineTo(shPos.x, shPos.y);
-	ctx.strokeStyle = '#60a5fa';
+	ctx.strokeStyle = '#2563eb';
 	ctx.lineWidth   = 6;
 	ctx.lineCap     = 'round';
 	ctx.stroke();
@@ -536,19 +633,22 @@ function drawFrame(snap) {
 	ctx.beginPath();
 	ctx.arc(kopfX, kopfY, 11, 0, Math.PI * 2);
 	ctx.fillStyle = '#93c5fd';
+	ctx.strokeStyle = '#2563eb';
+	ctx.lineWidth = 1.5;
 	ctx.fill();
+	ctx.stroke();
 
 	// ── Schulter-Punkt ─────────────────────────────────────────────────
 	ctx.beginPath();
 	ctx.arc(shPos.x, shPos.y, 5, 0, Math.PI * 2);
-	ctx.fillStyle = '#94a3b8';
+	ctx.fillStyle = '#64748b';
 	ctx.fill();
 
 	// ── Rechter Oberarm ────────────────────────────────────────────────
 	ctx.beginPath();
 	ctx.moveTo(shPos.x, shPos.y);
 	ctx.lineTo(elPos.x, elPos.y);
-	ctx.strokeStyle = '#34d399';
+	ctx.strokeStyle = '#059669';
 	ctx.lineWidth   = 7;
 	ctx.lineCap     = 'round';
 	ctx.stroke();
@@ -556,14 +656,14 @@ function drawFrame(snap) {
 	// ── Rechter Ellbogen ───────────────────────────────────────────────
 	ctx.beginPath();
 	ctx.arc(elPos.x, elPos.y, 5, 0, Math.PI * 2);
-	ctx.fillStyle = '#94a3b8';
+	ctx.fillStyle = '#64748b';
 	ctx.fill();
 
 	// ── Rechter Unterarm ───────────────────────────────────────────────
 	ctx.beginPath();
 	ctx.moveTo(elPos.x, elPos.y);
 	ctx.lineTo(handPos.x, handPos.y);
-	ctx.strokeStyle = '#f59e0b';
+	ctx.strokeStyle = '#d97706';
 	ctx.lineWidth   = 5;
 	ctx.lineCap     = 'round';
 	ctx.stroke();
@@ -571,20 +671,20 @@ function drawFrame(snap) {
 	// ── Rechte Hand ────────────────────────────────────────────────────
 	ctx.beginPath();
 	ctx.arc(handPos.x, handPos.y, 6, 0, Math.PI * 2);
-	ctx.fillStyle = '#fbbf24';
+	ctx.fillStyle = '#f59e0b';
 	ctx.fill();
 
 	// ── Peak-Markierung ────────────────────────────────────────────────
 	if (snap.isPeak) {
 		ctx.beginPath();
 		ctx.arc(handPos.x, handPos.y, 10, 0, Math.PI * 2);
-		ctx.strokeStyle = '#f97316';
+		ctx.strokeStyle = '#dc2626';
 		ctx.lineWidth   = 2;
 		ctx.setLineDash([3, 3]);
 		ctx.stroke();
 		ctx.setLineDash([]);
 
-		ctx.fillStyle = '#f97316';
+		ctx.fillStyle = '#dc2626';
 		ctx.font      = 'bold 10px system-ui';
 		ctx.textAlign = 'left';
 		ctx.fillText('v_max', handPos.x + 13, handPos.y + 4);
@@ -599,12 +699,22 @@ function drawFrame(snap) {
 	const ZERO_Y    = HIST_Y0 + HIST_H / 2;
 	const T_MAX     = SIM_TOTAL + 0.05;
 
-	ctx.fillStyle = 'rgba(15,23,42,0.88)';
+	// Dynamische Skala: Maximum der Kurve + 20% Puffer, mind. 5 m/s
+	const vMax = Math.max(5, ...history.map(h => Math.abs(h.v)));
+	const V_DISP = Math.ceil(vMax * 1.2);
+
+	ctx.fillStyle = 'rgba(241,245,249,0.92)';
 	if (ctx.roundRect) ctx.roundRect(HIST_PAD, HIST_Y0, HIST_W_PX, HIST_H, 4);
 	else ctx.rect(HIST_PAD, HIST_Y0, HIST_W_PX, HIST_H);
 	ctx.fill();
+	ctx.strokeStyle = '#e2e8f0';
+	ctx.lineWidth = 1;
+	ctx.beginPath();
+	if (ctx.roundRect) ctx.roundRect(HIST_PAD, HIST_Y0, HIST_W_PX, HIST_H, 4);
+	else ctx.rect(HIST_PAD, HIST_Y0, HIST_W_PX, HIST_H);
+	ctx.stroke();
 
-	ctx.strokeStyle = '#475569';
+	ctx.strokeStyle = '#cbd5e1';
 	ctx.setLineDash([4, 4]);
 	ctx.lineWidth = 1;
 	ctx.beginPath();
@@ -612,7 +722,7 @@ function drawFrame(snap) {
 	ctx.stroke();
 	ctx.setLineDash([]);
 
-	ctx.fillStyle = '#64748b';
+	ctx.fillStyle = '#94a3b8';
 	ctx.font      = '9px system-ui';
 	ctx.textAlign = 'right';
 	ctx.fillText(`+${V_DISP} m/s`, HIST_PAD + HIST_W_PX - 2, HIST_Y0 + 10);
@@ -630,13 +740,13 @@ function drawFrame(snap) {
 		if (first) { ctx.moveTo(x, y); first = false; }
 		else        ctx.lineTo(x, y);
 	}
-	ctx.strokeStyle = snap.vHand < 0 ? '#f87171' : snap.vHand < 10 ? '#facc15' : '#34d399';
+	ctx.strokeStyle = snap.vHand < 0 ? '#dc2626' : snap.vHand < 10 ? '#d97706' : '#059669';
 	ctx.stroke();
 
 	// Scrubber-Cursor
 	if (scrubActive) {
 		const cursorX = HIST_PAD + (snap.t / T_MAX) * HIST_W_PX;
-		ctx.strokeStyle = 'rgba(255,255,255,0.65)';
+		ctx.strokeStyle = 'rgba(15,23,42,0.5)';
 		ctx.lineWidth   = 1;
 		ctx.setLineDash([3, 3]);
 		ctx.beginPath();
@@ -648,29 +758,18 @@ function drawFrame(snap) {
 		const cy = ZERO_Y - (vc / V_DISP) * (HIST_H / 2 - 3);
 		ctx.beginPath();
 		ctx.arc(cursorX, cy, 3, 0, Math.PI * 2);
-		ctx.fillStyle = '#fff';
+		ctx.fillStyle = '#0f172a';
 		ctx.fill();
 	}
 }
 
 // ─── Slider → localStorage ────────────────────────────────────────────────────
-$effect(() => { lsSave({ wHip }); });
-$effect(() => { lsSave({ wSh }); });
-$effect(() => { lsSave({ wEl }); });
-$effect(() => { lsSave({ vRun }); });
-
 // ─── Lifecycle ────────────────────────────────────────────────────────────────
-onMount(() => { drawIdleFrame(); });
+onMount(() => { startSim(); });
 </script>
 
 <!-- ─── Template ──────────────────────────────────────────────────────────────── -->
 <div class="widget">
-	<h3>Handgeschwindigkeit — Kinematisches Arm-Modell</h3>
-	<p class="subtitle">
-		Rechter Arm: Hüfte → Torso → Schulter → Oberarm → Unterarm.
-		Linker Arm wirft den Ball — Loslassen beim Maximum der Handgeschwindigkeit (v_max).
-	</p>
-
 	<div class="sim-area">
 		<canvas bind:this={overlayCanvas} class="overlay-canvas" width={W} height={H}></canvas>
 	</div>
@@ -683,6 +782,10 @@ onMount(() => { drawIdleFrame(); });
 		<div class="metric">
 			<span class="mlabel">v Hand x (Maximum)</span>
 			<span class="mval peak">{vHandXMax.toFixed(1)} m/s</span>
+		</div>
+		<div class="metric">
+			<span class="mlabel">Impuls (m=0.270 kg)</span>
+			<span class="mval peak">{(vHandXMax * 0.270).toFixed(2)} kg·m/s</span>
 		</div>
 		<div class="metric">
 			<span class="mlabel">Simulationszeit</span>
@@ -707,81 +810,63 @@ onMount(() => { drawIdleFrame(); });
 	<div class="controls">
 		<div class="srow">
 			<label for="s-run">Laufgeschwindigkeit <span class="sval">{vRun.toFixed(1)} m/s</span></label>
-			<input id="s-run" type="range" min="0" max="8" step="0.1" bind:value={vRun} />
+			<input id="s-run" type="range" min="0" max="8" step="0.1" value={vRun}
+				oninput={e => { vRun = +e.target.value; lsSave({ vRun }); startSim(); }} />
 		</div>
 		<div class="srow">
-			<label for="s-hip">Hüft-Rotation <span class="sval">{Math.round(wHip)} °/s</span></label>
-			<input id="s-hip" type="range" min="0" max="700" step="10" bind:value={wHip} />
+			<label for="s-hip">Hüft-Rotation <span class="sval">{Math.round(wHip)} °/s — {degSToMS(wHip, R_HIP)} m/s</span></label>
+			<input id="s-hip" type="range" min="50" max="700" step="10" value={wHip}
+				oninput={e => { wHip = +e.target.value; lsSave({ wHip }); startSim(); }} />
 		</div>
 		<div class="srow">
-			<label for="s-sh">Schulter-Schwung <span class="sval">{Math.round(wSh)} °/s</span></label>
-			<input id="s-sh" type="range" min="0" max="1500" step="10" bind:value={wSh} />
+			<label for="s-sh">Schulter-Schwung <span class="sval">{Math.round(wSh)} °/s — {degSToMS(wSh, R_SH)} m/s</span></label>
+			<input id="s-sh" type="range" min="0" max="1500" step="10" value={wSh}
+				oninput={e => { wSh = +e.target.value; lsSave({ wSh }); startSim(); }} />
 		</div>
 		<div class="srow">
-			<label for="s-el">Ellbogen-Peitsche <span class="sval">{Math.round(wEl)} °/s</span></label>
-			<input id="s-el" type="range" min="0" max="2000" step="10" bind:value={wEl} />
+			<label for="s-el">Ellbogen-Peitsche <span class="sval">{Math.round(wEl)} °/s — {degSToMS(wEl, R_EL)} m/s</span></label>
+			<input id="s-el" type="range" min="0" max="2000" step="10" value={wEl}
+				oninput={e => { wEl = +e.target.value; lsSave({ wEl }); startSim(); }} />
 		</div>
-		<div class="btns">
-			<button class="btn-go"    onclick={startSim}>▶ Berechnen</button>
-			<button class="btn-reset" onclick={resetSim}>↺ Zurücksetzen</button>
-		</div>
-	</div>
-
-	<div class="legend">
-		<span class="dot" style="background:#60a5fa"></span> Torso
-		<span class="dot" style="background:#34d399"></span> Rechter Oberarm
-		<span class="dot" style="background:#f59e0b"></span> Rechter Unterarm
-		<span class="dot" style="background:#818cf8"></span> Linker Arm
-		<span class="dot" style="background:#ca8a04"></span> Ball
 	</div>
 </div>
 
 <style>
 	.widget {
-		background: #0f172a; border: 1px solid #1e293b; border-radius: 12px;
-		padding: 1.25rem 1.5rem; color: #e2e8f0;
+		background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px;
+		padding: 1.25rem 1.5rem; color: #0f172a;
 		font-family: system-ui, sans-serif; max-width: 700px; margin: 1.5rem auto;
 	}
-	h3 { margin: 0 0 0.25rem; font-size: 1.05rem; color: #f1f5f9; }
-	.subtitle { font-size: 0.8rem; color: #64748b; margin: 0 0 0.9rem; }
+
 
 	.sim-area {
 		position: relative; width: 100%; max-width: 680px;
-		border-radius: 8px; border: 1px solid #1e293b; overflow: hidden; line-height: 0;
+		border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden; line-height: 0;
 	}
 	.overlay-canvas { display: block; width: 100% !important; height: auto !important; }
 
 	.metrics { display: flex; gap: 1.5rem; margin: 0.8rem 0 0.4rem; flex-wrap: wrap; }
 	.metric { display: flex; flex-direction: column; gap: 2px; }
 	.mlabel { font-size: 0.72rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
-	.mval { font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; color: #34d399; }
-	.mval.neg  { color: #f87171; }
-	.mval.peak { color: #60a5fa; }
-	.mval.dim  { color: #94a3b8; font-size: 1rem; font-weight: 400; padding-top: 5px; }
+	.mval { font-size: 1.35rem; font-weight: 700; font-variant-numeric: tabular-nums; color: #059669; }
+	.mval.neg  { color: #dc2626; }
+	.mval.peak { color: #2563eb; }
+	.mval.dim  { color: #64748b; font-size: 1rem; font-weight: 400; padding-top: 5px; }
 
 	.scrubber-row {
 		margin: 0.6rem 0 0.2rem; display: flex; flex-direction: column; gap: 3px;
-		padding: 0.55rem 0.75rem; background: #1e293b; border-radius: 8px; border: 1px solid #334155;
+		padding: 0.55rem 0.75rem; background: #f1f5f9; border-radius: 8px; border: 1px solid #e2e8f0;
 	}
-	.scrub-label { font-size: 0.8rem; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; }
-	.scrub-info { color: #e2e8f0; font-variant-numeric: tabular-nums; }
-	.scrub-time { color: #64748b; font-size: 0.75rem; margin-left: 0.4rem; }
+	.scrub-label { font-size: 0.8rem; color: #64748b; display: flex; justify-content: space-between; align-items: center; }
+	.scrub-info { color: #0f172a; font-variant-numeric: tabular-nums; }
+	.scrub-time { color: #94a3b8; font-size: 0.75rem; margin-left: 0.4rem; }
 	.scrub-slider { width: 100%; accent-color: #f59e0b; }
 
 	.controls { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.55rem; }
 	.srow { display: flex; flex-direction: column; gap: 2px; }
-	.srow label { font-size: 0.8rem; color: #94a3b8; display: flex; justify-content: space-between; }
-	.sval { color: #e2e8f0; font-variant-numeric: tabular-nums; }
+	.srow label { font-size: 0.8rem; color: #475569; display: flex; justify-content: space-between; }
+	.sval { color: #0f172a; font-variant-numeric: tabular-nums; }
 	input[type="range"] { width: 100%; accent-color: #3b82f6; }
 
-	.btns { display: flex; gap: 0.5rem; margin-top: 0.4rem; flex-wrap: wrap; }
-	button { padding: 0.38rem 1rem; border: none; border-radius: 6px; font-size: 0.88rem; cursor: pointer; transition: opacity 0.12s; }
-	button:disabled { opacity: 0.3; cursor: default; }
-	.btn-go    { background: #2563eb; color: #fff; }
-	.btn-go:not(:disabled):hover    { background: #1d4ed8; }
-	.btn-reset { background: #334155; color: #e2e8f0; }
-	.btn-reset:not(:disabled):hover { background: #475569; }
 
-	.legend { margin-top: 0.6rem; font-size: 0.78rem; color: #94a3b8; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
-	.dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
 </style>

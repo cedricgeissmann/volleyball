@@ -175,9 +175,9 @@
 
 	function buildScene() {
 		scene = new THREE.Scene();
-		scene.background = new THREE.Color(0x0d1117);
-		scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-		const sun = new THREE.DirectionalLight(0xfff8e8, 0.8);
+		scene.background = new THREE.Color(0xe8f0fe);
+		scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+		const sun = new THREE.DirectionalLight(0xfff8e8, 0.6);
 		sun.position.set(0, 20, 5);
 		scene.add(sun);
 
@@ -296,14 +296,14 @@
 	function buildFloor() {
 		const outer = new THREE.Mesh(
 			new THREE.PlaneGeometry(40, 40),
-			new THREE.MeshLambertMaterial({ color: 0x182820 })
+			new THREE.MeshLambertMaterial({ color: 0xdde8f5 })
 		);
 		outer.rotation.x = -Math.PI / 2;
 		scene.add(outer);
 
 		const field = new THREE.Mesh(
 			new THREE.PlaneGeometry(FIELD_W, FIELD_HALF_D * 2),
-			new THREE.MeshLambertMaterial({ color: 0x2a6034 })
+			new THREE.MeshLambertMaterial({ color: 0x4ade80 })
 		);
 		field.rotation.x = -Math.PI / 2;
 		field.position.y = 0.005;
@@ -312,7 +312,7 @@
 		// Servicezone
 		const sz = new THREE.Mesh(
 			new THREE.PlaneGeometry(FIELD_W, 3.5),
-			new THREE.MeshLambertMaterial({ color: 0x224a28 })
+			new THREE.MeshLambertMaterial({ color: 0x86efac })
 		);
 		sz.rotation.x = -Math.PI / 2;
 		sz.position.set(0, 0.004, FIELD_HALF_D + 1.75);
@@ -527,13 +527,12 @@
 			const newWorldZ = FIELD_HALF_D + 0.5 + nz * 2.5;
 
 			// ── U (Seitwärts-Treffpunkt) ──────────────────────────────────────
-			// Altes Ziel-X: sideRatio_alt * FIELD_W/2
-			// Neues u so wählen dass sideRatio_neu * FIELD_W/2 = altes Ziel-X
-			// sideRatio = -u  →  u = -sideRatio
+			// Altes Ziel-X: oldWorldX + sideRatio_alt * FIELD_W
+			// Neues u so wählen dass newWorldX + sideRatio_neu * FIELD_W = altes Ziel-X
 			const { sideRatio: oldSideRatio } = getContactInfo(contactPoint);
-			const oldTargetX = oldSideRatio * (FIELD_W / 2);
-			// Neues Ziel-X bleibt gleich: newSideRatio = oldTargetX / (FIELD_W/2)
-			const newSideRatio = clamp(oldTargetX / (FIELD_W / 2), -1, 1);
+			const oldTargetX = oldWorldX + oldSideRatio * FIELD_W;
+			// Neuer sideRatio so dass Ziel-X gleich bleibt
+			const newSideRatio = clamp((oldTargetX - newWorldX) / FIELD_W, -1, 1);
 			const newU = clamp(-newSideRatio, -1, 1);
 			const newCp = { u: newU, v: contactPoint.v };
 
@@ -569,10 +568,10 @@
 		const hSpeed = speed * Math.cos(pitchRad);
 		const vSpeed = speed * Math.sin(pitchRad);
 
-		// Ziel-Richtung: Der sideRatio verschiebt den Zielpunkt seitlich.
-		// Basis-Ziel ist Feldmitte Gegenseite. sideRatio * FIELD_W/2 ergibt
-		// den maximalen Seitenversatz (bei u=±1 landet der Ball am Rand).
-		const sideTargetX = sideRatio * (FIELD_W / 2);
+		// Ziel-Richtung: sideRatio bestimmt seitliche Ablenkung RELATIV zur Servierposition.
+		// Bei u=0 fliegt der Ball geradeaus (Feldmitte Gegenseite relativ zur eigenen X-Position).
+		// Bei u=±1 maximaler Seitenversatz von ±FIELD_W/2 relativ zur Servierposition.
+		const sideTargetX = serveWorldX + sideRatio * FIELD_W;
 		const dx = sideTargetX - serveWorldX;
 		const dz = -(serveWorldZ + FIELD_HALF_D * 0.6);
 		const dist = Math.sqrt(dx * dx + dz * dz);
@@ -682,7 +681,7 @@
 
 	function buildWidgetScene() {
 		wScene = new THREE.Scene();
-		wScene.background = new THREE.Color(0x1a1c2e);
+		wScene.background = new THREE.Color(0xf1f5f9);
 		wScene.add(new THREE.AmbientLight(0xffffff, 0.6));
 		const wSun = new THREE.DirectionalLight(0xfff8e8, 0.9);
 		wSun.position.set(2, 3, 4);
@@ -1304,10 +1303,11 @@
 		width: 100%;
 		max-width: 820px;
 		margin: 2rem auto;
-		background: #12121e;
+		background: #f8fafc;
 		border-radius: 12px;
 		overflow: hidden;
-		box-shadow: 0 4px 32px rgba(0,0,0,0.55);
+		box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+		border: 1px solid #e2e8f0;
 		font-family: inherit;
 	}
 
@@ -1316,7 +1316,7 @@
 		position: relative;
 		width: 100%;
 		aspect-ratio: 16 / 7;
-		background: #0d1117;
+		background: #e8f0fe;
 	}
 
 	canvas {
@@ -1342,9 +1342,9 @@
 		padding: 0.28rem 0.6rem;
 		font-size: 0.72rem;
 		font-weight: 600;
-		background: rgba(18, 18, 30, 0.82);
-		color: #556;
-		border: 1px solid rgba(60, 70, 110, 0.5);
+		background: rgba(255,255,255,0.88);
+		color: #64748b;
+		border: 1px solid rgba(148,163,184,0.6);
 		border-radius: 6px;
 		cursor: pointer;
 		backdrop-filter: blur(4px);
@@ -1353,30 +1353,31 @@
 		letter-spacing: 0.02em;
 	}
 
-	.cam-btn:hover { color: #99aacc; background: rgba(30, 35, 60, 0.92); }
+	.cam-btn:hover { color: #1e40af; background: rgba(255,255,255,0.98); }
 	.cam-btn.active {
-		background: rgba(45, 74, 170, 0.88);
-		color: #ddeeff;
-		border-color: rgba(80, 120, 220, 0.7);
+		background: #2563eb;
+		color: #fff;
+		border-color: #1d4ed8;
 	}
 
 	.canvas-badge {
 		position: absolute;
 		bottom: 10px; left: 50%;
 		transform: translateX(-50%);
-		background: rgba(0,0,0,0.6);
-		color: #bbb;
+		background: rgba(255,255,255,0.82);
+		color: #475569;
 		font-size: 0.78rem;
 		padding: 3px 12px;
 		border-radius: 20px;
 		pointer-events: none;
+		border: 1px solid #e2e8f0;
 	}
 
 	.canvas-hint {
 		position: absolute;
 		bottom: 10px; left: 50%;
 		transform: translateX(-50%);
-		color: #445;
+		color: #94a3b8;
 		font-size: 0.72rem;
 		pointer-events: none;
 		white-space: nowrap;
@@ -1385,6 +1386,7 @@
 	/* ── Controls ── */
 	.controls {
 		padding: 1.1rem 1.3rem 1.3rem;
+		background: #f8fafc;
 	}
 
 	.controls-main {
@@ -1411,7 +1413,7 @@
 		font-weight: 700;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
-		color: #667;
+		color: #64748b;
 	}
 
 	.ball-canvas-wrap {
@@ -1442,12 +1444,12 @@
 	}
 
 	.ball-info-label {
-		color: #ff8888;
+		color: #dc2626;
 		font-weight: 700;
 	}
 
-	.ball-info-label.is-hover { color: #ffcc44; }
-	.ball-info-placeholder { color: #445; font-style: italic; }
+	.ball-info-label.is-hover { color: #d97706; }
+	.ball-info-placeholder { color: #94a3b8; font-style: italic; }
 
 	/* ── Params ── */
 	.params {
@@ -1468,7 +1470,7 @@
 		font-weight: 700;
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
-		color: #8899bb;
+		color: #475569;
 		white-space: nowrap;
 	}
 
@@ -1481,19 +1483,19 @@
 		padding: 0.3rem 0.65rem;
 		font-size: 0.76rem;
 		font-weight: 600;
-		background: #1a1c30;
-		color: #556;
-		border: 1px solid #2a2d4a;
+		background: #f1f5f9;
+		color: #64748b;
+		border: 1px solid #e2e8f0;
 		border-radius: 6px;
 		cursor: pointer;
 		transition: background 0.12s, color 0.12s, border-color 0.12s;
 	}
 
-	.toggle-btn:hover:not(:disabled) { color: #99aacc; background: #22253a; }
+	.toggle-btn:hover:not(:disabled) { color: #1e40af; background: #e0e7ff; }
 	.toggle-btn.active {
-		background: #2d4aaa;
+		background: #2563eb;
 		color: #fff;
-		border-color: #4466cc;
+		border-color: #1d4ed8;
 	}
 	.toggle-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
@@ -1509,14 +1511,14 @@
 		justify-content: space-between;
 		font-size: 0.8rem;
 		font-weight: 600;
-		color: #8899bb;
+		color: #475569;
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
 	}
 
 	.lv {
 		font-weight: 700;
-		color: #ccd;
+		color: #0f172a;
 		text-transform: none;
 		letter-spacing: 0;
 	}
@@ -1527,7 +1529,7 @@
 		width: 100%;
 		height: 5px;
 		border-radius: 3px;
-		background: #2a2d4a;
+		background: #e2e8f0;
 		outline: none;
 		cursor: pointer;
 	}
@@ -1536,8 +1538,8 @@
 		-webkit-appearance: none;
 		width: 16px; height: 16px;
 		border-radius: 50%;
-		background: #5577cc;
-		border: 2px solid #99bbff;
+		background: #2563eb;
+		border: 2px solid #93c5fd;
 		cursor: pointer;
 		transition: transform 0.1s;
 	}
@@ -1545,8 +1547,8 @@
 	.slider::-moz-range-thumb {
 		width: 16px; height: 16px;
 		border-radius: 50%;
-		background: #5577cc;
-		border: 2px solid #99bbff;
+		background: #2563eb;
+		border: 2px solid #93c5fd;
 		cursor: pointer;
 	}
 
@@ -1554,11 +1556,12 @@
 		display: flex;
 		justify-content: space-between;
 		font-size: 0.63rem;
-		color: #445;
+		color: #94a3b8;
 	}
 
 	.contact-box {
-		background: #1a1c30;
+		background: #f1f5f9;
+		border: 1px solid #e2e8f0;
 		border-radius: 7px;
 		padding: 0.6rem 0.9rem;
 		font-size: 0.82rem;
@@ -1567,21 +1570,21 @@
 		align-items: center;
 	}
 
-	.contact-hint-txt { color: #445; font-style: italic; }
+	.contact-hint-txt { color: #94a3b8; font-style: italic; }
 
 	.contact-chosen {
 		display: flex;
 		align-items: center;
 		gap: 0.65rem;
-		color: #ccd;
+		color: #0f172a;
 	}
 
 	.dot {
 		width: 9px; height: 9px;
 		border-radius: 50%;
-		background: #ff4444;
+		background: #dc2626;
 		flex-shrink: 0;
-		box-shadow: 0 0 6px #ff4444;
+		box-shadow: 0 0 6px rgba(220,38,38,0.4);
 	}
 
 	.button-row {
@@ -1594,14 +1597,14 @@
 		padding: 0.7rem 1rem;
 		font-size: 0.95rem;
 		font-weight: 700;
-		background: #2d4aaa;
+		background: #2563eb;
 		color: #fff;
 		border: none;
 		border-radius: 8px;
 		cursor: pointer;
 		transition: background 0.15s, transform 0.1s;
 	}
-	.serve-btn:hover:not(:disabled) { background: #3d5acc; transform: translateY(-1px); }
+	.serve-btn:hover:not(:disabled) { background: #1d4ed8; transform: translateY(-1px); }
 	.serve-btn:active:not(:disabled) { transform: none; }
 	.serve-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
@@ -1610,13 +1613,13 @@
 		font-size: 0.88rem;
 		font-weight: 600;
 		background: transparent;
-		color: #556;
-		border: 1px solid #2a2d4a;
+		color: #64748b;
+		border: 1px solid #e2e8f0;
 		border-radius: 8px;
 		cursor: pointer;
 		transition: background 0.15s, color 0.15s;
 	}
-	.reset-btn:hover { background: #1a1c30; color: #99aacc; }
+	.reset-btn:hover { background: #f1f5f9; color: #334155; }
 
 	.result {
 		text-align: center;
@@ -1626,8 +1629,8 @@
 		font-weight: 600;
 		animation: fadeIn 0.3s ease;
 	}
-	.result.success { background: #162a16; color: #55cc55; border: 1px solid #224422; }
-	.result.failure { background: #2a1616; color: #cc5555; border: 1px solid #442222; }
+	.result.success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+	.result.failure { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
 
 	@keyframes fadeIn {
 		from { opacity: 0; transform: translateY(4px); }

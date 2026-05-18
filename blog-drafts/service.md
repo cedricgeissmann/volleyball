@@ -173,3 +173,42 @@ miteinander zu kombinieren, das wir das gleiche Resultat erreichen. Dafür
 schauen wir uns das in der nächsten Animation an. Wir versuchen hier eine
 stabile Konstellation zu finden, um den Impuls zu erreichen, den wir für
 unseren Service brauchen. Das wird vermutlich um die $4 kg m/s$ sein.
+
+## Kinetische-Kette
+
+Wir können uns eine Kinetische-Kette ganz vereinfacht als Peitsche vorstellen.
+Bei einer Peitsche ist das letzte Glied oder der vorderste Teil am Ende der
+schnellste, das können wir uns vereinfacht so vorstellen, das jeder Teil seine
+Geschwindigkeit an den nächsten Teil weiter gibt, dieser dreht sich dann aber
+auch nochmals um seine Verankerung und somit werden diese
+Winkelgeschwindigkeiten unglaublich hoch bis zum letzten Teil. Da sich die
+einzelnen Teile auch noch Kreisförmig bewegen, wird die Geschwindigkeit mit
+zunehmendem Radius ebenfalls grösser. Bei einer Kinetischen-Kette, möchten wir
+genau dieses Prinzip nutzen. Statt nur die Schulter zu verwenden, starten wir
+bereits in der Hüfte, dann kommt die Schulter dazu und danach kommt noch der
+Unterarm. Wenn wir diese alle gut synchronisieren, dann können wir ganz einfach
+mit unserer Hand die **invariante** Geschwindigkeit erzeugen. Oftmals ist dies
+gar nicht die höchste Geschwindigkeit die wir hinbekommen könnten, sondern
+einfach eine gute Geschwindigkeit für die Servicesituation. Normalerweise
+würden wir dem *Kraft* sagen, da es sich aber aus so vielen Teilen
+zusammensetzt, ist *Kraft* nicht so ein guter Ausdruck hier, denn für uns geht
+es nur darum eine bestimmte Geschwindigkeit in den Ball bzw. unsere Hand zu
+bekommen. Das tolle an der Kinetischen-Kette ist jetzt, das wir mehrere
+Körperteile haben, die wir zusammen aktivieren können um auf unsere gewünschte
+Handgeschwindigkeit zu kommen. Wir können auch schon sehr schnell in den
+Service rennen, dann bekommen wir ohne Koordination bereits 2 m/s geschenkt,
+das können wir uns dann in der Schulter sparen, oder auch in der Hüfte. Da wir
+nicht nach dem Maximum suchen, können wir einige Körperteile einfach entlasten
+und mit anderen dafür übernehmen, oder wir können Körperteile weglassen um das
+ganze einfacher zu machen. Genau das passiert beim lernen - also wenn wir den
+Service neu lernen, oder auf die andere Hand wechseln - damit unser Körper
+einen Weg findet wie er den Ball trotzdem noch treffen kann, friert er ganz
+viele Freiheitsgrade ein, oder wenn wir verletzt sind, macht der Körper das
+auch automatisch. Unser Ziel ist es also diese Freiheitsgrade - in diesem Fall
+Gelenke und Muskel - zu nutzen und eine Servicebewegung mit mehr Teilen (Hüfte,
+Unterarm, Laufgeschwindigkeit, ...) zu entwickeln. Genau das haben wir schon
+mal besprochen (Link zu Blogpost: Warum dein Körper mehr weiss als dein Kopf).
+Die Lösung damals war, dem Körper selber die Kontrolle geben, nicht dem inneren
+Kontrolleur. Am besten geht das über einen externen Fokus, diesen koppeln wir
+dann am besten mit Propriozeption, damit wir direkt Feedback haben ob sich in
+der Technik etwas geändert hat.
