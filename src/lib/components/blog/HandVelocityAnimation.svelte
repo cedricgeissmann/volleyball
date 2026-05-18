@@ -25,6 +25,7 @@
 
 import { onMount } from 'svelte';
 import { browser } from '$app/environment';
+import { handVelocityMax } from '$lib/stores/serviceVelocity.js';
 
 // ─── Skalierung ───────────────────────────────────────────────────────────────
 const PX_PER_M = 80;
@@ -451,6 +452,7 @@ function startSim() {
 	scrubActive = true;
 	simTime     = frames[0].t;
 	vHandX      = frames[0].vHand;
+	handVelocityMax.set(vHandXMax);
 	drawFrame(frames[0]);
 }
 
@@ -776,16 +778,12 @@ onMount(() => { startSim(); });
 
 	<div class="metrics">
 		<div class="metric">
-			<span class="mlabel">v Hand x (aktuell)</span>
+			<span class="mlabel">Handgeschwindigkeit (aktuell)</span>
 			<span class="mval" class:neg={vHandX < 0}>{vHandX.toFixed(1)} m/s</span>
 		</div>
 		<div class="metric">
-			<span class="mlabel">v Hand x (Maximum)</span>
-			<span class="mval peak">{vHandXMax.toFixed(1)} m/s</span>
-		</div>
-		<div class="metric">
-			<span class="mlabel">Impuls (m=0.270 kg)</span>
-			<span class="mval peak">{(vHandXMax * 0.270).toFixed(2)} kg·m/s</span>
+			<span class="mlabel">Handgeschwindigkeit (Maximum)</span>
+			<span class="mval peak">{vHandXMax.toFixed(1)} m/s ({(vHandXMax * 3.6).toFixed(1)} km/h)</span>
 		</div>
 		<div class="metric">
 			<span class="mlabel">Simulationszeit</span>

@@ -65,7 +65,7 @@
 	let netHeight = $derived(genderMode === 'men' ? 2.43 : 2.24);
 
 	// Kamera-Perspektive
-	let camView = $state(_ls.camView ?? 'player'); // 'player' | 'iso'
+	let camView = $state(_ls.camView ?? 'player'); // 'player' | 'iso' | 'side'
 
 	// Derived: Aufschlag-Weltkoordinaten
 	let serveWorldX = $derived((servePos.x - 0.5) * FIELD_W);
@@ -278,12 +278,12 @@
 		// Flugbahn-Vorschau
 		const _dc2 = new THREE.LineCurve3(new THREE.Vector3(0,0,0), new THREE.Vector3(0,1,0));
 		trajectoryMesh = new THREE.Mesh(
-			new THREE.TubeGeometry(_dc2, 20, 0.035, 6, false),
+			new THREE.TubeGeometry(_dc2, 20, 0.07, 8, false),
 			new THREE.ShaderMaterial({
 				transparent: true, depthTest: false, depthWrite: false,
 				uniforms: { uOpacity: { value: 0.0 } },
 				vertexShader: `varying float vT; void main() { vT = uv.x; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }`,
-				fragmentShader: `uniform float uOpacity; varying float vT; void main() { float a = uOpacity*(1.0-vT*0.45); gl_FragColor = vec4(0.35,0.85,1.0,a); }`
+				fragmentShader: `uniform float uOpacity; varying float vT; void main() { float a = uOpacity*(1.0-vT*0.35); gl_FragColor = vec4(0.45,0.1,0.85,a); }`
 			})
 		);
 		scene.add(trajectoryMesh);
@@ -463,6 +463,14 @@
 			return {
 				pos:    { x: 14.0, y: 17.0, z: 12.0 },
 				lookAt: { x: 0,    y: 1.2,   z: -1.5 },
+			};
+		}
+		if (view === 'side') {
+			// Seitenansicht: Kamera rechts neben dem Feld, auf das Netz (z=0) zentriert,
+			// Flugparabel von Servicezone bis Landepunkt gut erkennbar
+			return {
+				pos:    { x: 16.0, y: 5.0, z: 0 },
+				lookAt: { x: 0,    y: 2.5, z: 0 },
 			};
 		}
 		// 'player'
@@ -645,9 +653,9 @@
 		if (pts.length >= 2) {
 			const curve = new THREE.CatmullRomCurve3(pts);
 			trajectoryMesh.geometry.dispose();
-			trajectoryMesh.geometry = new THREE.TubeGeometry(curve, Math.min(pts.length * 3, 200), 0.035, 6, false);
+			trajectoryMesh.geometry = new THREE.TubeGeometry(curve, Math.min(pts.length * 3, 200), 0.07, 8, false);
 		}
-		trajectoryMesh.material.uniforms.uOpacity.value = opacity * 0.9;
+		trajectoryMesh.material.uniforms.uOpacity.value = opacity * 0.95;
 
 		// Netz-Farbe: rot wenn Vorschau-Flugbahn das Netz trifft
 		setNetHitColor(hitsNet);
@@ -1128,7 +1136,8 @@
 
 	// ─── Derived Labels ───────────────────────────────────────────────────────────
 	let strengthCategory = $derived(strength < 33 ? 'Leicht' : strength < 66 ? 'Mittel' : 'Hart');
-	let strengthImpulse  = $derived(getImpulse().toFixed(2));
+	let strengthSpeed    = $derived(getSpeed().toFixed(1));
+	let strengthSpeedKmh = $derived((getSpeed() * 3.6).toFixed(1));
 	let heightLabel   = $derived(
 		serveHeight < 40 ? `Stand (${getHeight().toFixed(1)} m)`
 		: serveHeight > 70 ? `Jump (${getHeight().toFixed(1)} m)`
@@ -1182,6 +1191,19 @@
 					<path d="M8 2 L8 14 M2 5.5 L14 5.5" stroke="currentColor" stroke-width="1" stroke-dasharray="2 1.5" opacity="0.6"/>
 				</svg>
 				&Uuml;bersicht
+			</button>
+			<button
+				class="cam-btn"
+				class:active={camView === 'side'}
+				onclick={() => camView = 'side'}
+				title="Seitenansicht – Flugparabel"
+			>
+				<svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+					<path d="M2 13 Q5 4 14 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+					<line x1="2" y1="13" x2="14" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+					<line x1="2" y1="6" x2="2" y2="13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="2 1.5"/>
+				</svg>
+				Seite
 			</button>
 		</div>
 
@@ -1246,15 +1268,15 @@
 
 				<div class="control-group">
 					<label for="strength-slider">
-						Impuls
-						<span class="lv">{strengthCategory} · {strengthImpulse} kg·m/s</span>
+						Geschwindigkeit
+						<span class="lv">{strengthCategory} · {strengthSpeed} m/s ({strengthSpeedKmh} km/h)</span>
 					</label>
 					<input id="strength-slider" type="range" min="0" max="100"
 						bind:value={strength} disabled={phase === 'flying'} class="slider" />
 					<div class="slider-ticks">
-						<span>{IMPULSE_MIN.toFixed(1)} N·s</span>
-						<span>{((IMPULSE_MIN + IMPULSE_MAX) / 2).toFixed(1)} N·s</span>
-						<span>{IMPULSE_MAX.toFixed(1)} N·s</span>
+						<span>{SPEED_MIN} m/s</span>
+						<span>{((SPEED_MIN + SPEED_MAX) / 2).toFixed(0)} m/s</span>
+						<span>{SPEED_MAX} m/s</span>
 					</div>
 				</div>
 
