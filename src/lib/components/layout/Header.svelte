@@ -93,13 +93,20 @@
 			>
 				{$_('nav_blog')}
 			</a>
-			<a
-				href="{base}/{currentLang}/events"
-				class:active={$page.url.pathname.includes('/events')}
-				on:click={closeMobileMenu}
-			>
-				{$_('nav_events')}
-			</a>
+		<a
+			href="{base}/{currentLang}/events"
+			class:active={$page.url.pathname.includes('/events')}
+			on:click={closeMobileMenu}
+		>
+			{$_('nav_events')}
+		</a>
+		<a
+			href="{base}/{currentLang}/service-matrix"
+			class:active={$page.url.pathname.includes('/service-matrix')}
+			on:click={closeMobileMenu}
+		>
+			{$_('nav_service_matrix')}
+		</a>
 		</nav>
 
 		<div class="header-actions">

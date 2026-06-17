@@ -8,6 +8,7 @@
 	"nav_cla": "CLA-Theorie",
 	"nav_blog": "Blog",
 	"nav_events": "Events",
+	"nav_service_matrix": "Service-Matrix",
 	"nav_privacy": "Datenschutz",
 	
 	"btn_print": "Drucken",
@@ -333,5 +334,26 @@
 	"meta_events_desc": "Spiele, Turniere und Events",
 	"meta_cla_desc": "Constraints-Led Approach im Volleyball - Theoretische Grundlagen",
 	"meta_privacy_desc": "Datenschutzerklärung für die TV Muttenz Volleyball Website",
-	"meta_blog_desc": "Blog über Volleyball-Training und CLA"
+	"meta_blog_desc": "Blog über Volleyball-Training und CLA",
+
+	"sm_meta_desc": "Service-Matrix: Aufschlag-Training mit zufälligen Konfigurationen für Richtung, Technik und Flugbahn",
+	"sm_subtitle": "Zufällige Aufschlag-Konfigurationen für gezielte Trainingsreize",
+	"sm_show_aspects": "Aspekte anzeigen",
+	"sm_aspect_stance": "Sprung / Stand",
+	"sm_aspect_toss": "Aufwurf",
+	"sm_aspect_ball_flight": "Ballflug",
+	"sm_aspect_serve_position": "Aufschlagposition",
+	"sm_target": "Ziel",
+	"sm_opponent": "Gegner",
+	"sm_server": "Aufschläger",
+	"sm_court_aria": "Volleyball-Spielfeld mit Aufschlag-Zielzone",
+	"sm_stance_jump": "Sprungaufschlag",
+	"sm_stance_stand": "Standesaufschlag",
+	"sm_next": "Nächste Konfiguration",
+	"sm_timer_enable": "Timer aktivieren",
+	"sm_timer_seconds": "Sekunden",
+	"sm_qr_show": "QR-Code anzeigen",
+	"sm_qr_hide": "QR-Code schliessen",
+	"sm_qr_title": "Link zu dieser Seite",
+	"sm_qr_hint": "QR-Code abscannen, um diese Seite auf dem Handy zu öffnen"
 }

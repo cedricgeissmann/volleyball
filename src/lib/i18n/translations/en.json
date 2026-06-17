@@ -8,6 +8,7 @@
 	"nav_cla": "CLA Theory",
 	"nav_blog": "Blog",
 	"nav_events": "Events",
+	"nav_service_matrix": "Service Matrix",
 	"nav_privacy": "Privacy",
 	
 	"btn_print": "Print",
@@ -334,5 +335,26 @@
 	"meta_events_desc": "Games, tournaments and events",
 	"meta_cla_desc": "Constraints-Led Approach in Volleyball - Theoretical Foundations",
 	"meta_privacy_desc": "Privacy policy for the TV Muttenz Volleyball Website",
-	"meta_blog_desc": "Blog about volleyball training and CLA"
+	"meta_blog_desc": "Blog about volleyball training and CLA",
+
+	"sm_meta_desc": "Service Matrix: Serve training with random configurations for direction, technique and ball flight",
+	"sm_subtitle": "Random serve configurations for targeted training stimuli",
+	"sm_show_aspects": "Show aspects",
+	"sm_aspect_stance": "Jump / Stand",
+	"sm_aspect_toss": "Ball toss",
+	"sm_aspect_ball_flight": "Ball flight",
+	"sm_aspect_serve_position": "Serve position",
+	"sm_target": "Target",
+	"sm_opponent": "Opponent",
+	"sm_server": "Server",
+	"sm_court_aria": "Volleyball court with serve target zone",
+	"sm_stance_jump": "Jump serve",
+	"sm_stance_stand": "Standing serve",
+	"sm_next": "Next configuration",
+	"sm_timer_enable": "Enable timer",
+	"sm_timer_seconds": "Seconds",
+	"sm_qr_show": "Show QR Code",
+	"sm_qr_hide": "Close QR Code",
+	"sm_qr_title": "Link to this page",
+	"sm_qr_hint": "Scan QR code to open this page on your phone"
 }
