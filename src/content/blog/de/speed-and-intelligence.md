@@ -72,7 +72,7 @@ Aber nicht nur der Zuspieler hat diese Phasen. Auch ein Angreifer durchläuft ve
 
 Wir zählen das Blocken zur **Verteidigungs**-Phase. Wenn es nicht zum Angriff kommt, gilt die **Blocksicherung** — wir möchten das Modell aber möglichst einfach halten, denn es geht um das Konzept und nicht um die Details.
 
-Die **Angriffsbereitschaft** habe ich als eigene Phase herausgenommen, weil sie aus meiner Sicht einer der wichtigsten und entscheidenden Punkte ist, wenn wir schnell und intelligent spielen möchten.
+Die **Angriffsbereitschaft** wird hier als eigene Phase herausgenommen, weil sie einer der wichtigsten und entscheidenden Punkte ist, wenn wir schnell und intelligent spielen möchten.
 
 ### Ein konkretes Beispiel: Der Aufsteiger-Angriff
 
@@ -80,7 +80,7 @@ Aus der Erfahrung wissen wir: Der Aufsteiger-Angriff ist sehr effektiv, um den G
 
 Doch die Frage, die wir uns stellen sollten: **Warum sehen wir diesen Angriff nicht öfter?**
 
-Für alle, die bereits einige Spiele mit mir absolviert haben, ist klar: Es liegt nicht an der Qualität der Verteidigung. Man kann diesen Angriff auch gut spielen, wenn man weiter vom Netz entfernt ist als der Zuspieler.
+Es liegt nicht an der Qualität der Verteidigung. Man kann diesen Angriff auch gut spielen, wenn man weiter vom Netz entfernt ist als der Zuspieler.
 
 **Der entscheidende Faktor ist der Angreifer.**
 
@@ -109,12 +109,9 @@ Dazu brauchen wir:
 1. **Beobachtung** — um zu erkennen, in welcher Situation wir uns befinden
 2. **Absicht** — um zu wissen, welche die nächste Phase ist und was unsere Aufgabe ist
 
-Beides könnt ihr in unseren vergangenen Artikeln nochmals nachlesen:
+Mehr zur Absicht gibt es im Artikel [Absicht](/blog/de/intention) — Warum die Intention den Unterschied macht.
 
-- [Beobachten](/blog/de/beobachten) — Wie wir Informationen aus der Umwelt richtig wahrnehmen
-- [Absicht](/blog/de/intention) — Warum deine Intention den Unterschied macht
-
-Ich lasse das ganze hier absichtlich offen, denn es gibt zu viele Situationen, um sie hier aufzuzählen. Jede Person löst eine Phase leicht unterschiedlich, je nachdem, wie schnell oder stark jemand ist. Wenn jemand etwas Unpassendes in einer Phase macht, fällt das schnell auf und wird von den anderen korrigiert.
+Das wird hier absichtlich offen gelassen, denn es gibt zu viele Situationen, um sie aufzuzählen. Jede Person löst eine Phase leicht unterschiedlich, je nachdem, wie schnell oder stark jemand ist. Wenn jemand etwas Unpassendes in einer Phase macht, fällt das schnell auf und wird von den anderen korrigiert.
 
 ## Tempo auf den aussen Positionen
 
