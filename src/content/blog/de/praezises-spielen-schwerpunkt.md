@@ -7,7 +7,7 @@ tags:
   - Schwerpunkt
   - Stabilität
   - Präzision
-description: "Nicht die Ballgeschwindigkeit entscheidet, sondern die relative Geschwindigkeit zwischen Ball und Körperschwerpunkt. Wer sie klein hält, spielt präziser — in Annahme, Zuspiel und Angriff."
+description: "Zuerst zum Ball kommen, dann die relative Geschwindigkeit zwischen Ball und Körperschwerpunkt im Moment des Kontakts minimieren. Dieses Prinzip trägt Annahme, Zuspiel und Angriff."
 published: true
 ---
 
@@ -22,7 +22,9 @@ Im Football, Rugby und Ultimate gibt es eine Situation, die vertraut ist: Ein Ob
 
 Der Trick ist einfach: Man macht es gar nicht. Statt den Landepunkt zu berechnen, passt man die eigene Geschwindigkeit dem Flugobjekt an. Sobald Spieler und Objekt gleich schnell sind, bleibt das Bild ruhig — man kann in dieser Situation verharren, bis das Objekt tief genug zum Fangen ist.
 
-Das machen nicht nur wir Menschen. Bei Hunden sieht man es noch deutlicher, denn genau das ist ihre Hauptstrategie. Und sobald das Objekt den Boden berührt und seine Geschwindigkeit unvorhersehbar ändert, überschlagen sie sich fast. Allein das zeigt schon, wie gut diese Strategie ist. Aber schauen wir genauer hin — und vor allem, wo und wie wir sie im Volleyball nutzen können.
+Das machen nicht nur wir Menschen. Bei Hunden sieht man es noch deutlicher, denn genau das ist ihre Hauptstrategie. Und sobald das Objekt den Boden berührt und seine Geschwindigkeit unvorhersehbar ändert, überschlagen sie sich fast. Allein das zeigt schon, wie gut diese Strategie ist.
+
+Im Volleyball übernehmen wir dieses Prinzip — aber nicht eins zu eins. Der entscheidende Unterschied: Beim Fangen passen wir uns über den **ganzen Flug** an, weil wir sonst gar nicht am richtigen Ort ankommen. Im Volleyball zählt nur ein sehr kurzes Fenster, nämlich das **um den Ballkontakt herum**. Dort — und nur dort — soll die relative Geschwindigkeit zwischen Ball und Körperschwerpunkt so klein wie möglich sein. Was vorher passiert, ist Anlauf: Wir dürfen (und müssen oft) sehr schnell unterwegs sein, um überhaupt zum Ball zu kommen.
 
 ---
 
@@ -36,6 +38,19 @@ Mit der Strategie, die Geschwindigkeit des Objekts zu kopieren, fallen die Koord
 
 ---
 
+## Zwei Ziele — in dieser Reihenfolge
+
+Bevor wir ins Detail gehen, die wichtigste Ordnung. Wir verfolgen zwei Ziele, und sie sind nicht gleichwertig:
+
+1. **Zum Ball kommen.** Der Ball muss in unsere kontrollierte Zone. Das ist nicht verhandelbar — ohne Ball keine Technik. Auf dem Weg dorthin darf die relative Geschwindigkeit beliebig gross sein; wir sprinten, hechten, springen.
+2. **Die relative Geschwindigkeit im Kontaktmoment minimieren.** Sobald Ziel 1 gesichert ist, versuchen wir, uns dem Ball so weit anzugleichen, dass er sich kurz vor dem Kontakt relativ zu uns kaum noch bewegt. Das ist die Kür — sie entscheidet über die Präzision.
+
+Daraus folgt eine wichtige Einschränkung: Solange der Ball **innerhalb der kontrollierten Zone** bleibt, spielt die relative Geschwindigkeit kaum eine Rolle. In der Annahme ist diese Zone etwa 30 cm breit um den Körperschwerpunkt — in diesem Korridor können wir mit den Armen praktisch alles korrigieren. Fehler entstehen erst, wenn der Ball diese Zone während des Kontaktfensters verlässt, also relativ zu uns aus ihr herausdriftet.
+
+Und genau hier kommt die Grösse der Zone ins Spiel: Im Zuspiel ist sie deutlich kleiner, im Angriff noch einmal kleiner. Je kleiner die Zone, desto wichtiger wird die relative Geschwindigkeit — bei gleichem Ball. Das ist der eigentliche Grund, warum Zuspiel und Angriff technisch anspruchsvoller sind als die Annahme.
+
+---
+
 ## Der Unterschied zum Volleyball
 
 Im Volleyball sieht die Sache anders aus. Der Ball kommt auf uns zu — wir können seine Geschwindigkeit nicht einfach übernehmen. Oder etwa doch? Das hängt davon ab, welche Geschwindigkeit wir betrachten.
@@ -44,13 +59,13 @@ Schauen wir uns eine Annahmesituation an. Der Ball kommt sehr schnell auf uns zu
 
 Interessant sind die anderen beiden Richtungen. Im Aufriss — der Seitenansicht entlang der Netzachse — bewegt sich der Ball in **x-Richtung** (parallel zum Netz) und in **y-Richtung** (Flughöhe). Dank Feldgeometrie und Netz sind beide stark eingeschränkt. Innerhalb unserer Annahmezone können wir deshalb die x-Geschwindigkeit des Balls mit dem Körperschwerpunkt übernehmen. Gelingt das, wird selbst ein Flatterball einfach.
 
-Und genau hier liegt der Kern: Nicht die Ballgeschwindigkeit entscheidet, sondern die **relative Geschwindigkeit zwischen Ball und Körperschwerpunkt**. Ist sie klein, wird das Spiel einfach. Das folgende Widget zeigt, wie sich diese relative Geschwindigkeit verändert, wenn der Schwerpunkt mitgeht.
+Und genau hier liegt der Kern: Nicht die Ballgeschwindigkeit entscheidet, sondern die **relative Geschwindigkeit zwischen Ball und Körperschwerpunkt im Moment des Kontakts**. Ist sie klein, wird das Spiel einfach. Das folgende Widget zeigt, wie sich diese relative Geschwindigkeit verändert, wenn der Schwerpunkt mitgeht.
 
 <RelativeVelocityReception />
 
 Auch in y-Richtung funktioniert das Prinzip. Der Ball fällt nicht besonders schnell, weil er von weit her geschlagen wird und zuerst über das Netz muss. Kommt er tiefer als erwartet, gehen wir einfach mit nach unten. Hier begrenzt uns oft die eigene Beweglichkeit oder schlicht die fehlende Höhe. Trotzdem gilt: Sobald der Ball unsere Augenhöhe erreicht, können wir mit ihm nach unten gehen.
 
-Wir müssen dabei nicht exakt gleich schnell wie der Ball sein — es reicht, uns ihm ein Stück weit anzupassen. Was eine Situation schwer macht, ist ein Ball mit viel Geschwindigkeit in eine Richtung. Aber das ist immer relativ zu uns. Bewegen wir uns mit dem Ball mit, wird die Situation sofort einfacher.
+Wir müssen dabei nicht exakt gleich schnell wie der Ball sein — es reicht, uns ihm ein Stück weit anzupassen. Was eine Situation schwer macht, ist ein Ball, der während des Kontaktfensters mit viel Geschwindigkeit aus unserer Zone herausdriftet. Aber das ist immer relativ zu uns. Bewegen wir uns mit dem Ball mit, wird die Situation sofort einfacher.
 
 ---
 
@@ -58,18 +73,27 @@ Wir müssen dabei nicht exakt gleich schnell wie der Ball sein — es reicht, un
 
 Ich nehme die Annahme gerne als Beispiel, weil wir hier die langsamste und längste Bewegung haben. Das Prinzip gilt aber genauso für Verteidigung und Gratisball — nur Geschwindigkeit und Bewegungsradius ändern sich.
 
-In der Annahme haben wir einen Bewegungsradius von etwa 2 m zur Seite. Alles, was weiter weg ist, gehört ohnehin der Person neben uns oder liegt ausserhalb des Feldes. Wichtig ist: Wir passen unseren **Körperschwerpunkt** an die x-Geschwindigkeit des Balls an — die Arme übernehmen nur die Feinabstimmung oder helfen, wenn wir die Geschwindigkeit nicht ganz treffen. Genau in dieser Situation passieren die meisten Fehler: Der Ball driftet von uns weg, und wir bekommen ihn nicht mehr zum Ziel zurück.
+In der Annahme haben wir einen Bewegungsradius von etwa 2 m zur Seite. Alles, was weiter weg ist, gehört ohnehin der Person neben uns oder liegt ausserhalb des Feldes. Innerhalb dieses Radius gilt Ziel 1: hin zum Ball. Wie schnell wir dabei unterwegs sind, ist zunächst egal — entscheidend ist, dass der Ball in die 30-cm-Zone um unseren Schwerpunkt kommt.
 
-Kommt der Ball dagegen in unsere Zone hinein, ist es deutlich einfacher — er bewegt sich auf unseren Schwerpunkt zu. Bei tiefer x-Geschwindigkeit können wir warten. Ist sie hoch, übernehmen wir sie mit dem Schwerpunkt. Das klingt paradox, aber unser Ziel ist es, uns vom Ball weg zu bewegen und ihn ausserhalb der Körperachse zu spielen.
+Erst danach kommt Ziel 2. Wir passen unseren **Körperschwerpunkt** so an die x-Geschwindigkeit des Balls an, dass er kurz vor dem Kontakt in der Zone stehen bleibt statt hindurchzuwandern. Die Arme übernehmen nur die Feinabstimmung oder helfen, wenn wir die Geschwindigkeit nicht ganz treffen. Genau hier passieren die meisten Fehler: Der Ball driftet während des Kontakts aus der Zone heraus, und wir bekommen ihn nicht mehr zum Ziel zurück.
 
-Die vier typischen Situationen unterscheiden sich nur in ihrer x-Geschwindigkeit:
+Kommt der Ball **von ausserhalb unserer Zone**, ist das also kein anderes Problem, sondern dasselbe in zwei Etappen: erst schnell hin (relative Geschwindigkeit gross, das stört nicht), dann angleichen (relative Geschwindigkeit klein, das entscheidet). Wer nur die erste Etappe macht, kommt zwar an den Ball, spielt ihn aber mit voller Driftgeschwindigkeit — der Ball geht dorthin, wohin er ohnehin wollte. Wer nur die zweite Etappe im Kopf hat, bewegt sich zu vorsichtig und ist gar nicht erst da.
+
+Kommt der Ball direkt in unsere Zone hinein, ist es deutlich einfacher — er bewegt sich auf unseren Schwerpunkt zu. Bei tiefer x-Geschwindigkeit können wir warten. Ist sie hoch, übernehmen wir sie mit dem Schwerpunkt. Das klingt paradox, aber unser Ziel ist es, uns vom Ball weg zu bewegen und ihn ausserhalb der Körperachse zu spielen.
+
+Im Annahmeriegel stehen wir aber nie allein. Drei Spieler mit je 2 m Radius decken das Feld ab — ihre Zonen überlappen sich deutlich, weil die Abstände nur etwa 3 m betragen. Das folgende Widget zeigt das ganze Feld von oben: Jeder Klick erzeugt einen neuen, zufälligen Aufschlag von der Gegenseite.
 
 <ReceptionZoneScenarios />
 
-- **Quer durch die Zone:** hohe x-Geschwindigkeit — die übernehmen wir voll mit dem Schwerpunkt.
-- **Bis zur Mitte:** mittlere x-Geschwindigkeit — der Schwerpunkt geht ein Stück mit.
-- **Knapp herein:** fast keine x-Geschwindigkeit — an den Rand gehen und warten, die Arme gleichen kaum etwas aus.
-- **In der eigenen Zone:** der Ball kommt direkt auf uns zu — hier reicht oft schon warten.
+Der zuständige Spieler läuft dort in zwei klar getrennten Phasen. In **Phase 1** ist der Kontaktpunkt bereits bekannt — die Flugbahn ist gerade — und er bewegt sich **direkt darauf zu**. Die Pfeile sind in dieser Phase gross, die relative Geschwindigkeit spielt schlicht keine Rolle. In **Phase 2**, den letzten rund 0,4 Sekunden, beginnt die **Angleichphase**: Jetzt übernimmt der Schwerpunkt die x-Geschwindigkeit des Balls, damit v_rel im Kontaktmoment klein wird.
+
+Genau deshalb sieht die Animation auf den ersten Blick etwas „falsch“ aus: Der Laufweg knickt gegen Ende ab und der Spieler gleitet ein Stück seitlich mit, statt geradlinig im Kontaktpunkt stehen zu bleiben. Das ist Absicht und keine Ungenauigkeit der Darstellung — die beiden Phasen sind bewusst deutlich getrennt gezeichnet, damit sichtbar wird, dass wir uns zuerst kompromisslos **zum Punkt** bewegen und erst danach **mit dem Ball**. In der Realität verschmelzen die beiden Phasen zu einer fliessenden Bewegung; im Widget sind sie überzeichnet, um genau diesen Wechsel sichtbar zu machen.
+
+Mit dem Umschalter kann man vergleichen, was passiert, wenn Phase 2 fehlt und man nur hinläuft und abstoppt.
+
+Im Widget ist für jeden der drei Spieler seine relative x-Geschwindigkeit zum Ball eingezeichnet. Die Färbung kombiniert beide Ziele: **Grün** heisst, der Ball ist in der Kontrollzone (± 30 cm) **und** die relative Geschwindigkeit ist klein — das ist der Zustand, den wir wollen. **Orange** heisst, der Ball ist zwar in der Zone, aber noch zu schnell relativ zu uns. **Rot** heisst, wir sind ruhig, aber nicht am Ball — Ziel 1 ist nicht erfüllt. **Grau** ist alles andere, typischerweise der Anlauf.
+
+Die überlappenden Zonen sind kein Problem, sondern die Lösung: Nicht der Feldstrich entscheidet, wer den Ball nimmt, sondern wer ihn erstens erreicht und zweitens im Kontaktmoment am ruhigsten in seiner Zone halten kann. Die anderen beiden weichen aus und sichern die frei werdende Fläche ab.
 
 Die y-Geschwindigkeit haben wir bereits angesprochen: Ist sie hoch, lassen wir uns fallen. Zieht der Ball leicht nach oben, gehen wir sofort mit und erhöhen unseren Schwerpunkt.
 
@@ -87,21 +111,25 @@ Der Kern bleibt derselbe: Unser Schwerpunkt kopiert die Bewegung des Balls so gu
 
 ## Das Zuspiel
 
-Kommen wir zur Königsdisziplin: dem Zuspiel. Es ist viel komplexer, denn wir reflektieren den Ball nicht nur, sondern spielen ihn von einer Position aus präzise auf vier bis sechs Ziele. Dabei sollen wir dem Gegner unsere Absicht nicht verraten. Der Schlüssel ist also nicht nur ein präzises Zuspiel, sondern auch, diese neutrale Position möglichst lange zu halten. Beides erreichen wir mit derselben Überlegung.
+Kommen wir zur Königsdisziplin: dem Zuspiel. Dasselbe Prinzip, aber mit einer deutlich kleineren kontrollierten Zone. Beim Zuspiel liegt sie eher im Bereich von 10 bis 15 cm um den Schwerpunkt — der Ball muss über der Stirn und zwischen den Händen sein, sonst verlieren wir die Richtungsfreiheit. Dieselbe relative Geschwindigkeit, die in der Annahme harmlos ist, wirft uns hier aus der Position.
 
-Ein präzises Zuspiel gelingt, wenn unser Körperschwerpunkt möglichst die gleiche Bewegung wie der Ball hat. Zuspieler nutzen dafür gerne das Sprungzuspiel, weil sie mit einer leichten seitlichen Bewegung mit dem Ball mitgehen können. Um das zu verstehen, schauen wir den Grundriss an — die Draufsicht. Der Ball hat jetzt eine **x-Geschwindigkeit** (parallel zum Netz) und eine **z-Geschwindigkeit** (Abstand zum Netz). Dank guter Annahme oder Verteidigung sind beide klein.
+Denn das Zuspiel ist auch inhaltlich komplexer: Wir reflektieren den Ball nicht nur, sondern spielen ihn von einer Position aus präzise auf vier bis sechs Ziele. Dabei sollen wir dem Gegner unsere Absicht nicht verraten. Der Schlüssel ist also nicht nur ein präzises Zuspiel, sondern auch, diese neutrale Position möglichst lange zu halten. Beides erreichen wir mit derselben Überlegung.
+
+Ein präzises Zuspiel gelingt, wenn unser Körperschwerpunkt im Kontaktfenster möglichst die gleiche Bewegung wie der Ball hat. Zuspieler nutzen dafür gerne das Sprungzuspiel, weil sie mit einer leichten seitlichen Bewegung mit dem Ball mitgehen können. Um das zu verstehen, schauen wir den Grundriss an — die Draufsicht. Der Ball hat jetzt eine **x-Geschwindigkeit** (parallel zum Netz) und eine **z-Geschwindigkeit** (Abstand zum Netz). Dank guter Annahme oder Verteidigung sind beide klein.
 
 <SetterRelativeVelocity />
 
-Was ein Zuspieler macht, ist einfach: Er geht in die Zone, in der er den Ball spielen wird — besser noch, er ist bereits da. Dort hält er den Schwerpunkt ruhig, um x- und z-Geschwindigkeit des Balls genau einzuschätzen, denn er hat nur eine Chance. Dann setzt er zum Sprung an. Dabei geht es nicht um die Höhe, sondern darum, die x- und z-Geschwindigkeit des Balls zu übernehmen. So bleibt die stabile Position unter dem Ball möglichst lange erhalten, und er kann in alle Richtungen weiterleiten.
+Was ein Zuspieler macht, ist einfach — und es ist wieder dieselbe Reihenfolge. Zuerst Ziel 1: Er geht in die Zone, in der er den Ball spielen wird — besser noch, er ist bereits da. Dort hält er den Schwerpunkt ruhig, um x- und z-Geschwindigkeit des Balls genau einzuschätzen, denn er hat nur eine Chance. Dann setzt er zum Sprung an. Dabei geht es nicht um die Höhe, sondern darum, die x- und z-Geschwindigkeit des Balls zu übernehmen. So bleibt die stabile Position unter dem Ball möglichst lange erhalten, und er kann in alle Richtungen weiterleiten.
 
-Stimmen diese Geschwindigkeiten nicht überein, schrumpft das Zuspielfenster drastisch. Dann ist man nur noch damit beschäftigt, eine Ausgleichbewegung mit den Händen zu kontrollieren — das hat nichts mehr mit Ballkontrolle zu tun, das ist reine Schadensbegrenzung.
+Das ist Ziel 2, nur mit engerer Toleranz. Stimmen diese Geschwindigkeiten nicht überein, schrumpft das Zuspielfenster drastisch. Dann ist man nur noch damit beschäftigt, eine Ausgleichbewegung mit den Händen zu kontrollieren — das hat nichts mehr mit Ballkontrolle zu tun, das ist reine Schadensbegrenzung.
 
 Das Schöne: Es reicht oft, **eine** Geschwindigkeitsrichtung zu neutralisieren. Meist übernehmen wir die x-Geschwindigkeit mit dem Schwerpunkt und gleichen die z-Geschwindigkeit mit den Armen aus. Weil sie normalerweise klein ist, gelingt das gut.
 
 ---
 
 ## Der Angriff
+
+Im Angriff ist die kontrollierte Zone am kleinsten: Sie ist nicht mehr der Raum um den Schwerpunkt, sondern das Schlagfenster über der Schlagschulter — horizontal etwa 0,5 m, und der Arm braucht darin Zeit für die Feinanpassung. Entsprechend hart bestraft der Angriff eine hohe relative Geschwindigkeit im Kontaktmoment.
 
 Beim Angriff gibt es mehrere Wege, den Schwerpunkt an den Ball anzupassen. Der wichtigste — und unintuitivste — ist die Hangtime. Unintuitiv, weil wir uns hier gar nicht dem Ball anpassen, sondern einfach in der Luft hängen. Genau darin liegt der Trick: Beim Hängen ist unsere y-Geschwindigkeit für relativ lange Zeit null. Wir beschleunigen nicht mehr auf den Ball zu, sondern der Ball kommt zu uns. In diesem Fenster schätzen wir am besten ab, wie schnell er sich nähert — in der Aufwärtsbewegung geht das kaum. Ein kontrollierter Schlag braucht einen stabilen Schwerpunkt, und den bekommen wir in y-Richtung durch die Hangtime und einen Form-2-Angriff.
 
@@ -119,4 +147,8 @@ Deshalb ist es sinnvoll, in der Mitte von rechts nach links zu laufen: So vermin
 
 ## Fazit
 
-Das Wichtigste ist die **relative Geschwindigkeit zwischen Schwerpunkt und Ball**. Je kleiner sie ist, desto einfacher wird das Spiel. Dafür brauchen wir Kraft und Mobilität, um schnell in verschiedene Positionen zu kommen. Unser Fokus sollte aber immer auf dem eigenen Körperschwerpunkt liegen: Zu oft bringen wir ihn zur Ruhe und können ihn dann nicht mehr weiterbewegen. Genau dann häufen sich die technischen Fehler.
+Zuerst zum Ball — das bleibt Ziel Nummer eins. Ist das gesichert, entscheidet die **relative Geschwindigkeit zwischen Schwerpunkt und Ball im Moment des Kontakts**: Je kleiner sie ist, desto präziser spielen wir. Anders als beim Fangen müssen wir uns nicht über den ganzen Flug anpassen, sondern nur im kurzen Fenster um den Kontakt.
+
+Wie streng dieses Kriterium ist, hängt an der Grösse der kontrollierten Zone: rund 30 cm in der Annahme, deutlich weniger im Zuspiel, am wenigsten im Angriffs-Schlagfenster. Solange der Ball in dieser Zone bleibt, korrigieren Arme und Hände fast alles. Verlässt er sie während des Kontakts, wird es Schadensbegrenzung.
+
+Dafür brauchen wir Kraft und Mobilität, um schnell in verschiedene Positionen zu kommen. Unser Fokus sollte aber immer auf dem eigenen Körperschwerpunkt liegen: Zu oft bringen wir ihn zur Ruhe und können ihn dann nicht mehr weiterbewegen. Genau dann häufen sich die technischen Fehler.
