@@ -130,6 +130,27 @@
 		text-align: justify;
 	}
 
+	.content :global(a) {
+		color: var(--color-primary);
+		font-weight: var(--font-weight-medium);
+		text-decoration: underline;
+		text-decoration-thickness: 2px;
+		text-underline-offset: 3px;
+		text-decoration-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
+		border-radius: var(--radius-sm);
+		transition:
+			color var(--transition-fast),
+			background var(--transition-fast),
+			text-decoration-color var(--transition-fast);
+	}
+
+	.content :global(a:hover),
+	.content :global(a:focus-visible) {
+		color: var(--color-primary-hover);
+		background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+		text-decoration-color: currentColor;
+	}
+
 	.content :global(ul),
 	.content :global(ol) {
 		margin-block: var(--space-md);
